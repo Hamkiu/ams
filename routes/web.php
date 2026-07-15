@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +31,12 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('audittrail')->group(function () {
             Route::get('/', [AuditTrailController::class, 'index'])->name('audittrail');
             Route::any('list', [AuditTrailController::class, 'list'])->name('audittrail.list');
+        });
+
+        Route::prefix('user')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('user');
+            Route::any('list', [UserController::class, 'list'])->name('user.list');
+            Route::get('create', [UserController::class, 'create'])->name('user.create');
         });
 
     });

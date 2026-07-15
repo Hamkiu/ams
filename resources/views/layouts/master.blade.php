@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="en" data-bs-theme="blue-theme">
+<html lang="en" data-bs-theme="light">
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>DBSurat@mbi | @yield('title')</title>
+  <title>Audit Management System | @yield('title')</title>
   <!--favicon-->
   <link rel="icon" sizes="16x16" href="{{ asset('template/assets/images/logo-mbi.png') }}" type="image/png">
   <!-- loader-->
@@ -65,7 +66,7 @@
 
    <!--start footer-->
    <footer class="page-footer">
-    <p class="mb-0">Copyright © 2025. All right reserved.</p>
+    <p class="mb-0">Copyright © <script>document.write(new Date().getFullYear())</script> All Rights Reserved <a target="_blank" href="https://www.mbi.gov.my/">Musyhabizu</a>.</p>    
   </footer>
   <!--end footer-->
 
@@ -97,6 +98,8 @@
   <script>
 	   new PerfectScrollbar(".user-list")
   </script>
+
+  @stack('scripts')
 
 </body>
 

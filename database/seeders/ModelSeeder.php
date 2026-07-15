@@ -21,20 +21,21 @@ class ModelSeeder extends Seeder
         $components_no = 1;
         $components = [
             'Dashboard',
+            'Pengguna',
             'Audit Log',
         ];
 
         $component_icon = [
             'Dashboard' => 'home',
+            'Pengguna' => 'person',
             'Audit Log' => 'widgets',
-
         ];
 
         $sub_components = [];
 
         array_push($sub_components, ['sub_components_name' => 'Dashboard', 'sub_components' => 'dashboard', 'route' => 'dashboard', 'components_no' => 1]);
-        array_push($sub_components, ['sub_components_name' => 'Audit Log', 'sub_components' => 'audittrail', 'route' => 'audittrail', 'components_no' => 2]);
-
+        array_push($sub_components, ['sub_components_name' => 'Pengguna', 'sub_components' => 'user', 'route' => 'user', 'components_no' => 2]);
+        array_push($sub_components, ['sub_components_name' => 'Audit Log', 'sub_components' => 'audittrail', 'route' => 'audittrail', 'components_no' => 3]);
 
         
         foreach($components as $component) {

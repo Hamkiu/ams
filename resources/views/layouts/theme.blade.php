@@ -18,7 +18,7 @@
 
         <div class="row g-3">
           <div class="col-12 col-xl-6">
-            <input type="radio" class="btn-check" name="theme-options" id="BlueTheme" checked>
+            <input type="radio" class="btn-check" name="theme-options" id="BlueTheme">
             <label class="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4" for="BlueTheme">
               <span class="material-icons-outlined">contactless</span>
               <span>Blue</span>

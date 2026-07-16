@@ -64,6 +64,25 @@ return [
             ]) : [],
         ],
 
+        'oracle' => [
+            'driver'        => 'oracle',
+            'host'          => env('ORACLE_HOST', '64.0.0.100'),
+            'port'          => env('ORACLE_PORT', '1521'),
+            'database'      => env('ORACLE_DATABASE', 'sbpt'),
+            'service_name'  => env('ORACLE_SERVICE_NAME', 'sbpt'),
+            'username'      => env('ORACLE_USERNAME', 'STKN'),
+            'password'      => env('ORACLE_PASSWORD', ''),
+            'charset'       => 'AL32UTF8',
+            'prefix'        => '',
+            'sessionVars' => [
+                'NLS_TIME_FORMAT'      => 'HH24:MI:SS',
+                'NLS_DATE_FORMAT'      => 'YYYY-MM-DD HH24:MI:SS',
+                'NLS_TIMESTAMP_FORMAT' => 'YYYY-MM-DD HH24:MI:SS',
+                'NLS_TIMESTAMP_TZ_FORMAT' => 'YYYY-MM-DD HH24:MI:SS TZH:TZM',
+                'NLS_NUMERIC_CHARACTERS' => '.,',
+            ],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

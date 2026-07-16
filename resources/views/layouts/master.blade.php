@@ -21,6 +21,7 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/plugins/simplebar/css/simplebar.css') }}">
   <!--bootstrap css-->
   <link href="{{ asset('template/assets/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('template/assets/plugins/datatable/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
   <!--main css-->
@@ -86,6 +87,9 @@
   <script src="{{ asset('template/assets/plugins/apexchart/apexcharts.min.js') }}"></script>
   <script src="{{ asset('template/assets/plugins/simplebar/js/simplebar.min.js') }}"></script>
   <script src="{{ asset('template/assets/plugins/peity/jquery.peity.min.js') }}"></script>
+  <script src="{{ asset('template/assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ asset('template/assets/plugins/datatable/js/dataTables.bootstrap5.min.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     $(".data-attributes span").peity("donut")
   </script>

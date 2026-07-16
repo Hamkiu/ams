@@ -37,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('user');
             Route::any('list', [UserController::class, 'list'])->name('user.list');
             Route::get('create', [UserController::class, 'create'])->name('user.create');
+            Route::get('edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+            Route::post('store', [UserController::class, 'store'])->name('user.store');
+            Route::post('search-staff', [UserController::class, 'searchStaff'])->name('user.searchStaff');
         });
 
     });

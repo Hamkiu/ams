@@ -35,4 +35,15 @@ return [
         ],
     ],
 
+    'kkp' => [
+        'login_url' => env('KKP_API_LOGIN'),
+
+        'id'       => env('KKP_API_ID'),
+        'password' => env('KKP_API_PASSWORD'),
+        'entity'   => env('KKP_API_ENTITY'),
+        'static_token' => env('KKP_API_STATIC_TOKEN'),
+
+        'url_pekerja' => env('KKP_API_PEKERJA'),
+    ],
+
 ];

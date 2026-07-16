@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('create', [UserController::class, 'create'])->name('user.create');
             Route::get('edit/{id}', [UserController::class, 'edit'])->name('user.edit');
             Route::post('store', [UserController::class, 'store'])->name('user.store');
-            Route::post('search-staff', [UserController::class, 'searchStaff'])->name('user.searchStaff');
+            Route::get('destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
         });
 
     });

@@ -26,12 +26,22 @@ class UserController extends Controller
             ->addColumn('roles', function ($row) {
                 return $row->roles->pluck('name')->implode(', ');
             })
+            ->addColumn('status', function ($row) {
+                $btn = '';
+                if ($row->status == 'AKTIF') {
+                    $btn .= '<span class="badge bg-success">'.$row->status.'</span>';
+                } else {
+                    $btn .= '<span class="badge bg-danger">'.$row->status.'</span>';
+                }
+                return $btn;
+            })
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
                 $btn .= '<a href="'.route('user.edit', encode($row->id)).'" class="btn btn-warning btn-sm">Edit</a>';
+                $btn .= ' <a href="'.route('user.destroy', encode($row->id)).'" class="btn btn-danger btn-sm">Delete</a>';
                 return $btn;
             })
-            ->rawColumns(['tindakan'])
+            ->rawColumns(['status', 'tindakan'])
             ->make(true);
     }
 
@@ -49,7 +59,29 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $validated = $request->validate([
+            'name' => 'required',
+            'password' => 'required',
+            'role' => 'required',
+        ], [
+            'name.required' => 'Nama wajib diisi',
+            'password.required' => 'Password wajib diisi',
+            'role.required' => 'Role pengguna wajib diisi',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'no_pekerja' => $request->no_pekerja,
+            'jawatan' => $request->jawatan,
+            'jabatan' => $request->jabatan,
+            'status' => 'AKTIF',
+        ]);
+        $role = Role::findById($request->role);
+        $user->assignRole($role);
+        return redirect()->route('user')->with('success', 'Pengguna berjaya disimpan');
     }
 
     /**
@@ -79,8 +111,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $user = User::find(decode($id));
+        $user->delete();
+        return redirect()->route('user')->with('success', 'Pengguna '.$user->name.' berjaya dipadam');
     }
 }

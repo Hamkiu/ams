@@ -32,6 +32,7 @@
                         <th>Role</th>
                         <th>Jabatan</th>
                         <th>Jawatan</th>
+                        <th>Status</th>
                         <th>Tindakan</th>
                     </tr>
                 </thead>
@@ -92,6 +93,11 @@ $(document).ready(function () {
                 name: 'jawatan'
             },
             {
+                data: 'status',
+                name: 'status',
+                className: 'text-center'
+            },
+            {
                 data: 'tindakan',
                 name: 'tindakan',
                 orderable: false,
@@ -120,6 +126,16 @@ $(document).ready(function () {
         ]
 
     });
+
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berjaya!',
+            text: "{{ session('success') }}",
+            timer: 3000,
+            showConfirmButton: true
+        });        
+    @endif
 
 });
 </script>

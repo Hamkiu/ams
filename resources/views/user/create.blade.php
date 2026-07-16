@@ -25,8 +25,8 @@
                                     <input type="text"
                                            class="form-control"
                                            id="paynumber"
-                                           name="paynumber"
-                                           placeholder="Sila Masukkan No Pekerja">
+                                           name="no_pekerja"
+                                           placeholder="Sila Masukkan No Pekerja" value="{{ old('no_pekerja') }}">
                         
                                     <button class="btn btn-primary btn-sm" type="button" id="btnSearchPekerja">
                                         <i class="material-icons-outlined">search</i>
@@ -49,11 +49,17 @@
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="material-icons-outlined fs-5">format_list_bulleted</i></span>
                                         <select class="form-select" id="role" name="role">
-                                            <option selected="">--- Pilih Role ---</option>
+                                            <option value="" selected disabled>
+                                                --- Pilih Role ---
+                                            </option>
+                                        
                                             @foreach ($roles as $role)
-                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                <option value="{{ $role->id }}"
+                                                    {{ old('role') == $role->id ? 'selected' : '' }}>
+                                                    {{ $role->name }}
+                                                </option>
                                             @endforeach
-                                          </select>
+                                        </select>
                                       </div>
                                 </div>
                             </div>
@@ -85,11 +91,11 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="input52" class="col-sm-3 col-form-label">Kata Laluan</label>
+                                <label for="input54" class="col-sm-3 col-form-label">Kata Laluan (sama dengan SPBT)</label>
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="material-icons-outlined fs-5">lock</i></span>
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="Kata Laluan" value="{{ old('password') }}" readonly>
+                                        <input type="text" class="form-control" id="password" name="password" placeholder="Kata Laluan" value="{{ old('password', old('no_pekerja')) }}" readonly>
                                       </div>
                                 </div>
                             </div>
@@ -98,8 +104,7 @@
                                 <label class="col-sm-3 col-form-label"></label>
                                 <div class="col-sm-9">
                                     <div class="d-md-flex d-grid align-items-center gap-3">
-                                        <button type="button" class="btn btn-success">Submit</button>
-                                        <button type="button" class="btn btn-secondary">Reset</button>
+                                        <button type="submit" class="btn btn-success">Simpan</button>
                                     </div>
                                 </div>
                             </div>
@@ -158,7 +163,7 @@
             document.getElementById('name').value = u.MAS_STAFFNAME ?? '';
             document.getElementById('jawatan').value = u.JAW_JAWATNAME ?? '';
             document.getElementById('jabatan').value = u.PTJ_PTJPKNAME ?? '';
-            document.getElementById('password').value = paynumber ?? '';
+            document.getElementById('password').value = u.USE_PASSWORDS ?? '';
         })
 
             .catch(err => {

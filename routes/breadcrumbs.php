@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 // Home
 Breadcrumbs::for('dashboard', function ($trail) {
     $trail->push('Home', route('dashboard'));
@@ -14,6 +15,12 @@ Breadcrumbs::for('user', function ($trail) {
 Breadcrumbs::for('user.create', function ($trail) {
     $trail->parent('user');
     $trail->push('Tambah Pengguna', route('user.create'));
+});
+
+Breadcrumbs::for('user.edit', function ($trail, $id) {
+    $trail->parent('user');
+    $user = User::find(decode($id));
+    $trail->push('Edit Pengguna: ' . $user->name, route('user.edit', encode($id)));
 });
 
 // Audit Trail

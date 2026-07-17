@@ -39,7 +39,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('create', [UserController::class, 'create'])->name('user.create');
             Route::get('edit/{id}', [UserController::class, 'edit'])->name('user.edit');
             Route::post('store', [UserController::class, 'store'])->name('user.store');
+            Route::post('update/{id}', [UserController::class, 'update'])->name('user.update');
             Route::get('destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+            Route::get('actionStatus/{id}/{status}', [UserController::class, 'actionStatus'])->name('user.actionStatus');
         });
 
     });

@@ -95,7 +95,7 @@ $(document).ready(function () {
             {
                 data: 'status',
                 name: 'status',
-                className: 'text-center'
+                className: 'text-center align-middle'
             },
             {
                 data: 'tindakan',

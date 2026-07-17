@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::middleware('role:Admin|User')->group(function () {
+    Route::middleware('role:Admin|Auditor')->group(function () {
 
         Route::prefix('dashboard')->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

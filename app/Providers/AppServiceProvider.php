@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
                         'audittrail'
                     ]);
     
-                } else if ($user->hasRole('User')) {
+                } else if ($user->hasRole('Auditor')) {
     
                     $query->whereIn('sub_components', [
                         'dashboard'

@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('edit/{id}', [AuditTemplateItemsController::class, 'edit'])->name('audittemplate.items.edit');
                 Route::post('update/{id}', [AuditTemplateItemsController::class, 'update'])->name('audittemplate.items.update');
                 Route::get('destroy/{id}', [AuditTemplateItemsController::class, 'destroy'])->name('audittemplate.items.destroy');
+                Route::get('actionStatus/{id}/{status}', [AuditTemplateItemsController::class, 'actionStatus'])->name('audittemplate.items.actionStatus');
             });
         });
 

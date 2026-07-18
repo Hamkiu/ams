@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditTemplate;
+use App\Models\AuditTemplateItems;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -46,6 +47,7 @@ class AuditTemplateController extends Controller
             'no_pindaan' => $request->no_pindaan,
             'version' => $request->version,
             'tarikh_berkuatkuasa' => $request->tarikh_berkuatkuasa,
+            'description' => $request->description,
             'status' => 'DRAFT',
             'created_by' => \Auth::user()->id,
         ]);
@@ -134,6 +136,10 @@ class AuditTemplateController extends Controller
     public function destroy($id)
     {
         $auditTemplate = AuditTemplate::find(decode($id));
+        $auditTemplateItems = AuditTemplateItems::where('audit_template_id', decode($id))->get();
+        foreach ($auditTemplateItems as $item) {
+            $item->delete();
+        }
         $auditTemplate->delete();
         auditTrail('Delete', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
         return redirect()->route('audittemplate')->with('success', 'Template ' . $auditTemplate->id . ' berjaya dipadam');

@@ -95,7 +95,7 @@
                                 <div class="col-sm-9">
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="material-icons-outlined fs-5">lock</i></span>
-                                        <input type="text" class="form-control" id="password" name="password" placeholder="Kata Laluan" value="{{ old('password', old('no_pekerja')) }}" readonly>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Kata Laluan" value="{{ old('password', old('no_pekerja')) }}" readonly>
                                       </div>
                                 </div>
                             </div>

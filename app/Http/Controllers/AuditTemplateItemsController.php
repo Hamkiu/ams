@@ -67,12 +67,31 @@ class AuditTemplateItemsController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('is_active', function ($row) {
-                $badge = $row->is_active ? 'success' : 'danger';
-                $status = $row->is_active ? 'Aktif' : 'Tidak Aktif';
-    
-                return '<span class="badge bg-' . $badge . '">' .
-                            $status .
-                       '</span>';            })
+
+                $btn = '<div class="d-flex justify-content-center align-items-center">';
+
+                if ($row->is_active) {
+
+                    $btn .= '<a href="' . route('audittemplate.items.actionStatus', [encode($row->id), 0]) . '"
+                                class="btn btn-success btn-circle raised rounded-circle wh-48"
+                                title="Aktif">
+                                <i class="material-icons-outlined">toggle_on</i>
+                            </a>';
+
+                } else {
+
+                    $btn .= '<a href="' . route('audittemplate.items.actionStatus', [encode($row->id), 1]) . '"
+                                class="btn btn-danger btn-circle raised rounded-circle wh-48"
+                                title="Tidak Aktif">
+                                <i class="material-icons-outlined">toggle_off</i>
+                            </a>';
+
+                }
+
+                $btn .= '</div>';
+
+                return $btn;
+            })
             ->addColumn('created_by', function ($row) {
                 $name = optional($row->user)->name;
                 $date = date('d/m/Y H:i:a', strtotime($row->created_at));
@@ -91,11 +110,24 @@ class AuditTemplateItemsController extends Controller
                 $btn = '';
                 $btn .= ' <button type="button" class="btn btn-primary btn-sm editItem" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
                 $btn .= ' <a href="" class="btn btn-warning btn-sm" title="checklist"><i class="material-icons-outlined">settings</i></a>';
-                $btn .= ' <a href="" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                $btn .= ' <a href="'.route('audittemplate.items.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                 return $btn;
             })
             ->rawColumns(['is_active', 'created_by', 'updated_by', 'tindakan'])
             ->make(true);
+    }
+
+    public function actionStatus($id, $status)
+    {
+        $auditTemplateItems = AuditTemplateItems::find(decode($id));
+        if ($status == 0) {
+            $auditTemplateItems->is_active = 0;
+        } else {
+            $auditTemplateItems->is_active = 1;
+        }
+        $auditTemplateItems->save();
+        auditTrail('Update', 'Tetapan Audit', 'Audit Template Item', $auditTemplateItems->id, $auditTemplateItems->perkara, \Auth::user()->id);
+        return redirect()->back();
     }
 
     /**
@@ -139,8 +171,11 @@ class AuditTemplateItemsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AuditTemplateItems $auditTemplateItems)
+    public function destroy($id)
     {
-        //
+        $auditTemplateItems = AuditTemplateItems::find(decode($id));
+        $auditTemplateItems->delete();
+        auditTrail('Delete', 'Tetapan Audit', 'Audit Template Item', $auditTemplateItems->id, $auditTemplateItems->perkara, \Auth::user()->id);
+        return redirect()->route('audittemplate.items', encode($auditTemplateItems->audit_template_id))->with('success', 'Item berjaya dihapus');
     }
 }

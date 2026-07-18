@@ -25,10 +25,9 @@
                         <th>No Pindaan</th>
                         <th>Version</th>
                         <th>Status</th>
+                        <th>Tarikh Berkuatkuasa</th>
                         <th>Dicipta Oleh</th>
                         <th>Dikemaskini Oleh</th>
-                        <th>Dicipta Pada</th>
-                        <th>Dikemaskini Pada</th>
                         <th>Tindakan</th>
                     </tr>
                 </thead>
@@ -54,7 +53,83 @@
 
         });
 
+        $('#templateTable').DataTable({
 
+            processing: true,
+            serverSide: true,
+            pageLength: 10,
+
+            lengthMenu: [
+                [10, 25, 50, -1],
+                [10, 25, 50, "Semua"]
+            ],
+
+            ajax: {
+                url: "{{ route('audittemplate.list') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}"
+                }
+            },
+
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', width: '2%'},
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'no_rujukan',
+                    name: 'no_rujukan'
+                },
+                {
+                    data: 'no_pindaan',
+                    name: 'no_pindaan',
+                    className: 'text-center',
+                    width: '3%'
+                },
+                {
+                    data: 'version',
+                    name: 'version',
+                    className: 'text-center',
+                    width: '3%'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'tarikh_berkuatkuasa',
+                    name: 'tarikh_berkuatkuasa',
+                    width: '5%'
+                },
+                {
+                    data: 'created_by',
+                    name: 'created_by'
+                },
+                {
+                    data: 'updated_by',
+                    name: 'updated_by'
+                },
+                {
+                    data: 'tindakan',
+                    name: 'tindakan',
+                    orderable: false,
+                    searchable: false
+                }
+            ],
+
+        });
+
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berjaya!',
+                text: "{{ session('success') }}",
+                timer: 3000,
+                showConfirmButton: true
+            });        
+        @endif
     });
 </script>
 @endpush

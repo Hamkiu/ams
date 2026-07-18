@@ -1,6 +1,7 @@
-<div class="card">
-    <form action="" method="POST" id="create_audit_template_form" enctype="multipart/form-data">
-        @csrf
+<form action="{{ route('audittemplate.store') }}" method="POST" id="create_audit_template_form" enctype="multipart/form-data">
+    @csrf
+    <div class="card">
+
         <div class="card-header d-flex justify-content-between align-items-center">
             <div>
                 <h5 class="mb-0">
@@ -50,10 +51,9 @@
                         </div>
                     </div>
                 </div>
-            </form>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary float-end">Simpan</button>
+            <button type="submit" class="btn btn-success float-end">Simpan</button>
         </div>
-    </form>
-</div>
+    </div>
+</form>

@@ -21,6 +21,10 @@ class AuditTemplate extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'tarikh_berkuatkuasa' => 'date',
+    ];
+
     public $incrementing = false;
 
     public function getEncryptIdAttribute()

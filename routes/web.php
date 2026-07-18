@@ -48,6 +48,10 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('audittemplate')->group(function () {
             Route::get('/', [AuditTemplateController::class, 'index'])->name('audittemplate');
             Route::any('list', [AuditTemplateController::class, 'list'])->name('audittemplate.list');
+            Route::post('store', [AuditTemplateController::class, 'store'])->name('audittemplate.store');
+            Route::get('edit/{id}', [AuditTemplateController::class, 'edit'])->name('audittemplate.edit');
+            Route::post('update/{id}', [AuditTemplateController::class, 'update'])->name('audittemplate.update');
+            Route::get('destroy/{id}', [AuditTemplateController::class, 'destroy'])->name('audittemplate.destroy');
         });
 
     });

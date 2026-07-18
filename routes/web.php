@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuditTemplateController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +43,11 @@ Route::middleware(['auth'])->group(function () {
             Route::post('update/{id}', [UserController::class, 'update'])->name('user.update');
             Route::get('destroy/{id}', [UserController::class, 'destroy'])->name('user.destroy');
             Route::get('actionStatus/{id}/{status}', [UserController::class, 'actionStatus'])->name('user.actionStatus');
+        });
+
+        Route::prefix('audittemplate')->group(function () {
+            Route::get('/', [AuditTemplateController::class, 'index'])->name('audittemplate');
+            Route::any('list', [AuditTemplateController::class, 'list'])->name('audittemplate.list');
         });
 
     });

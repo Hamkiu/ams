@@ -43,7 +43,8 @@ class AppServiceProvider extends ServiceProvider
                         
                         'dashboard',
                         'user',
-                        'audittrail'
+                        'audittrail',
+                        'audittemplate'
                     ]);
     
                 } else if ($user->hasRole('Auditor')) {

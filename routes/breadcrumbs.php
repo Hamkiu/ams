@@ -28,3 +28,9 @@ Breadcrumbs::for('audittrail', function ($trail) {
     $trail->parent('dashboard');
     $trail->push('Audit Log', route('audittrail'));
 });
+
+// Audit Template
+Breadcrumbs::for('audittemplate', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push('Audit Template', route('audittemplate'));
+});

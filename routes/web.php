@@ -5,6 +5,7 @@ use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuditTemplateController;
+use App\Http\Controllers\AuditTemplateItemsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -52,7 +53,20 @@ Route::middleware(['auth'])->group(function () {
             Route::get('edit/{id}', [AuditTemplateController::class, 'edit'])->name('audittemplate.edit');
             Route::post('update/{id}', [AuditTemplateController::class, 'update'])->name('audittemplate.update');
             Route::get('destroy/{id}', [AuditTemplateController::class, 'destroy'])->name('audittemplate.destroy');
+            Route::get('show/{id}', [AuditTemplateController::class, 'show'])->name('audittemplate.show');
+
+            Route::prefix('templateitems')->group(function () {
+                Route::get('/{id}', [AuditTemplateItemsController::class, 'index'])->name('audittemplate.items');
+                Route::any('list/{id}', [AuditTemplateItemsController::class, 'list'])->name('audittemplate.items.list');
+                Route::get('create/{id}', [AuditTemplateItemsController::class, 'create'])->name('audittemplate.items.create');
+                Route::post('store/{id}', [AuditTemplateItemsController::class, 'store'])->name('audittemplate.items.store');
+                Route::get('edit/{id}', [AuditTemplateItemsController::class, 'edit'])->name('audittemplate.items.edit');
+                Route::post('update/{id}', [AuditTemplateItemsController::class, 'update'])->name('audittemplate.items.update');
+                Route::get('destroy/{id}', [AuditTemplateItemsController::class, 'destroy'])->name('audittemplate.items.destroy');
+            });
         });
+
+        
 
     });
 

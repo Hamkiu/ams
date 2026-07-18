@@ -8,8 +8,10 @@ class AuditTemplate extends Model
 {
     protected $table = 'audit_templates';
     protected $primaryKey = 'id';
-    protected $appends = ['encrypt_id'];
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = [
+        'id',
         'name',
         'no_rujukan',
         'no_pindaan',
@@ -25,8 +27,6 @@ class AuditTemplate extends Model
         'tarikh_berkuatkuasa' => 'date',
     ];
 
-    public $incrementing = false;
-
     public function getEncryptIdAttribute()
 	{
 		return encrypt($this->id) ;
@@ -40,5 +40,10 @@ class AuditTemplate extends Model
     public function useru()
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(AuditTemplateItems::class, 'audit_template_id', 'id')->orderBy('sort');
     }
 }

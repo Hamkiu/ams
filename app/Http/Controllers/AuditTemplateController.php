@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditTemplate;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -20,9 +19,10 @@ class AuditTemplateController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function show($id)
     {
-        //
+        $auditTemplate = AuditTemplate::find(decode($id));
+        return view('template.show', compact('auditTemplate'));
     }
 
     /**
@@ -38,8 +38,9 @@ class AuditTemplateController extends Controller
             'name.required' => 'Nama template wajib diisi',
             'no_rujukan.required' => 'No rujukan wajib diisi',
         ]);
-
+        $templateId = generateId('AT', 'audit_templates', 'id');
         $auditTemplate = AuditTemplate::create([
+            'id' => $templateId,
             'name' => $request->name,
             'no_rujukan' => $request->no_rujukan,
             'no_pindaan' => $request->no_pindaan,
@@ -49,7 +50,7 @@ class AuditTemplateController extends Controller
             'created_by' => \Auth::user()->id,
         ]);
 
-        auditTrail('Create', 'Audit Template', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
+        auditTrail('Create', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
         return redirect()->route('audittemplate')->with('success', 'Template audit berjaya disimpan');
     }
 
@@ -83,8 +84,8 @@ class AuditTemplateController extends Controller
             })
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
-                $btn .= '<a href="'.route('audittemplate.edit', encode($row->id)).'" class="btn btn-primary btn-sm" title="Edit"><i class="material-icons-outlined">edit</i></a>';
-                $btn .= ' <a href="" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
+                $btn .= ' <button type="button" class="btn btn-primary btn-sm editTemplate" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
+                $btn .= ' <a href="'.route('audittemplate.items', encode($row->id)).'" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
                 $btn .= ' <a href="'.route('audittemplate.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                 return $btn;
             })
@@ -103,9 +104,28 @@ class AuditTemplateController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AuditTemplate $auditTemplate)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'no_rujukan' => 'required',
+        ], [
+            'name.required' => 'Nama template wajib diisi',
+            'no_rujukan.required' => 'No rujukan wajib diisi',
+        ]);
+
+        $auditTemplate = AuditTemplate::find(decode($id));
+        $auditTemplate->update([
+            'name' => $request->name,
+            'no_rujukan' => $request->no_rujukan,
+            'no_pindaan' => $request->no_pindaan,
+            'version' => $request->version,
+            'tarikh_berkuatkuasa' => $request->tarikh_berkuatkuasa,
+            'description' => $request->description,
+            'updated_by' => \Auth::user()->id,
+        ]);
+        auditTrail('Update', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
+        return redirect()->route('audittemplate')->with('success', 'Template ' . $auditTemplate->id . ' berjaya dikemaskini');
     }
 
     /**
@@ -115,7 +135,7 @@ class AuditTemplateController extends Controller
     {
         $auditTemplate = AuditTemplate::find(decode($id));
         $auditTemplate->delete();
-        auditTrail('Delete', 'Audit Template', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
-        return redirect()->route('audittemplate')->with('success', 'Template audit berjaya dipadam');
+        auditTrail('Delete', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
+        return redirect()->route('audittemplate')->with('success', 'Template ' . $auditTemplate->id . ' berjaya dipadam');
     }
 }

@@ -23,14 +23,14 @@ class ModelSeeder extends Seeder
             'Dashboard',
             'Pengguna',
             'Audit Log',
-            'Audit Template',
+            'Tetapan Audit',
         ];
 
         $component_icon = [
             'Dashboard' => 'home',
             'Pengguna' => 'person',
             'Audit Log' => 'widgets',
-            'Audit Template' => 'description',
+            'Tetapan Audit' => 'description',
         ];
 
         $sub_components = [];

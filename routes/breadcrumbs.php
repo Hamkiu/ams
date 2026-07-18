@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use App\Models\AuditTemplate;
+
 // Home
 Breadcrumbs::for('dashboard', function ($trail) {
     $trail->push('Home', route('dashboard'));
@@ -19,8 +21,7 @@ Breadcrumbs::for('user.create', function ($trail) {
 
 Breadcrumbs::for('user.edit', function ($trail, $id) {
     $trail->parent('user');
-    $user = User::find(decode($id));
-    $trail->push('Edit Pengguna: ' . $user->name, route('user.edit', encode($id)));
+    $trail->push('Edit Pengguna',route('user.edit', $id));
 });
 
 // Audit Trail
@@ -33,4 +34,11 @@ Breadcrumbs::for('audittrail', function ($trail) {
 Breadcrumbs::for('audittemplate', function ($trail) {
     $trail->parent('dashboard');
     $trail->push('Audit Template', route('audittemplate'));
+});
+
+// Audit Template Items
+Breadcrumbs::for('audittemplate.items', function ($trail, $id) {
+    $auditTemplate = AuditTemplate::find(decode($id));
+    $trail->parent('audittemplate');
+    $trail->push( $auditTemplate->id, route('audittemplate.items', encode($id)));
 });

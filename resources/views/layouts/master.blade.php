@@ -71,7 +71,7 @@
   </footer>
   <!--end footer-->
 
-
+  @stack('modal')
   <!--start switcher-->
     @include('layouts.theme')
   <!--end switcher-->

@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>No Template</th>
                         <th>Nama Template</th>
                         <th>No Rujukan</th>
                         <th>No Pindaan</th>
@@ -40,6 +41,15 @@
 </div>
 {{-- end list table template --}}
 @endsection
+@push('modal')
+    <div class="modal fade" id="aMd1" tabindex="-1" role="dialog" aria-labelledby="aMdl" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content" id="aMd1_content">
+                
+            </div>
+        </div>
+    </div>
+@endpush
 @push('scripts')
 <script>
     $(document).ready(function () {
@@ -74,6 +84,10 @@
 
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', width: '2%'},
+                {
+                    data: 'id',
+                    name: 'id'
+                },
                 {
                     data: 'name',
                     name: 'name'
@@ -130,6 +144,20 @@
                 showConfirmButton: true
             });        
         @endif
+
+        $('body').on('click','.editTemplate', function (e){
+            var id = $(this).data("id");
+            var url = '{{ route("audittemplate.show", ":id") }}';
+            var new_url = url.replace(':id', id);
+            $.ajax({
+                url: new_url,
+                type:'GET',
+                success: function(data) {
+                    $('#aMd1_content').html(data);
+                    $('#aMd1').modal('show');
+                }
+            });
+        });
     });
 </script>
 @endpush

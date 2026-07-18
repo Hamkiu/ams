@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('audit_templates', function (Blueprint $table) {
-            $table->id();
+            $table->string('id',15)->primary();
 
             $table->string('name');
             $table->string('no_rujukan')->nullable();

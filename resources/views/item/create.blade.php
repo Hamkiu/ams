@@ -2,11 +2,11 @@
     <div class="card-header" id="head2">
         <section class="mb-0 mt-0">
             <div role="menu" class="collapsed d-flex justify-content-center align-items-center" data-bs-toggle="collapse" data-bs-target="#defaultAccordionTwo" aria-expanded="false" aria-controls="defaultAccordionTwo">
-                <i data-feather="plus-square"></i>&nbsp;<b>Tambah Item</b>
+                <i data-feather="plus-square"></i>&nbsp;<b>Tambah Item</b><span class="badge bg-danger ms-2 blink-badge">Klik Di Sini</span>
             </div>
         </section>
     </div>
-    <div id="defaultAccordionTwo" class="collapse show" aria-labelledby="head2" data-bs-parent="#toggleAccordion">
+    <div id="defaultAccordionTwo" class="collapse" aria-labelledby="head2" data-bs-parent="#toggleAccordion">
         <form action="{{ route('audittemplate.items.store', encode($auditTemplate->id)) }}" method="post">
             @csrf
             <div class="card-body">

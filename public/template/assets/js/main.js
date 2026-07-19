@@ -178,9 +178,30 @@ $(function () {
   /* menu active */
 
   $(function () {
-    for (var e = window.location, o = $(".metismenu li a").filter(function () {
-      return this.href == e
-    }).addClass("").parent().addClass("mm-active"); o.is("li");) o = o.parent("").addClass("mm-show").parent("").addClass("mm-active")
+
+      var current = window.location.pathname.replace(/\/$/, "");
+
+      $(".metismenu li a").each(function () {
+
+        var href = new URL(this.href).pathname.replace(/\/$/, "");
+
+        if (
+            current === href ||
+            current.startsWith(href + "/")
+        ) {
+
+            $(this)
+                .parent("li")
+                .addClass("mm-active")
+                .parents("ul")
+                .addClass("mm-show")
+                .parents("li")
+                .addClass("mm-active");
+
+        }
+
+    });
+
   });
 
 

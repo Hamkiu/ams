@@ -6,7 +6,7 @@
             </div>
         </section>
     </div>
-    <div id="defaultAccordionThree" class="collapse" aria-labelledby="head3" data-bs-parent="#toggleAccordion">
+    <div id="defaultAccordionThree" class="collapse show" aria-labelledby="head3" data-bs-parent="#toggleAccordion">
         <div class="card-body">
             <div class="table-responsive">
                 <table id="itemTable" class="table table-striped table-bordered">

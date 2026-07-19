@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();
             $table->foreign('audit_template_id')->references('id')->on('audit_templates')->restrictOnDelete();
+            $table->unique(['audit_template_id', 'sort']);
 
         });
     }

@@ -6,7 +6,9 @@ use App\Models\AuditTemplateItems;
 use App\Models\AuditTemplate;
 use Yajra\DataTables\Facades\DataTables;
 
+
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AuditTemplateItemsController extends Controller
 {
@@ -34,12 +36,19 @@ class AuditTemplateItemsController extends Controller
     {
         // dd($request->all());
         $validated = $request->validate([
-            'sort' => 'required|integer',
+            'sort' => ['required','integer',
+                Rule::unique('audit_template_items')
+                    ->where(function ($query) use ($id) {
+                        return $query->where('audit_template_id', decode($id));
+                }),
+            ],
             'perkara' => 'required|string',
             'no_klausa' => 'required|string',
             'klausa' => 'required|string',
         ], [
             'sort.required' => 'Sort wajib diisi',
+            'sort.integer'  => 'Sort mestilah nombor',
+            'sort.unique'   => 'Nombor sort telah digunakan bagi template ini.',
             'perkara.required' => 'Perkara wajib diisi',
             'no_klausa.required' => 'No Klausa wajib diisi',
             'klausa.required' => 'Klausa wajib diisi',
@@ -144,18 +153,28 @@ class AuditTemplateItemsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $auditTemplateItems = AuditTemplateItems::find(decode($id));
         $validated = $request->validate([
-            'sort' => 'required|integer',
+            'sort' => [
+                'required',
+                'integer',
+                Rule::unique('audit_template_items')
+                    ->where(function ($query) use ($auditTemplateItems) {
+                        return $query->where('audit_template_id', $auditTemplateItems->audit_template_id);
+                    })
+                    ->ignore($auditTemplateItems->id),
+            ],
             'perkara' => 'required|string',
             'no_klausa' => 'required|string',
             'klausa' => 'required|string',
         ], [
             'sort.required' => 'Sort wajib diisi',
+            'sort.integer'  => 'Sort mestilah nombor',
+            'sort.unique'   => 'Nombor sort telah digunakan bagi template ini.',
             'perkara.required' => 'Perkara wajib diisi',
             'no_klausa.required' => 'No Klausa wajib diisi',
             'klausa.required' => 'Klausa wajib diisi',
         ]);
-        $auditTemplateItems = AuditTemplateItems::find(decode($id));
         $auditTemplateItems->update([
             'sort' => $request->sort,
             'perkara' => $request->perkara,

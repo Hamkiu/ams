@@ -2,6 +2,25 @@
 @section('title', 'Senarai Item')
 @section('content')
 @include('include.error')
+@push('styles')
+<style>
+    .blink-badge{
+        animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse{
+        0%{
+            transform:scale(1);
+        }
+        50%{
+            transform:scale(1.08);
+        }
+        100%{
+            transform:scale(1);
+        }
+    }
+</style>
+@endpush
 <div class="accordion" id="toggleAccordion">
     <div class="card">
         <div class="card-header" id="head1">

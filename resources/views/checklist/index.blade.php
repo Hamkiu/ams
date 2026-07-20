@@ -1,8 +1,8 @@
 @extends('layouts.master')
-@section('title', 'Senarai Audit Template')
+@section('title', 'Senarai Checklist')
 @section('content')
 @include('include.error')
-@include('template.create')
+@include('checklist.create')
 
 {{-- list table template --}}
 <div class="card">
@@ -10,24 +10,17 @@
         <div>
             <h5 class="mb-0">
                 <i data-feather="file-text"></i>
-                Senarai Audit Template
+                Senarai Penemuan Audit
             </h5>
         </div>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="templateTable" class="table table-striped table-bordered">
+            <table id="checklistTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>No Template</th>
-                        <th>Nama Template</th>
-                        <th>Klausa</th>
-                        <th>No Rujukan</th>
-                        <th>No Pindaan</th>
-                        <th>Version</th>
-                        <th>Status</th>
-                        <th>Tarikh Berkuatkuasa</th>
+                        <th>Penemuan Audit</th>
                         <th>Dicipta Oleh</th>
                         <th>Dikemaskini Oleh</th>
                         <th>Tindakan</th>
@@ -54,20 +47,11 @@
 @push('scripts')
 <script>
     $(document).ready(function () {
-        $('#version').on('blur', function () {
-
-            let value = parseFloat($(this).val());
-
-            if (!isNaN(value)) {
-                $(this).val(value.toFixed(1));
-            }
-
-        });
-
-        $('#templateTable').DataTable({
+        $('#checklistTable').DataTable({
 
             processing: true,
             serverSide: true,
+            autoWidth: false,
             pageLength: 10,
 
             lengthMenu: [
@@ -76,7 +60,7 @@
             ],
 
             ajax: {
-                url: "{{ route('audittemplate.list') }}",
+                url: "{{ route('audittemplate.checklist.list', encode($auditTemplateItems->id)) }}",
                 type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}"
@@ -86,42 +70,8 @@
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', width: '2%'},
                 {
-                    data: 'id',
-                    name: 'id'
-                },
-                {
                     data: 'name',
                     name: 'name'
-                },
-                {
-                    data: 'klausa',
-                    name: 'klausa',
-                    width: '4%'
-                },
-                {
-                    data: 'no_rujukan',
-                    name: 'no_rujukan'
-                },
-                {
-                    data: 'no_pindaan',
-                    name: 'no_pindaan',
-                    className: 'text-center',
-                    width: '3%'
-                },
-                {
-                    data: 'version',
-                    name: 'version',
-                    className: 'text-center',
-                    width: '3%'
-                },
-                {
-                    data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'tarikh_berkuatkuasa',
-                    name: 'tarikh_berkuatkuasa',
-                    width: '5%'
                 },
                 {
                     data: 'created_by',
@@ -151,9 +101,9 @@
             });        
         @endif
 
-        $('body').on('click','.editTemplate', function (e){
+        $('body').on('click','.editChecklist', function (e){
             var id = $(this).data("id");
-            var url = '{{ route("audittemplate.show", ":id") }}';
+            var url = '{{ route("audittemplate.checklist.edit", ":id") }}';
             var new_url = url.replace(':id', id);
             $.ajax({
                 url: new_url,
@@ -167,3 +117,4 @@
     });
 </script>
 @endpush
+

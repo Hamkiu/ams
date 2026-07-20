@@ -28,18 +28,25 @@ class ModelSeeder extends Seeder
 
         $component_icon = [
             'Dashboard' => 'home',
-            'Pengguna' => 'person',
-            'Audit Log' => 'widgets',
-            'Tetapan Audit' => 'description',
+            'Pengguna' => 'manage_accounts',
+            'Audit Log' => 'history',
+            'Tetapan Audit' => 'admin_panel_settings',
         ];
 
         $sub_components = [];
-
+        //Dashboard
         array_push($sub_components, ['sub_components_name' => 'Dashboard', 'sub_components' => 'dashboard', 'route' => 'dashboard', 'components_no' => 1]);
+
+        //Pengguna
         array_push($sub_components, ['sub_components_name' => 'Pengguna', 'sub_components' => 'user', 'route' => 'user', 'components_no' => 2]);
+
+        //Audit Log
         array_push($sub_components, ['sub_components_name' => 'Audit Log', 'sub_components' => 'audittrail', 'route' => 'audittrail', 'components_no' => 3]);
+
+        // Tetapan Audit
         array_push($sub_components, ['sub_components_name' => 'Audit Template', 'sub_components' => 'audittemplate', 'route' => 'audittemplate', 'components_no' => 4]);
-        
+        array_push($sub_components, ['sub_components_name' => 'Audit Group', 'sub_components' => 'auditgroup', 'route' => 'auditgroup', 'components_no' => 4]);
+
         foreach($components as $component) {
             $sub_component_no = 1;
             foreach($sub_components as $sub_component) {

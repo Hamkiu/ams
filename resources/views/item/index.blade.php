@@ -174,6 +174,14 @@
                     width: '6%'
                 },
                 {
+                    data: 'senarai_penemuan_audit',
+                    name: 'senarai_penemuan_audit',
+                    orderable: false,
+                    searchable: false,
+                    className: 'text-center',
+                    width: '2%'
+                },
+                {
                     data: 'created_by',
                     name: 'created_by'
                 },

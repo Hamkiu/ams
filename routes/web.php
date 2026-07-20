@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuditTemplateController;
 use App\Http\Controllers\AuditTemplateItemsController;
+use App\Http\Controllers\AuditItemChecklistController;
+use App\Http\Controllers\AuditGroupsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -54,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('update/{id}', [AuditTemplateController::class, 'update'])->name('audittemplate.update');
             Route::get('destroy/{id}', [AuditTemplateController::class, 'destroy'])->name('audittemplate.destroy');
             Route::get('show/{id}', [AuditTemplateController::class, 'show'])->name('audittemplate.show');
+            Route::get('publish/{id}', [AuditTemplateController::class, 'publish'])->name('audittemplate.publish');
+            Route::get('archive/{id}', [AuditTemplateController::class, 'archive'])->name('audittemplate.archive');
+            
 
             Route::prefix('templateitems')->group(function () {
                 Route::get('/{id}', [AuditTemplateItemsController::class, 'index'])->name('audittemplate.items');
@@ -65,7 +70,27 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('destroy/{id}', [AuditTemplateItemsController::class, 'destroy'])->name('audittemplate.items.destroy');
                 Route::get('actionStatus/{id}/{status}', [AuditTemplateItemsController::class, 'actionStatus'])->name('audittemplate.items.actionStatus');
             });
+
+            Route::prefix('checklist')->group(function () {
+                Route::get('/{id}', [AuditItemChecklistController::class, 'index'])->name('audittemplate.checklist');
+                Route::any('list/{id}', [AuditItemChecklistController::class, 'list'])->name('audittemplate.checklist.list');
+                Route::post('store/{id}', [AuditItemChecklistController::class, 'store'])->name('audittemplate.checklist.store');
+                Route::get('edit/{id}', [AuditItemChecklistController::class, 'edit'])->name('audittemplate.checklist.edit');
+                Route::post('update/{id}', [AuditItemChecklistController::class, 'update'])->name('audittemplate.checklist.update');
+                Route::get('destroy/{id}', [AuditItemChecklistController::class, 'destroy'])->name('audittemplate.checklist.destroy');
+            });
         });
+
+        Route::prefix('auditgroup')->group(function () {
+            Route::get('/', [AuditGroupsController::class, 'index'])->name('auditgroup');
+            Route::any('list', [AuditGroupsController::class, 'list'])->name('auditgroup.list');
+            Route::get('create', [AuditGroupsController::class, 'create'])->name('auditgroup.create');
+            Route::post('store', [AuditGroupsController::class, 'store'])->name('auditgroup.store');
+            Route::get('edit/{id}', [AuditGroupsController::class, 'edit'])->name('auditgroup.edit');
+            Route::post('update/{id}', [AuditGroupsController::class, 'update'])->name('auditgroup.update');
+            Route::get('destroy/{id}', [AuditGroupsController::class, 'destroy'])->name('auditgroup.destroy');
+        });
+
 
         
 

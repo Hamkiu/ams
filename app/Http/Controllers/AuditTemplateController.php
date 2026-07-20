@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditTemplate;
 use App\Models\AuditTemplateItems;
+use App\Models\AuditItemChecklist;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -44,6 +45,7 @@ class AuditTemplateController extends Controller
             'id' => $templateId,
             'name' => $request->name,
             'no_rujukan' => $request->no_rujukan,
+            'klausa' => $request->klausa,
             'no_pindaan' => $request->no_pindaan,
             'version' => $request->version,
             'tarikh_berkuatkuasa' => $request->tarikh_berkuatkuasa,
@@ -65,7 +67,17 @@ class AuditTemplateController extends Controller
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('status', function ($row) {
-                return '<span class="badge bg-'.($row->status == 'DRAFT' ? 'warning' : 'success').'">'.$row->status.'</span>';
+
+                $badge = match ($row->status) {
+                    'DRAFT'   => 'warning',
+                    'PUBLISHED'   => 'success',
+                    'ARCHIVE' => 'dark',
+                    default   => 'secondary',
+                };
+            
+                return '<span class="badge bg-' . $badge . '">' .
+                            $row->status .
+                    '</span>';
             })
             ->addColumn('created_by', function ($row) {
                 $name = optional($row->user)->name;
@@ -86,9 +98,22 @@ class AuditTemplateController extends Controller
             })
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
-                $btn .= ' <button type="button" class="btn btn-primary btn-sm editTemplate" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
-                $btn .= ' <a href="'.route('audittemplate.items', encode($row->id)).'" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
-                $btn .= ' <a href="'.route('audittemplate.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                if($row->status == 'DRAFT'){
+                    $btn .= ' <button type="button" class="btn btn-primary btn-sm editTemplate" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
+                    $btn .= ' <a href="'.route('audittemplate.publish', encode($row->id)).'" class="btn btn-success btn-sm" title="Publish"><i class="material-icons-outlined">publish</i></a>';
+                    $btn .= ' <a href="'.route('audittemplate.items', encode($row->id)).'" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
+                    $btn .= ' <a href="'.route('audittemplate.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                    return $btn;
+                }else if($row->status == 'PUBLISHED'){
+                    $btn .= ' <button type="button" class="btn btn-primary btn-sm editTemplate" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
+                    $btn .= ' <a href="'.route('audittemplate.items', encode($row->id)).'" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
+                    $btn .= ' <a href="'.route('audittemplate.archive', encode($row->id)).'" class="btn btn-secondary btn-sm" title="Archive"><i class="material-icons-outlined">archive</i></a>';
+                }else if($row->status == 'ARCHIVED'){
+                    $btn .= ' <button type="button" class="btn btn-primary btn-sm editTemplate" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
+                    $btn .= ' <a href="'.route('audittemplate.items', encode($row->id)).'" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
+                    $btn .= ' <a href="'.route('audittemplate.publish', encode($row->id)).'" class="btn btn-success btn-sm" title="Publish"><i class="material-icons-outlined">publish</i></a>';
+
+                }
                 return $btn;
             })
             ->rawColumns(['status', 'created_by', 'updated_by', 'tarikh_berkuatkuasa', 'tindakan'])
@@ -120,6 +145,7 @@ class AuditTemplateController extends Controller
         $auditTemplate->update([
             'name' => $request->name,
             'no_rujukan' => $request->no_rujukan,
+            'klausa' => $request->klausa,
             'no_pindaan' => $request->no_pindaan,
             'version' => $request->version,
             'tarikh_berkuatkuasa' => $request->tarikh_berkuatkuasa,
@@ -138,10 +164,36 @@ class AuditTemplateController extends Controller
         $auditTemplate = AuditTemplate::find(decode($id));
         $auditTemplateItems = AuditTemplateItems::where('audit_template_id', decode($id))->get();
         foreach ($auditTemplateItems as $item) {
+            $auditItemChecklists = AuditItemChecklist::where('items_id', $item->id)->get();
+            foreach ($auditItemChecklists as $checklist) {
+                $checklist->delete();
+            }
             $item->delete();
         }
         $auditTemplate->delete();
         auditTrail('Delete', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
         return redirect()->route('audittemplate')->with('success', 'Template ' . $auditTemplate->id . ' berjaya dipadam');
+    }
+
+    public function publish($id)
+    {
+        $auditTemplate = AuditTemplate::find(decode($id));
+        $auditTemplate->update([
+            'status' => 'PUBLISHED',
+            'updated_by' => \Auth::user()->id,
+        ]);
+        auditTrail('Publish', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
+        return redirect()->route('audittemplate')->with('success', 'Template ' . $auditTemplate->id . ' berjaya diaktifkan');
+    }
+
+    public function archive($id)
+    {
+        $auditTemplate = AuditTemplate::find(decode($id));
+        $auditTemplate->update([
+            'status' => 'ARCHIVED',
+            'updated_by' => \Auth::user()->id,
+        ]);
+        auditTrail('Archive', 'Tetapan Audit', 'Audit Template', $auditTemplate->id, $auditTemplate->name, \Auth::user()->id);
+        return redirect()->route('audittemplate')->with('success', 'Template ' . $auditTemplate->id . ' berjaya diarsipkan');
     }
 }

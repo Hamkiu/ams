@@ -4,23 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AuditTemplateItems extends Model
+class AuditGroups extends Model
 {
-    protected $table = 'audit_template_items';
+    protected $table = 'audit_groups';
     protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = [
+        'id',
         'audit_template_id',
-        'sort',
-        'perkara',
-        'no_klausa',
-        'klausa',
-        'keterangan',
-        'is_active',
+        'name',
+        'jabatan',
+        'tarikh',
         'created_by',
         'updated_by',
     ];
 
-    public function template()
+    protected $casts = [
+        'tarikh' => 'date',
+    ];
+
+    public function getEncryptIdAttribute()
+	{
+		return encrypt($this->id) ;
+    }
+
+    public function auditTemplate()
     {
         return $this->belongsTo(AuditTemplate::class, 'audit_template_id', 'id');
     }
@@ -33,10 +42,5 @@ class AuditTemplateItems extends Model
     public function useru()
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
-    }
-
-    public function checklists()
-    {
-        return $this->hasMany(AuditItemChecklist::class, 'items_id', 'id');
     }
 }

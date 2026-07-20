@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('no_rujukan')->nullable();
+            $table->string('klausa')->nullable();
             $table->unsignedInteger('no_pindaan')->default(0);
             $table->decimal('version', 4, 1)->default(1.0);
 

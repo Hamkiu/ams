@@ -14,6 +14,7 @@ class AuditTemplate extends Model
         'id',
         'name',
         'no_rujukan',
+        'klausa',
         'no_pindaan',
         'version',
         'description',
@@ -45,5 +46,10 @@ class AuditTemplate extends Model
     public function items()
     {
         return $this->hasMany(AuditTemplateItems::class, 'audit_template_id', 'id')->orderBy('sort');
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(AuditGroups::class, 'audit_template_id', 'id');
     }
 }

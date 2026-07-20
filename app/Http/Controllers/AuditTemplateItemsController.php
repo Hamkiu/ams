@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditTemplateItems;
 use App\Models\AuditTemplate;
+use App\Models\AuditItemChecklist;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -72,7 +73,10 @@ class AuditTemplateItemsController extends Controller
      */
     public function list(Request $request, $id)
     {
-        $data = AuditTemplateItems::where('audit_template_id', decode($id))->orderBy('sort')->get();
+        $data = AuditTemplateItems::withCount('checklists')
+        ->where('audit_template_id', decode($id))
+        ->orderBy('sort')
+        ->get();        
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('is_active', function ($row) {
@@ -101,6 +105,13 @@ class AuditTemplateItemsController extends Controller
 
                 return $btn;
             })
+            ->addColumn('senarai_penemuan_audit', function ($row) {
+
+                return '<span class="badge bg-primary">'
+                        .$row->checklists_count.
+                        ' Senarai</span>';
+
+            })
             ->addColumn('created_by', function ($row) {
                 $name = optional($row->user)->name;
                 $date = date('d/m/Y H:i:a', strtotime($row->created_at));
@@ -118,11 +129,11 @@ class AuditTemplateItemsController extends Controller
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
                 $btn .= ' <button type="button" class="btn btn-primary btn-sm editItem" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
-                $btn .= ' <a href="" class="btn btn-warning btn-sm" title="checklist"><i class="material-icons-outlined">settings</i></a>';
+                $btn .= ' <a href="'.route('audittemplate.checklist', encode($row->id)).'" class="btn btn-warning btn-sm" title="checklist"><i class="material-icons-outlined">settings</i></a>';
                 $btn .= ' <a href="'.route('audittemplate.items.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                 return $btn;
             })
-            ->rawColumns(['is_active', 'created_by', 'updated_by', 'tindakan'])
+            ->rawColumns(['is_active', 'senarai_penemuan_audit', 'created_by', 'updated_by', 'tindakan'])
             ->make(true);
     }
 
@@ -193,8 +204,12 @@ class AuditTemplateItemsController extends Controller
     public function destroy($id)
     {
         $auditTemplateItems = AuditTemplateItems::find(decode($id));
+        $auditItemChecklists = AuditItemChecklist::where('items_id', decode($id))->get();
+        foreach ($auditItemChecklists as $item) {
+            $item->delete();
+        }
         $auditTemplateItems->delete();
         auditTrail('Delete', 'Tetapan Audit', 'Audit Template Item', $auditTemplateItems->id, $auditTemplateItems->perkara, \Auth::user()->id);
-        return redirect()->route('audittemplate.items', encode($auditTemplateItems->audit_template_id))->with('success', 'Item berjaya dihapus');
+        return redirect()->route('audittemplate.items', encode($auditTemplateItems->audit_template_id))->with('success', 'Item dan senarai penemuan audit berjaya dihapus');
     }
 }

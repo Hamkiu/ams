@@ -60,12 +60,19 @@
 
         <div class="row">
 
-            <div class="col-md-10">
+            <div class="col-md-6">
                 <div class="form-group mb-3">
                     <label>Description</label>
                     <textarea name="description"
                               class="form-control"
                               rows="3">{{ old('description', $auditTemplate->description) }}</textarea>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label>Klausa</label>
+                    <input type="text" name="klausa" class="form-control" value="{{ old('klausa', $auditTemplate->klausa) }}">
                 </div>
             </div>
 

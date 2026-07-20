@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Models\AuditTemplate;
+use App\Models\AuditTemplateItems;
+use App\Models\AuditGroups;
 
 // Home
 Breadcrumbs::for('dashboard', function ($trail) {
@@ -40,5 +42,31 @@ Breadcrumbs::for('audittemplate', function ($trail) {
 Breadcrumbs::for('audittemplate.items', function ($trail, $id) {
     $auditTemplate = AuditTemplate::find(decode($id));
     $trail->parent('audittemplate');
-    $trail->push( $auditTemplate->id, route('audittemplate.items', encode($id)));
+    $trail->push( $auditTemplate->id, route('audittemplate.items', $id));
+});
+
+// Audit Template Checklist
+Breadcrumbs::for('audittemplate.checklist', function ($trail, $id) {
+    $auditTemplateItems = AuditTemplateItems::find(decode($id));
+    $trail->parent('audittemplate.items', encode($auditTemplateItems->audit_template_id));
+    $trail->push( $auditTemplateItems->perkara, route('audittemplate.checklist', $id));
+});
+
+// Audit Group
+Breadcrumbs::for('auditgroup', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push('Audit Group', route('auditgroup'));
+});
+
+// Audit Group Create
+Breadcrumbs::for('auditgroup.create', function ($trail) {
+    $trail->parent('auditgroup');
+    $trail->push('Tambah Group', route('auditgroup.create'));
+});
+
+// Audit Group Edit
+Breadcrumbs::for('auditgroup.edit', function ($trail, $id) {
+    $auditGroup = AuditGroups::find(decode($id));
+    $trail->parent('auditgroup');
+    $trail->push($auditGroup->name, route('auditgroup.edit', $id));
 });

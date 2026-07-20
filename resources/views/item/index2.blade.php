@@ -18,6 +18,7 @@
                             <th>No Klausa</th>
                             <th>Klausa</th>
                             <th>Status</th>
+                            <th>Penemuan Audit</th>
                             <th>Dicipta Oleh</th>
                             <th>Dikemaskini Oleh</th>
                             <th>Tindakan</th>

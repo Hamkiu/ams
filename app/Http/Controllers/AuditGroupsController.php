@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditGroups;
 use App\Models\AuditTemplate;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -14,6 +15,7 @@ class AuditGroupsController extends Controller
      */
     public function index()
     {
+
         return view('auditgroup.index');
     }
 
@@ -98,9 +100,10 @@ class AuditGroupsController extends Controller
      */
     public function edit($id)
     {
+        $users = User::role('Auditor')->orderBy('name', 'ASC')->get(['id', 'name', 'jabatan']);
         $auditGroup = AuditGroups::find(decode($id));
         $auditTemplates = AuditTemplate::orderBy('name','ASC')->where('status', 'PUBLISHED')->get();
-        return view('auditgroup.edit', compact('auditGroup', 'auditTemplates'));
+        return view('auditgroup.edit', compact('auditGroup', 'auditTemplates', 'users'));
     }
 
     /**

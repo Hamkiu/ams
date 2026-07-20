@@ -100,8 +100,8 @@ class AuditTemplateController extends Controller
                 $btn = '';
                 if($row->status == 'DRAFT'){
                     $btn .= ' <button type="button" class="btn btn-primary btn-sm editTemplate" data-id="'.encode($row->id).'" title="Edit"><i class="material-icons-outlined">edit</i></button>';
-                    $btn .= ' <a href="'.route('audittemplate.publish', encode($row->id)).'" class="btn btn-success btn-sm" title="Publish"><i class="material-icons-outlined">publish</i></a>';
                     $btn .= ' <a href="'.route('audittemplate.items', encode($row->id)).'" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
+                    $btn .= ' <a href="'.route('audittemplate.publish', encode($row->id)).'" class="btn btn-success btn-sm" title="Publish"><i class="material-icons-outlined">publish</i></a>';
                     $btn .= ' <a href="'.route('audittemplate.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                     return $btn;
                 }else if($row->status == 'PUBLISHED'){

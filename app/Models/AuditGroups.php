@@ -43,4 +43,9 @@ class AuditGroups extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
     }
+
+    public function members()
+    {
+        return $this->hasMany(AuditGroupsMembers::class, 'audit_group_id', 'id');
+    }
 }

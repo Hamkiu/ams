@@ -8,6 +8,7 @@ use App\Http\Controllers\AuditTemplateController;
 use App\Http\Controllers\AuditTemplateItemsController;
 use App\Http\Controllers\AuditItemChecklistController;
 use App\Http\Controllers\AuditGroupsController;
+use App\Http\Controllers\AuditGroupsMembersController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -91,7 +92,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('destroy/{id}', [AuditGroupsController::class, 'destroy'])->name('auditgroup.destroy');
         });
 
-
+        Route::prefix('auditgroupmember')->group(function () {
+            Route::get('/{id}', [AuditGroupsMembersController::class, 'index'])->name('auditgroupmember');
+            Route::any('list/{id}', [AuditGroupsMembersController::class, 'list'])->name('auditgroupmember.list');
+            Route::post('store/{id}', [AuditGroupsMembersController::class, 'store'])->name('auditgroupmember.store');
+            Route::get('edit/{id}', [AuditGroupsMembersController::class, 'edit'])->name('auditgroupmember.edit');
+            Route::post('update/{id}', [AuditGroupsMembersController::class, 'update'])->name('auditgroupmember.update');
+            Route::get('destroy/{id}', [AuditGroupsMembersController::class, 'destroy'])->name('auditgroupmember.destroy');
+        });
         
 
     });

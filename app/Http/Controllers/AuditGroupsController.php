@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditGroups;
+use App\Models\AuditGroupsMembers;
 use App\Models\AuditTemplate;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -63,6 +64,24 @@ class AuditGroupsController extends Controller
             ->addColumn('audit_template_id', function ($row) {
                 return $row->auditTemplate->name;
             })
+            ->addColumn('bil_juruaudit', function ($row) {
+
+                return '<span class="badge bg-primary">'
+                        .$row->members->count().
+                        ' Juruaudit</span>';
+
+            })
+            ->addColumn('status', function ($row) {
+                if($row->status == 'BELUM BERMULA'){
+                    return '<span class="badge bg-secondary">'.$row->status.'</span>';
+                }elseif($row->status == 'DALAM PROSES'){
+                    return '<span class="badge bg-warning">'.$row->status.'</span>';
+                }elseif($row->status == 'SELESAI'){
+                    return '<span class="badge bg-success">'.$row->status.'</span>';
+                }else{
+                    return '<span class="badge bg-danger">'.$row->status.'</span>';
+                }
+            })
             ->addColumn('created_by', function ($row) {
                 $name = optional($row->user)->name;
                 $date = date('d/m/Y H:i:a', strtotime($row->created_at));
@@ -83,7 +102,7 @@ class AuditGroupsController extends Controller
                 $btn .= ' <a href="'.route('auditgroup.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                 return $btn;
             })
-            ->rawColumns(['audit_template_id', 'created_by', 'updated_by', 'tindakan'])
+            ->rawColumns(['audit_template_id', 'bil_juruaudit', 'status', 'created_by', 'updated_by', 'tindakan'])
             ->make(true);
     }
 
@@ -100,10 +119,20 @@ class AuditGroupsController extends Controller
      */
     public function edit($id)
     {
-        $users = User::role('Auditor')->orderBy('name', 'ASC')->get(['id', 'name', 'jabatan']);
+        $users = User::role('Auditor')
+        ->whereNotIn('id', function ($q) use ($id) {
+            $q->select('user_id')
+              ->from('audit_groups_members')
+              ->where('audit_group_id', decode($id));
+        })
+        ->orderBy('name')
+        ->get();        
+        $hasLeader = AuditGroupsMembers::where('audit_group_id', decode($id))
+    ->where('role', 'Leader')
+    ->exists();
         $auditGroup = AuditGroups::find(decode($id));
         $auditTemplates = AuditTemplate::orderBy('name','ASC')->where('status', 'PUBLISHED')->get();
-        return view('auditgroup.edit', compact('auditGroup', 'auditTemplates', 'users'));
+        return view('auditgroup.edit', compact('auditGroup', 'auditTemplates', 'users', 'hasLeader'));
     }
 
     /**

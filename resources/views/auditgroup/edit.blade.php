@@ -123,15 +123,27 @@
                                 }).then(function () {
                                     window.location.href ="{{ route('auditgroup.edit', encode ($auditGroup->id)) }}"
                                 });
-                            },error: function(jqXhr, json, errorThrown){
-                                var errors = jqXhr.responseJSON;
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal',
-                                    text: errors.errors,
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
+                            },error: function(xhr) {
+
+                            let message = 'Ralat telah berlaku.';
+
+                            if (xhr.responseJSON) {
+
+                                if (xhr.responseJSON.message) {
+                                    message = xhr.responseJSON.message;
+                                } else if (xhr.responseJSON.errors) {
+                                    message = Object.values(xhr.responseJSON.errors)[0][0];
+                                }
+
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: message,
+                                showConfirmButton: true
+                            });
+
                             }
                         });
                     }else{

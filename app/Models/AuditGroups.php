@@ -16,12 +16,17 @@ class AuditGroups extends Model
         'name',
         'jabatan',
         'tarikh',
+        'status',
+        'started_at',
+        'completed_at',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
         'tarikh' => 'date',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
     ];
 
     public function getEncryptIdAttribute()

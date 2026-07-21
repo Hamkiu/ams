@@ -70,3 +70,16 @@ Breadcrumbs::for('auditgroup.edit', function ($trail, $id) {
     $trail->parent('auditgroup');
     $trail->push($auditGroup->name, route('auditgroup.edit', $id));
 });
+
+// Audit
+Breadcrumbs::for('audit', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push('Senarai Audit', route('audit'));
+});
+
+// Audit Show
+Breadcrumbs::for('audit.show', function ($trail, $id) {
+    $auditGroup = AuditGroups::find(decode($id));
+    $trail->parent('audit');
+    $trail->push($auditGroup->name, route('audit.show', $id));
+});

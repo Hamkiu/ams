@@ -14,7 +14,6 @@ class RoleSeeder extends Seeder
 
         $roles = [
             'Auditor',
-            'Ketua Auditor',
             'Admin'
         ];
 
@@ -31,7 +30,6 @@ class RoleSeeder extends Seeder
                 'jabatan' => match($roleName) {
                     'Admin' => 'Jabatan A',
                     'Auditor' => 'Jabatan B',
-                    'Ketua Auditor' => 'Jabatan C',
                 },
                 'no_telefon' => '012' . rand(1000000,9999999),
                 'no_pekerja' => $noPekerja,

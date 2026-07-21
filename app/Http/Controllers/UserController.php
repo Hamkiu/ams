@@ -7,6 +7,7 @@ use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -97,10 +98,13 @@ class UserController extends Controller
             'name' => 'required',
             'password' => 'required',
             'role' => 'required',
+            'no_pekerja' => 'required|unique:users,no_pekerja',
         ], [
-            'name.required' => 'Nama wajib diisi',
-            'password.required' => 'Password wajib diisi',
-            'role.required' => 'Role pengguna wajib diisi',
+            'name.required' => 'Nama wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'role.required' => 'Role pengguna wajib diisi.',
+            'no_pekerja.required' => 'No Pekerja wajib diisi.',
+            'no_pekerja.unique' => 'No Pekerja telah wujud.',
         ]);
 
         $user = User::create([
@@ -142,19 +146,24 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
+        $user = User::find(decode($id));
         $validated = $request->validate([
-            'no_pekerja' => 'required',
+            'no_pekerja' => [
+                'required',
+                Rule::unique('users', 'no_pekerja')->ignore($user->id),
+            ],
             'name' => 'required',
             'password' => 'required',
             'role' => 'required',
         ], [
-            'no_pekerja.required' => 'No. Pekerja wajib diisi',
+            'no_pekerja.required' => 'No. Pekerja wajib diisi.',
+            'no_pekerja.unique' => 'No. Pekerja telah wujud.',            
             'name.required' => 'Nama wajib diisi',
             'password.required' => 'Password wajib diisi',
             'role.required' => 'Role pengguna wajib diisi',
         ]);
         
-        $user = User::find(decode($id));
+        
         $user->name = $request->name;
         $user->email = $request->email;
         $user->no_pekerja = $request->no_pekerja;

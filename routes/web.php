@@ -9,6 +9,7 @@ use App\Http\Controllers\AuditTemplateItemsController;
 use App\Http\Controllers\AuditItemChecklistController;
 use App\Http\Controllers\AuditGroupsController;
 use App\Http\Controllers\AuditGroupsMembersController;
+use App\Http\Controllers\AuditController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +28,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('dashboard')->group(function () {
             Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        });
+
+        Route::prefix('audit')->group(function () {
+            Route::get('/', [AuditController::class, 'index'])->name('audit');
+            Route::get('show/{id}', [AuditController::class, 'show'])->name('audit.show');
         });
 
     });

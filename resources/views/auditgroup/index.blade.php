@@ -27,6 +27,8 @@
                         <th>Template</th>
                         <th>Nama Kumpulan</th>
                         <th>Jabatan / Unit</th>
+                        <th>Bil. Juruaudit</th>
+                        <th>Status</th>
                         <th>Dicipta Oleh</th>
                         <th>Dikemaskini Oleh</th>
                         <th>Tindakan</th>
@@ -80,6 +82,20 @@
                 {
                     data: 'jabatan',
                     name: 'jabatan'
+                },
+                {
+                    data: 'bil_juruaudit',
+                    name: 'bil_juruaudit',
+                    width: '5%',
+                    className: 'text-center',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    width: '5%',
+                    className: 'text-center'
                 },
                 {
                     data: 'created_by',

@@ -24,6 +24,7 @@ class ModelSeeder extends Seeder
             'Pengguna',
             'Audit Log',
             'Tetapan Audit',
+            'Audit',
         ];
 
         $component_icon = [
@@ -31,6 +32,7 @@ class ModelSeeder extends Seeder
             'Pengguna' => 'manage_accounts',
             'Audit Log' => 'history',
             'Tetapan Audit' => 'admin_panel_settings',
+            'Audit' => 'fact_check',
         ];
 
         $sub_components = [];
@@ -46,6 +48,9 @@ class ModelSeeder extends Seeder
         // Tetapan Audit
         array_push($sub_components, ['sub_components_name' => 'Audit Template', 'sub_components' => 'audittemplate', 'route' => 'audittemplate', 'components_no' => 4]);
         array_push($sub_components, ['sub_components_name' => 'Audit Group', 'sub_components' => 'auditgroup', 'route' => 'auditgroup', 'components_no' => 4]);
+
+        // Audit
+        array_push($sub_components, ['sub_components_name' => 'Senarai Audit', 'sub_components' => 'audit', 'route' => 'audit', 'components_no' => 5]);
 
         foreach($components as $component) {
             $sub_component_no = 1;

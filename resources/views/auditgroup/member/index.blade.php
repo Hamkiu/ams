@@ -71,8 +71,14 @@
                                             <label>Peranan</label>
                                             <select name="role" class="form-control">
                                                 <option value="">-- Pilih Peranan --</option>
-                                                <option value="Leader">Ketua Juruaudit</option>
-                                                <option value="Member">Ahli Juruaudit</option>
+                                            
+                                                <option value="Leader" {{ $hasLeader ? 'disabled' : '' }}>
+                                                    Ketua Juruaudit
+                                                </option>
+                                            
+                                                <option value="Member">
+                                                    Ahli Juruaudit
+                                                </option>
                                             </select>
                                         </div>
                                     </div>

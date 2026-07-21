@@ -32,31 +32,75 @@ class AuditGroupsMembersController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'role' => 'required|in:Leader,Member',
-        ], [
+            'role'    => 'required|in:Leader,Member',
+            ], 
+            [
             'user_id.required' => 'Juruaudit wajib dipilih',
-            'user_id.exists' => 'Juruaudit tidak ditemukan',
-            'role.required' => 'Peranan wajib dipilih',
-            'role.in' => 'Peranan tidak valid',
+            'user_id.exists'   => 'Juruaudit tidak ditemukan',
+            'role.required'    => 'Peranan wajib dipilih',
+            'role.in'          => 'Peranan tidak sah',
         ]);
-        $sort = AuditGroupsMembers::where('audit_group_id', decode($id))
+    
+        $auditGroupId = decode($id);
+    
+        // Semak juruaudit telah wujud dalam kumpulan
+        $existMember = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
+            ->where('user_id', $request->user_id)
+            ->exists();
+    
+        if ($existMember) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Juruaudit ini telah berada di dalam kumpulan.',
+            ], 422);
+        }
+    
+        // Semak Ketua Juruaudit hanya seorang
+        if ($request->role == 'Leader') {
+    
+            $existLeader = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
+                ->where('role', 'Leader')
+                ->exists();
+    
+            if ($existLeader) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ketua Juruaudit telah ditetapkan bagi kumpulan ini.',
+                ], 422);
+            }
+        }
+    
+        // Susunan ahli
+        $sort = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
             ->max('sort');
+    
         $sort = $sort ? $sort + 1 : 1;
-        $auditGroup = AuditGroups::find(decode($id));
+    
+        $auditGroup = AuditGroups::findOrFail($auditGroupId);
+    
         $auditGroup->members()->create([
-            'audit_group_id' => decode($id),
-            'user_id' => $request->user_id,
-            'jabatan' => $request->jabatan,
-            'sort' => $sort,
-            'role' => $request->role,
-            'remarks' => $request->remarks,
-            'created_by' => \Auth::user()->id,
+            'audit_group_id' => $auditGroupId,
+            'user_id'        => $request->user_id,
+            'jabatan'        => $request->jabatan,
+            'sort'           => $sort,
+            'role'           => $request->role,
+            'remarks'        => $request->remarks,
+            'created_by'     => auth()->id(),
         ]);
-        auditTrail('Create', 'Tetapan Audit', 'Audit Group Member', $auditGroup->id, $auditGroup->name, \Auth::user()->id);
+    
+        auditTrail(
+            'Create',
+            'Tetapan Audit',
+            'Audit Group Member',
+            $auditGroup->id,
+            $auditGroup->name,
+            auth()->id()
+        );
+    
         return response()->json([
             'success' => true,
-            'message' => 'Juruaudit berjaya ditambahkan',
-        ]);    
+            'message' => 'Juruaudit berjaya ditambahkan.',
+        ]);
     }
 
     public function list(Request $request, $id)

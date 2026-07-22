@@ -78,7 +78,7 @@
 
                 </h2>
 
-                <div id="collapse{{ $item->id }}" class="accordion-collapse collapse" data-bs-parent="#auditAccordion">
+                <div id="collapse{{ $item->id }}" class="accordion-collapse collapse" data-item="{{ $item->id }}" data-bs-parent="#auditAccordion">
 
                     <div class="accordion-body">
 
@@ -194,7 +194,7 @@
 
                                         <td>
 
-                                            <textarea class="form-control" rows="5"></textarea>
+                                            <textarea class="form-control bukti_audit" rows="5" name="bukti_audit" id="bukti_audit_{{ $item->id }}"></textarea>
 
                                         </td>
 
@@ -243,3 +243,51 @@
 
     </div>
 @endsection
+@push('scripts')
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+<script>
+
+    const editors = {};
+
+    document.querySelectorAll('.accordion-collapse').forEach(function(collapse){
+
+        collapse.addEventListener('shown.bs.collapse', function(){
+
+            let itemId = this.dataset.item;
+
+            if(editors[itemId]){
+                return;
+            }
+
+            let textarea = document.querySelector('#bukti_audit_' + itemId);
+
+            if(!textarea){
+                return;
+            }
+
+            ClassicEditor
+                .create(textarea,{
+                    ckfinder:{
+                        uploadUrl:'{{ route("image.upload",["_token"=>csrf_token()]) }}'
+                    }
+                })
+                .then(editor=>{
+
+                    editors[itemId]=editor;
+
+                    console.log('Editor '+itemId+' loaded');
+
+                })
+                .catch(error=>{
+
+                    console.error(error);
+
+                });
+
+        });
+
+    });
+
+</script>
+@endpush

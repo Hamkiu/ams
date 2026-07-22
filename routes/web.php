@@ -10,19 +10,21 @@ use App\Http\Controllers\AuditItemChecklistController;
 use App\Http\Controllers\AuditGroupsController;
 use App\Http\Controllers\AuditGroupsMembersController;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\UploadImageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-Route::middleware(['auth'])->group(function () {
+    Route::prefix('image')->group(function () {
+        Route::any('upload', [UploadImageController::class, 'uploadimage'])->name('image.upload');
+    });
 
     Route::middleware('role:Auditor')->group(function () {
 

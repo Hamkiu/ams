@@ -24,11 +24,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-    Route::middleware('role:Admin|Auditor')->group(function () {
-
-        Route::prefix('dashboard')->group(function () {
-            Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        });
+    Route::middleware('role:Auditor')->group(function () {
 
         Route::prefix('audit')->group(function () {
             Route::get('/', [AuditController::class, 'index'])->name('audit');
@@ -38,6 +34,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware('role:Admin')->group(function () {
+
+        Route::prefix('dashboard')->group(function () {
+            Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        });
 
         Route::prefix('audittrail')->group(function () {
             Route::get('/', [AuditTrailController::class, 'index'])->name('audittrail');

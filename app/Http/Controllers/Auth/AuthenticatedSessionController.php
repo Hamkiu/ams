@@ -40,7 +40,7 @@ class AuthenticatedSessionController extends Controller
         $user = auth()->user();
 
         if ($user->hasRole('Auditor')) {
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/audit');
         }
 
         if ($user->hasRole('Admin')) {

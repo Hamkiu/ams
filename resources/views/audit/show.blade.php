@@ -57,8 +57,12 @@
     <div class="accordion mt-4" id="auditAccordion">
 
         @foreach ($group->auditTemplate->items as $item)
-            <form action="{{ route('audit.store', $group->id) }}" method="post">
+            <form action="{{ route('audit.store') }}" method="post">
                 @csrf
+
+                @php
+                    $answer = $answers[$item->id] ?? null;
+                @endphp
                 <input type="hidden" name="audit_group_id" value="{{ $group->id }}">
 
                 <input type="hidden" name="audit_item_id" value="{{ $item->id }}">
@@ -88,158 +92,139 @@
 
                         <div class="accordion-body">
 
-                            <form>
 
-                                <table class="table table-bordered">
+                            <table class="table table-bordered">
 
-                                    <tbody>
+                                <tbody>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td width="5%">Bil</td>
+                                        <td width="5%">Bil</td>
 
-                                            <td>
+                                        <td>
 
-                                                {{ $item->sort }}
+                                            {{ $item->sort }}
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>
+                                        <td>
 
-                                                Perkara
+                                            Perkara
 
-                                            </td>
+                                        </td>
 
-                                            <td>
+                                        <td>
 
-                                                {{ $item->perkara }}
+                                            {{ $item->perkara }}
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>
+                                        <td>
 
-                                                Klausa
+                                            Klausa
 
-                                            </td>
+                                        </td>
 
-                                            <td>
+                                        <td>
 
-                                                <b>
+                                            <b>
 
-                                                    {{ $item->no_klausa }}
+                                                {{ $item->no_klausa }}
 
-                                                </b>
+                                            </b>
 
-                                                <br>
+                                            <br>
 
-                                                {{ $item->klausa }}
+                                            {{ $item->klausa }}
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>
+                                        <td>
 
-                                                Senarai Semak
+                                            Senarai Semak
 
-                                            </td>
+                                        </td>
 
-                                            <td>
+                                        <td>
 
-                                                @foreach ($item->checklists as $checklist)
-                                                    <div class="form-check mb-2">
+                                            @foreach ($item->checklists as $checklist)
+                                                <div class="form-check mb-2">
 
-                                                        <input type="checkbox" class="form-check-input"
-                                                            name="checklist_id[]" value="{{ $checklist->id }}">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        name="checklist_id[]" value="{{ $checklist->id }}" @checked($answer && $answer->checklists->contains('audit_checklist_id', $checklist->id))>
 
-                                                        <label class="form-check-label">
+                                                    <label class="form-check-label">
 
-                                                            {{ $checklist->name }}
+                                                        {{ $checklist->name }}
 
-                                                        </label>
+                                                    </label>
 
-                                                    </div>
-                                                @endforeach
+                                                </div>
+                                            @endforeach
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>
+                                        <td>
 
-                                                Lain-lain Penemuan
+                                            Lain-lain Penemuan
 
-                                            </td>
+                                        </td>
 
-                                            <td>
+                                        <td>
 
-                                                <textarea class="form-control" rows="4" name="penemuan lain" id="penemuan_lain_{{ $item->id }}"></textarea>
+                                            <textarea class="form-control" rows="4" name="penemuan lain" id="penemuan_lain_{{ $item->id }}">{{ $answer->penemuan_lain ?? '' }}</textarea>
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>
+                                        <td>
 
-                                                Bukti Audit
+                                            Bukti Audit
 
-                                            </td>
+                                        </td>
 
-                                            <td>
+                                        <td>
 
-                                                <textarea class="form-control bukti_audit" rows="5" name="bukti_audit" id="bukti_audit_{{ $item->id }}"></textarea>
+                                            <textarea class="form-control bukti_audit" rows="5" name="bukti_audit" id="bukti_audit_{{ $item->id }}">{{ $answer->bukti_audit ?? '' }}</textarea>
 
-                                            </td>
+                                        </td>
 
-                                        </tr>
+                                    </tr>
 
-                                        <tr>
+                                </tbody>
 
-                                            <td>
+                            </table>
 
-                                                Lampiran
+                            <div class="text-end">
 
-                                            </td>
+                                <button type="submit" class="btn btn-primary">
 
-                                            <td>
+                                    <i class="fadeIn animated bx bx-save"></i>
 
-                                                <input type="file" multiple class="form-control">
+                                    Simpan Item
 
-                                            </td>
+                                </button>
 
-                                        </tr>
-
-                                    </tbody>
-
-                                </table>
-
-                                <div class="text-end">
-
-                                    <button type="submit" class="btn btn-primary">
-
-                                        <i class="fadeIn animated bx bx-save"></i>
-
-                                        Simpan Item
-
-                                    </button>
-
-                                </div>
-
-                            </form>
+                            </div>
 
                         </div>
 
@@ -250,6 +235,10 @@
         @endforeach
 
     </div>
+
+    @include('audit.attachment')
+<br>
+
 @endsection
 @push('scripts')
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
@@ -294,6 +283,19 @@
 
             });
 
+        });
+
+        $(document).ready(function () {
+
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berjaya!',
+                    text: "{{ session('success') }}",
+                    timer: 3000,
+                    showConfirmButton: true
+                });        
+            @endif
         });
     </script>
 @endpush

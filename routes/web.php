@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('audit')->group(function () {
             Route::get('/', [AuditController::class, 'index'])->name('audit');
             Route::get('show/{id}', [AuditController::class, 'show'])->name('audit.show');
-            Route::post('store/{id}', [AuditController::class, 'store'])->name('audit.store');
+            Route::post('store', [AuditController::class, 'store'])->name('audit.store');
         });
     });
 

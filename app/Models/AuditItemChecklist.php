@@ -29,4 +29,8 @@ class AuditItemChecklist extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
     }
+    public function answers()
+    {
+        return $this->hasMany(AuditAnswerChecklists::class, 'audit_checklist_id', 'id');
+    }
 }

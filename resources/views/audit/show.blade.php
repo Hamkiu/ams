@@ -57,237 +57,243 @@
     <div class="accordion mt-4" id="auditAccordion">
 
         @foreach ($group->auditTemplate->items as $item)
-            <div class="accordion-item mb-3">
+            <form action="{{ route('audit.store', $group->id) }}" method="post">
+                @csrf
+                <input type="hidden" name="audit_group_id" value="{{ $group->id }}">
 
-                <h2 class="accordion-header" id="heading{{ $item->id }}">
+                <input type="hidden" name="audit_item_id" value="{{ $item->id }}">
+                <div class="accordion-item mb-3">
 
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapse{{ $item->id }}">
+                    <h2 class="accordion-header" id="heading{{ $item->id }}">
 
-                        <strong>
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ $item->id }}">
 
-                            {{ $item->sort }}
+                            <strong>
 
-                            .
+                                {{ $item->sort }}
 
-                            {{ $item->perkara }}
+                                .
 
-                        </strong>
+                                {{ $item->perkara }}
 
-                    </button>
+                            </strong>
 
-                </h2>
+                        </button>
 
-                <div id="collapse{{ $item->id }}" class="accordion-collapse collapse" data-item="{{ $item->id }}" data-bs-parent="#auditAccordion">
+                    </h2>
 
-                    <div class="accordion-body">
+                    <div id="collapse{{ $item->id }}" class="accordion-collapse collapse"
+                        data-item="{{ $item->id }}" data-bs-parent="#auditAccordion">
 
-                        <form>
+                        <div class="accordion-body">
 
-                            <table class="table table-bordered">
+                            <form>
 
-                                <tbody>
+                                <table class="table table-bordered">
 
-                                    <tr>
+                                    <tbody>
 
-                                        <td width="5%">Bil</td>
+                                        <tr>
 
-                                        <td>
+                                            <td width="5%">Bil</td>
 
-                                            {{ $item->sort }}
+                                            <td>
 
-                                        </td>
+                                                {{ $item->sort }}
 
-                                    </tr>
+                                            </td>
 
-                                    <tr>
+                                        </tr>
 
-                                        <td>
+                                        <tr>
 
-                                            Perkara
+                                            <td>
 
-                                        </td>
+                                                Perkara
 
-                                        <td>
+                                            </td>
 
-                                            {{ $item->perkara }}
+                                            <td>
 
-                                        </td>
+                                                {{ $item->perkara }}
 
-                                    </tr>
+                                            </td>
 
-                                    <tr>
+                                        </tr>
 
-                                        <td>
+                                        <tr>
 
-                                            Klausa
+                                            <td>
 
-                                        </td>
+                                                Klausa
 
-                                        <td>
+                                            </td>
 
-                                            <b>
+                                            <td>
 
-                                                {{ $item->no_klausa }}
+                                                <b>
 
-                                            </b>
+                                                    {{ $item->no_klausa }}
 
-                                            <br>
+                                                </b>
 
-                                            {{ $item->klausa }}
+                                                <br>
 
-                                        </td>
+                                                {{ $item->klausa }}
 
-                                    </tr>
+                                            </td>
 
-                                    <tr>
+                                        </tr>
 
-                                        <td>
+                                        <tr>
 
-                                            Senarai Semak
+                                            <td>
 
-                                        </td>
+                                                Senarai Semak
 
-                                        <td>
+                                            </td>
 
-                                            @foreach ($item->checklists as $checklist)
-                                                <div class="form-check mb-2">
+                                            <td>
 
-                                                    <input type="checkbox" class="form-check-input">
+                                                @foreach ($item->checklists as $checklist)
+                                                    <div class="form-check mb-2">
 
-                                                    <label class="form-check-label">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            name="checklist_id[]" value="{{ $checklist->id }}">
 
-                                                        {{ $checklist->name }}
+                                                        <label class="form-check-label">
 
-                                                    </label>
+                                                            {{ $checklist->name }}
 
-                                                </div>
-                                            @endforeach
+                                                        </label>
 
-                                        </td>
+                                                    </div>
+                                                @endforeach
 
-                                    </tr>
+                                            </td>
 
-                                    <tr>
+                                        </tr>
 
-                                        <td>
+                                        <tr>
 
-                                            Lain-lain Penemuan
+                                            <td>
 
-                                        </td>
+                                                Lain-lain Penemuan
 
-                                        <td>
+                                            </td>
 
-                                            <textarea class="form-control" rows="4"></textarea>
+                                            <td>
 
-                                        </td>
+                                                <textarea class="form-control" rows="4" name="penemuan lain" id="penemuan_lain_{{ $item->id }}"></textarea>
 
-                                    </tr>
+                                            </td>
 
-                                    <tr>
+                                        </tr>
 
-                                        <td>
+                                        <tr>
 
-                                            Bukti Audit
+                                            <td>
 
-                                        </td>
+                                                Bukti Audit
 
-                                        <td>
+                                            </td>
 
-                                            <textarea class="form-control bukti_audit" rows="5" name="bukti_audit" id="bukti_audit_{{ $item->id }}"></textarea>
+                                            <td>
 
-                                        </td>
+                                                <textarea class="form-control bukti_audit" rows="5" name="bukti_audit" id="bukti_audit_{{ $item->id }}"></textarea>
 
-                                    </tr>
+                                            </td>
 
-                                    <tr>
+                                        </tr>
 
-                                        <td>
+                                        <tr>
 
-                                            Lampiran
+                                            <td>
 
-                                        </td>
+                                                Lampiran
 
-                                        <td>
+                                            </td>
 
-                                            <input type="file" multiple class="form-control">
+                                            <td>
 
-                                        </td>
+                                                <input type="file" multiple class="form-control">
 
-                                    </tr>
+                                            </td>
 
-                                </tbody>
+                                        </tr>
 
-                            </table>
+                                    </tbody>
 
-                            <div class="text-end">
+                                </table>
 
-                                <button type="submit" class="btn btn-primary">
+                                <div class="text-end">
 
-                                    <i class="fadeIn animated bx bx-save"></i>
+                                    <button type="submit" class="btn btn-primary">
 
-                                    Simpan Item
+                                        <i class="fadeIn animated bx bx-save"></i>
 
-                                </button>
+                                        Simpan Item
 
-                            </div>
+                                    </button>
 
-                        </form>
+                                </div>
+
+                            </form>
+
+                        </div>
 
                     </div>
 
                 </div>
-
-            </div>
+            </form>
         @endforeach
 
     </div>
 @endsection
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 
-<script>
+    <script>
+        const editors = {};
 
-    const editors = {};
+        document.querySelectorAll('.accordion-collapse').forEach(function(collapse) {
 
-    document.querySelectorAll('.accordion-collapse').forEach(function(collapse){
+            collapse.addEventListener('shown.bs.collapse', function() {
 
-        collapse.addEventListener('shown.bs.collapse', function(){
+                let itemId = this.dataset.item;
 
-            let itemId = this.dataset.item;
+                if (editors[itemId]) {
+                    return;
+                }
 
-            if(editors[itemId]){
-                return;
-            }
+                let textarea = document.querySelector('#bukti_audit_' + itemId);
 
-            let textarea = document.querySelector('#bukti_audit_' + itemId);
+                if (!textarea) {
+                    return;
+                }
 
-            if(!textarea){
-                return;
-            }
+                ClassicEditor
+                    .create(textarea, {
+                        ckfinder: {
+                            uploadUrl: '{{ route('image.upload', ['_token' => csrf_token()]) }}'
+                        }
+                    })
+                    .then(editor => {
 
-            ClassicEditor
-                .create(textarea,{
-                    ckfinder:{
-                        uploadUrl:'{{ route("image.upload",["_token"=>csrf_token()]) }}'
-                    }
-                })
-                .then(editor=>{
+                        editors[itemId] = editor;
 
-                    editors[itemId]=editor;
+                        console.log('Editor ' + itemId + ' loaded');
 
-                    console.log('Editor '+itemId+' loaded');
+                    })
+                    .catch(error => {
 
-                })
-                .catch(error=>{
+                        console.error(error);
 
-                    console.error(error);
+                    });
 
-                });
+            });
 
         });
-
-    });
-
-</script>
+    </script>
 @endpush

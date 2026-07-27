@@ -31,8 +31,8 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('audit')->group(function () {
             Route::get('/', [AuditController::class, 'index'])->name('audit');
             Route::get('show/{id}', [AuditController::class, 'show'])->name('audit.show');
+            Route::post('store/{id}', [AuditController::class, 'store'])->name('audit.store');
         });
-
     });
 
     Route::middleware('role:Admin')->group(function () {
@@ -67,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('show/{id}', [AuditTemplateController::class, 'show'])->name('audittemplate.show');
             Route::get('publish/{id}', [AuditTemplateController::class, 'publish'])->name('audittemplate.publish');
             Route::get('archive/{id}', [AuditTemplateController::class, 'archive'])->name('audittemplate.archive');
-            
+
 
             Route::prefix('templateitems')->group(function () {
                 Route::get('/{id}', [AuditTemplateItemsController::class, 'index'])->name('audittemplate.items');
@@ -108,10 +108,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('update/{id}', [AuditGroupsMembersController::class, 'update'])->name('auditgroupmember.update');
             Route::get('destroy/{id}', [AuditGroupsMembersController::class, 'destroy'])->name('auditgroupmember.destroy');
         });
-        
-
     });
-
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

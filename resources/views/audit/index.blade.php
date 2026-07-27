@@ -43,7 +43,7 @@
                             <b>Ketua Kumpulan :</b>
 
                             @php
-                                $leader = $member->auditGroup->members->where('role', 'LEADER')->first();
+                                $leader = $member->auditGroup->members->where('role', 'Leader')->first();
                             @endphp
 
                             {{ $leader?->pengguna?->name ?? '-' }}
@@ -60,7 +60,7 @@
 
                                     {{ $groupMember->pengguna->name }}
 
-                                    @if ($groupMember->role == 'LEADER')
+                                    @if ($groupMember->role == 'Leader')
                                         <span class="badge bg-primary ms-2">
                                             Ketua
                                         </span>

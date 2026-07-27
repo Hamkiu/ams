@@ -39,4 +39,8 @@ class AuditTemplateItems extends Model
     {
         return $this->hasMany(AuditItemChecklist::class, 'items_id', 'id');
     }
+    public function answers()
+    {
+        return $this->hasMany(AuditAnswers::class, 'audit_item_id', 'id');
+    }
 }

@@ -8,7 +8,6 @@ class AuditAnswerChecklists extends Model
 {
     protected $table = 'audit_answer_checklists';
     protected $primaryKey = 'id';
-    public $incrementing = false;
     protected $fillable = [
         'audit_answer_id',
         'audit_checklist_id',

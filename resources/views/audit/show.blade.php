@@ -3,48 +3,94 @@
 @section('title', 'Audit')
 @section('content')
     @include('include.error')
-    <div class="card">
+    <div class="card shadow-sm mb-4">
 
         <div class="card-body">
 
-            <div class="d-flex justify-content-between align-items-start">
+            @php
+                $member = $group->members->firstWhere('user_id', auth()->id());
 
-                <div>
+                $badge = match ($member?->status) {
+                    'BELUM BERMULA' => 'secondary',
+                    'DALAM PROSES' => 'warning',
+                    'SELESAI' => 'success',
+                    default => 'secondary',
+                };
+            @endphp
 
-                    <h4 class="mb-1">
+            <div class="row align-items-start">
+
+                {{-- Maklumat Audit --}}
+                <div class="col-12 col-lg-9">
+
+                    <h4 class="fw-bold mb-3">
                         {{ $group->name }}
                     </h4>
 
-                    <table class="table table-borderless table-sm mb-0">
-                        <tbody>
+                    <div class="table-responsive">
 
-                            <tr>
-                                <td width="170"><strong>Template</strong></td>
-                                <td>: {{ $group->auditTemplate->name }}</td>
-                            </tr>
+                        <table class="table table-borderless table-sm mb-0">
 
-                            <tr>
-                                <td><strong>Jabatan</strong></td>
-                                <td>: {{ $group->jabatan }}</td>
-                            </tr>
+                            <tbody>
 
-                            <tr>
-                                <td><strong>Tarikh Cadangan Audit</strong></td>
-                                <td>: {{ $group->tarikh->format('d-m-Y') }}</td>
-                            </tr>
+                                <tr>
+                                    <td style="width:220px;" class="fw-semibold">
+                                        Template
+                                    </td>
+                                    <td>
+                                        : {{ $group->auditTemplate->name }}
+                                    </td>
+                                </tr>
 
-                        </tbody>
-                    </table>
+                                <tr>
+                                    <td class="fw-semibold">
+                                        Jabatan
+                                    </td>
+                                    <td>
+                                        : {{ $group->jabatan }}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="fw-semibold">
+                                        Tarikh Cadangan Audit
+                                    </td>
+                                    <td>
+                                        : {{ $group->tarikh->format('d-m-Y') }}
+                                    </td>
+                                </tr>
+
+                                @if ($member)
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            Tarikh Mulakan Audit
+                                        </td>
+                                        <td>
+                                            : {{ $member->started_at?->format('d-m-Y H:i') ?? '-' }}
+                                        </td>
+                                    </tr>
+                                @endif
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
 
                 </div>
 
-                <div>
+                {{-- Status --}}
+                <div class="col-12 col-lg-3 mt-3 mt-lg-0">
 
-                    <span class="badge bg-warning fs-6">
+                    @if ($member)
+                        <div class="text-lg-end">
 
-                        {{ $group->status }}
+                            <span class="badge bg-{{ $badge }} px-4 py-2 fs-6">
+                                {{ $member->status }}
+                            </span>
 
-                    </span>
+                        </div>
+                    @endif
 
                 </div>
 
@@ -57,113 +103,122 @@
     <div class="accordion mt-4" id="auditAccordion">
 
         @foreach ($group->auditTemplate->items as $item)
-            <form action="{{ route('audit.store') }}" method="post">
+            @php
+                $answer = $answers[$item->id] ?? null;
+
+                $completed = $answer && !empty($answer->bukti_audit) && $answer->checklists->count() > 0;
+            @endphp
+
+            <form action="{{ route('audit.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                @php
-                    $answer = $answers[$item->id] ?? null;
-                @endphp
                 <input type="hidden" name="audit_group_id" value="{{ $group->id }}">
-
                 <input type="hidden" name="audit_item_id" value="{{ $item->id }}">
-                <div class="accordion-item mb-3">
+
+                <div class="accordion-item shadow-sm mb-3">
 
                     <h2 class="accordion-header" id="heading{{ $item->id }}">
 
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapse{{ $item->id }}">
 
-                            <strong>
+                            <div
+                                class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center w-100">
 
-                                {{ $item->sort }}
+                                <strong class="text-wrap pe-lg-3">
+                                    {{ $item->sort }}. {{ $item->perkara }}
+                                </strong>
 
-                                .
+                                <div class="mt-2 mt-lg-0">
 
-                                {{ $item->perkara }}
+                                    @if ($completed)
+                                        <span class="badge bg-success">
+                                            Selesai
+                                        </span>
+                                    @elseif($answer)
+                                        <span class="badge bg-warning text-dark">
+                                            Dalam Proses
+                                        </span>
+                                    @else
+                                        <span class="badge bg-danger">
+                                            Belum Dijawab
+                                        </span>
+                                    @endif
 
-                            </strong>
+                                </div>
+
+                            </div>
 
                         </button>
 
                     </h2>
 
                     <div id="collapse{{ $item->id }}" class="accordion-collapse collapse"
-                        data-item="{{ $item->id }}" data-bs-parent="#auditAccordion">
+                        data-bs-parent="#auditAccordion" data-item="{{ $item->id }}">
 
                         <div class="accordion-body">
 
+                            <div class="card border-0 bg-light">
 
-                            <table class="table table-bordered">
+                                <div class="card-body">
 
-                                <tbody>
+                                    <div class="row mb-3">
 
-                                    <tr>
+                                        <label class="col-lg-3 col-md-4 fw-bold">
+                                            Bil
+                                        </label>
 
-                                        <td width="5%">Bil</td>
-
-                                        <td>
-
+                                        <div class="col-lg-9 col-md-8">
                                             {{ $item->sort }}
+                                        </div>
 
-                                        </td>
+                                    </div>
 
-                                    </tr>
+                                    <div class="row mb-3">
 
-                                    <tr>
-
-                                        <td>
-
+                                        <label class="col-lg-3 col-md-4 fw-bold">
                                             Perkara
+                                        </label>
 
-                                        </td>
-
-                                        <td>
-
+                                        <div class="col-lg-9 col-md-8">
                                             {{ $item->perkara }}
+                                        </div>
 
-                                        </td>
+                                    </div>
 
-                                    </tr>
+                                    <div class="row mb-4">
 
-                                    <tr>
-
-                                        <td>
-
+                                        <label class="col-lg-3 col-md-4 fw-bold">
                                             Klausa
+                                        </label>
 
-                                        </td>
+                                        <div class="col-lg-9 col-md-8">
 
-                                        <td>
-
-                                            <b>
-
-                                                {{ $item->no_klausa }}
-
-                                            </b>
+                                            <strong>{{ $item->no_klausa }}</strong>
 
                                             <br>
 
                                             {{ $item->klausa }}
 
-                                        </td>
+                                        </div>
 
-                                    </tr>
+                                    </div>
 
-                                    <tr>
+                                    <hr>
 
-                                        <td>
+                                    <div class="row mb-4">
 
+                                        <label class="col-lg-3 col-md-4 fw-bold">
                                             Senarai Semak
+                                        </label>
 
-                                        </td>
-
-                                        <td>
+                                        <div class="col-lg-9 col-md-8">
 
                                             @foreach ($item->checklists as $checklist)
                                                 <div class="form-check mb-2">
 
-                                                    <input type="checkbox" class="form-check-input"
-                                                        name="checklist_id[]" value="{{ $checklist->id }}" @checked($answer && $answer->checklists->contains('audit_checklist_id', $checklist->id))>
+                                                    <input class="form-check-input" type="checkbox" name="checklist_id[]"
+                                                        value="{{ $checklist->id }}" @checked($answer && $answer->checklists->contains('audit_checklist_id', $checklist->id))>
 
                                                     <label class="form-check-label">
 
@@ -174,51 +229,51 @@
                                                 </div>
                                             @endforeach
 
-                                        </td>
+                                        </div>
 
-                                    </tr>
+                                    </div>
 
-                                    <tr>
+                                    <div class="row mb-4">
 
-                                        <td>
-
+                                        <label class="col-lg-3 col-md-4 fw-bold">
                                             Lain-lain Penemuan
+                                        </label>
 
-                                        </td>
+                                        <div class="col-lg-9 col-md-8">
 
-                                        <td>
+                                            <textarea class="form-control" rows="4" style="resize:vertical" name="penemuan_lain"
+                                                id="penemuan_lain_{{ $item->id }}">{{ $answer->penemuan_lain ?? '' }}</textarea>
 
-                                            <textarea class="form-control" rows="4" name="penemuan lain" id="penemuan_lain_{{ $item->id }}">{{ $answer->penemuan_lain ?? '' }}</textarea>
+                                        </div>
 
-                                        </td>
+                                    </div>
 
-                                    </tr>
+                                    <div class="row mb-4">
 
-                                    <tr>
-
-                                        <td>
-
+                                        <label class="col-lg-3 col-md-4 fw-bold">
                                             Bukti Audit
+                                        </label>
 
-                                        </td>
+                                        <div class="col-lg-9 col-md-8">
 
-                                        <td>
+                                            <textarea class="form-control bukti_audit" rows="6" style="resize:vertical" name="bukti_audit"
+                                                id="bukti_audit_{{ $item->id }}">{{ $answer->bukti_audit ?? '' }}</textarea>
 
-                                            <textarea class="form-control bukti_audit" rows="5" name="bukti_audit" id="bukti_audit_{{ $item->id }}">{{ $answer->bukti_audit ?? '' }}</textarea>
+                                        </div>
 
-                                        </td>
+                                    </div>
 
-                                    </tr>
+                                    @include('audit.attachment')
 
-                                </tbody>
+                                </div>
 
-                            </table>
+                            </div>
 
-                            <div class="text-end">
+                            <div class="d-grid d-md-flex justify-content-md-end mt-4">
 
                                 <button type="submit" class="btn btn-primary">
 
-                                    <i class="fadeIn animated bx bx-save"></i>
+                                    <i class="bx bx-save me-1"></i>
 
                                     Simpan Item
 
@@ -231,13 +286,11 @@
                     </div>
 
                 </div>
+
             </form>
         @endforeach
 
     </div>
-
-    @include('audit.attachment')
-<br>
 
 @endsection
 @push('scripts')
@@ -285,16 +338,16 @@
 
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            @if(session('success'))
+            @if (session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berjaya!',
                     text: "{{ session('success') }}",
                     timer: 3000,
                     showConfirmButton: true
-                });        
+                });
             @endif
         });
     </script>

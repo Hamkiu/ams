@@ -1,71 +1,61 @@
-<div class="accordion mt-4" id="lampiranAccordion">
+<div class="card-body">
+    <div class="row mb-4">
 
-    <div class="accordion-item">
+        {{-- TABLE --}}
+        <div class="col-lg-9">
 
-        <h2 class="accordion-header" id="headingLampiran">
+            <table class="table table-bordered dtattcment" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>File Name</th>
+                        <th>Created Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
 
-            <button class="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseLampiran"
-                    aria-expanded="false"
-                    aria-controls="collapseLampiran">
+            </table>
 
-                    <i data-feather="paperclip" class="me-2"></i>
+        </div>
 
-                <strong>Lampiran Audit</strong>
+        {{-- UPLOAD PANEL --}}
+        <div class="col-lg-3">
 
-            </button>
+            <div class="card border">
 
-        </h2>
+                <div class="card-header bg-light">
+                    <strong>Attachment(s)</strong>
+                </div>
 
-        <div id="collapseLampiran"
-             class="accordion-collapse collapse"
-             aria-labelledby="headingLampiran"
-             data-bs-parent="#lampiranAccordion">
+                <div class="card-body">
 
-            <div class="accordion-body">
+                    <div class="mb-3">
 
-                <table class="table table-bordered table-hover align-middle mb-0">
+                        <input type="file" class="form-control" name="tfiles[]" multiple>
 
-                    <thead class="table-light">
+                        <small class="text-muted">
+                            doc, docx, pdf, txt, jpeg, png,
+                            jpg, gif, svg
+                            <br>
+                            <strong>Maximum 10 MB</strong>
+                        </small>
 
-                        <tr>
+                    </div>
 
-                            <th width="40%">Nama Fail</th>
+                    <div class="d-grid">
+                        <button class="btn btn-primary">
+                            <i data-feather="upload" class="me-1"></i>
+                            Add
+                        </button>
+                    </div>
 
-                            <th width="20%">Tarikh</th>
-
-                            <th width="20%">Pengguna</th>
-
-                            <th width="20%" class="text-center">Aktiviti</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-
-                            <td colspan="4" class="text-center text-muted py-4">
-
-                                <i class="bx bx-folder-open fs-3 d-block mb-2"></i>
-
-                                Tiada lampiran dijumpai.
-
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
 </div>

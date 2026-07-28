@@ -30,8 +30,8 @@ class AuditGroups extends Model
     ];
 
     public function getEncryptIdAttribute()
-	{
-		return encrypt($this->id) ;
+    {
+        return encrypt($this->id);
     }
 
     public function auditTemplate()
@@ -52,5 +52,9 @@ class AuditGroups extends Model
     public function members()
     {
         return $this->hasMany(AuditGroupsMembers::class, 'audit_group_id', 'id');
+    }
+    public function answers()
+    {
+        return $this->hasMany(AuditAnswers::class, 'audit_group_id', 'id');
     }
 }

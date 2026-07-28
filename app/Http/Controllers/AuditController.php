@@ -32,29 +32,31 @@ class AuditController extends Controller
         ])->find(decode($id));
 
         $answers = AuditAnswers::where('audit_group_id', $group->id)
-        ->where('user_id', Auth::id())
-        ->get()
-        ->keyBy('audit_item_id');
+            ->where('user_id', Auth::id())
+            ->get()
+            ->keyBy('audit_item_id');
 
         return view('audit.show', compact('group', 'answers'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'audit_group_id' => 'required|exists:audit_groups,id',
-            'audit_item_id' => 'required|exists:audit_template_items,id',
-            'penemuan_lain' => 'required|string',
-            'bukti_audit' => 'required|string',
-        ],
-        [
-            'audit_group_id.required' => 'Audit group wajib diisi',
-            'audit_group_id.exists' => 'Audit group tidak ditemukan',
-            'audit_item_id.required' => 'Audit item wajib diisi',
-            'audit_item_id.exists' => 'Audit item tidak ditemukan',
-            'penemuan_lain.required' => 'Penemuan lain wajib diisi',
-            'bukti_audit.required' => 'Bukti audit wajib diisi',
-        ]);
+        $validated = $request->validate(
+            [
+                'audit_group_id' => 'required|exists:audit_groups,id',
+                'audit_item_id' => 'required|exists:audit_template_items,id',
+                'penemuan_lain' => 'required|string',
+                'bukti_audit' => 'required|string',
+            ],
+            [
+                'audit_group_id.required' => 'Audit group wajib diisi',
+                'audit_group_id.exists' => 'Audit group tidak ditemukan',
+                'audit_item_id.required' => 'Audit item wajib diisi',
+                'audit_item_id.exists' => 'Audit item tidak ditemukan',
+                'penemuan_lain.required' => 'Penemuan lain wajib diisi',
+                'bukti_audit.required' => 'Bukti audit wajib diisi',
+            ]
+        );
 
         $answer = AuditAnswers::firstOrNew([
             'audit_group_id' => $request->audit_group_id,
@@ -70,6 +72,19 @@ class AuditController extends Controller
         $answer->penemuan_lain = $request->penemuan_lain;
         $answer->bukti_audit = $request->bukti_audit;
         $answer->save();
+        //status audit group members
+        $member = AuditGroupsMembers::where('audit_group_id', $request->audit_group_id)
+            ->where('user_id', \Auth::user()->id)
+            ->first();
+        if ($member && $member->status == 'BELUM BERMULA') {
+
+            $member->status = 'DALAM PROSES';
+
+            $member->started_at = now();
+
+            $member->save();
+        }
+
         $answer->checklists()->delete();
         if ($request->filled('checklist_id')) {
 
@@ -79,12 +94,10 @@ class AuditController extends Controller
 
                     'audit_answer_id'   => $answer->id,
 
-                    'audit_checklist_id'=> $checklistId,
+                    'audit_checklist_id' => $checklistId,
 
                 ]);
-
             }
-
         }
 
         if ($isNew) {
@@ -99,7 +112,6 @@ class AuditController extends Controller
             );
 
             $message = 'Item (' . $answer->auditItem->perkara . ') telah berjaya disimpan.';
-
         } else {
 
             auditTrail(

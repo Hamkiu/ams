@@ -6,8 +6,10 @@ use App\Models\AuditGroups;
 use App\Models\AuditGroupsMembers;
 use App\Models\AuditAnswers;
 use App\Models\AuditAnswerChecklists;
+use App\Models\AuditFiles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class AuditController extends Controller
 {
@@ -127,5 +129,129 @@ class AuditController extends Controller
         }
 
         return back()->with('success', $message);
+    }
+
+    public function attachment(Request $request)
+    {
+        $answerId = decode($request->audit_answer_id);
+
+        if (!$request->hasFile('tfiles')) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tiada fail dipilih.'
+            ], 422);
+        }
+
+        $allowed = [
+            'doc',
+            'docx',
+            'pdf',
+            'txt',
+            'jpeg',
+            'png',
+            'jpg',
+            'gif',
+            'svg'
+        ];
+
+        foreach ($request->file('tfiles') as $file) {
+
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            if (!in_array($extension, $allowed)) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jenis fail tidak dibenarkan.'
+                ], 422);
+            }
+
+            if ($file->getSize() > 10485760) {
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Saiz fail melebihi 10MB.'
+                ], 422);
+            }
+
+            $filename = $file->getClientOriginalName();
+
+            $newName = uniqid('AUDIT_');
+
+            $path = $file->storeAs(
+                'uploads/audit/' . $answerId,
+                $newName . '.' . $extension,
+                'public'
+            );
+
+            AuditFiles::create([
+
+                'ref_id' => $answerId,
+                'file_name_ori' => $filename,
+                'file_name' => $newName,
+                'file_path' => $path,
+                'file_ext' => $extension,
+
+            ]);
+        }
+
+        auditTrail(
+            'Upload',
+            'Audit',
+            'Attachment',
+            $answerId,
+            'Attachment',
+            \Auth::user()->id
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lampiran berjaya dimuat naik.'
+        ]);
+    }
+
+    public function listattachment(Request $request)
+    {
+        $tfiles = AuditFiles::where('ref_id', decode($request->answer))->get();
+
+        $datatable = Datatables::of($tfiles)
+            ->addIndexColumn()
+            ->addColumn('file_name', function ($row) {
+                return $row->file_name_ori;
+            })
+            ->addColumn('created_at', function ($row) {
+                return $row->created_at->format('d/m/Y H:i:s');
+            })
+            ->addColumn('tindakan', function ($row) {
+                $btn = '';
+                $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '" class="btn btn-success btn-sm" title="Download"><i class="material-icons-outlined">download</i></a>';
+                $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                return $btn;
+            })
+            ->rawColumns(['file_name', 'created_at', 'tindakan'])
+            ->make(true);
+
+        return $datatable;
+    }
+
+    public function download($id)
+    {
+        $tfiles = AuditFiles::find(decode($id));
+        $pathToFile = storage_path('app/public/' . $tfiles->file_path);
+        auditTrail('Download', 'Audit', 'Attachment', $tfiles->ref_id, $tfiles->file_name_ori, \Auth::user()->id);
+        return response()->download($pathToFile, $tfiles->file_name_ori);
+    }
+
+    public function delete($id)
+    {
+        $tfiles = AuditFiles::find(decode($id));
+        $tfiles->delete();
+
+        auditTrail('Delete', 'Audit', 'Attachment', $tfiles->ref_id, $tfiles->file_name_ori, \Auth::user()->id);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Lampiran berjaya dihapus.');
     }
 }

@@ -339,7 +339,63 @@
         });
 
         $(document).ready(function() {
+            $('.attachment-table').each(function() {
 
+                let table = $(this);
+
+                let answer = table.data('answer');
+
+                table.DataTable({
+
+                    processing: true,
+
+                    serverSide: true,
+
+                    pageLength: 10,
+
+                    ajax: {
+
+                        url: "{{ route('audit.listattachment') }}",
+
+                        type: "POST",
+
+                        data: function(d) {
+
+                            d._token = "{{ csrf_token() }}";
+
+                            d.answer = answer;
+
+                        }
+
+                    },
+
+                    columns: [
+
+                        {
+                            data: 'DT_RowIndex',
+                            className: 'text-center',
+                            width: '2%'
+                        },
+
+                        {
+                            data: 'file_name'
+                        },
+
+                        {
+                            data: 'created_at'
+                        },
+
+                        {
+                            data: 'tindakan',
+                            orderable: false,
+                            searchable: false
+                        }
+
+                    ]
+
+                });
+
+            });
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -349,6 +405,77 @@
                     showConfirmButton: true
                 });
             @endif
+        });
+
+        $(document).on('click', '.btn-upload', function() {
+
+            let encodedAnswer = $(this).data('answer');
+            let answerId = $(this).data('id');
+
+            let input = $('#attachment_' + answerId)[0];
+
+            if (input.files.length === 0) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    text: 'Sila pilih fail terlebih dahulu.'
+                });
+
+                return;
+            }
+
+            let formData = new FormData();
+
+            formData.append('audit_answer_id', encodedAnswer);
+
+            $.each(input.files, function(i, file) {
+                formData.append('tfiles[]', file);
+            });
+
+            $.ajax({
+
+                url: "{{ route('audit.attachment') }}",
+
+                type: "POST",
+
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                data: formData,
+
+                processData: false,
+
+                contentType: false,
+
+                success: function(res) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        text: res.message
+                    }).then(() => {
+                        window.location.reload();
+                    });
+
+                    input.value = "";
+
+                    $('#attachmentTable_' + answerId)
+                        .DataTable()
+                        .ajax.reload();
+
+                },
+
+                error: function(xhr) {
+
+                    Swal.fire({
+                        icon: 'error',
+                        text: xhr.responseJSON.message
+                    });
+
+                }
+
+            });
+
         });
     </script>
 @endpush

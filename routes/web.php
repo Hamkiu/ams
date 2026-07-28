@@ -32,6 +32,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [AuditController::class, 'index'])->name('audit');
             Route::get('show/{id}', [AuditController::class, 'show'])->name('audit.show');
             Route::post('store', [AuditController::class, 'store'])->name('audit.store');
+            Route::post('attachment', [AuditController::class, 'attachment'])->name('audit.attachment');
+            Route::post('listattachment', [AuditController::class, 'listattachment'])->name('audit.listattachment');
+            Route::get('download/{id}', [AuditController::class, 'download'])->name('auditfiles.download');
+            Route::get('delete/{id}', [AuditController::class, 'delete'])->name('auditfiles.delete');
         });
     });
 

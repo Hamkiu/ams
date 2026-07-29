@@ -37,7 +37,8 @@
                         <div class="mb-3">
 
                             <input type="file" class="form-control attachment-file"
-                                id="attachment_{{ $answer->id }}" data-answer="{{ encode($answer->id) }}" multiple>
+                                id="attachment_{{ $answer->id }}" data-answer="{{ encode($answer->id) }}" multiple
+                                @disabled($readonly)>
 
                             <small class="text-muted">
                                 doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
@@ -48,16 +49,16 @@
                         </div>
 
                         <div class="d-grid">
+                            @if (!$readonly)
+                                <button type="button" class="btn btn-primary btn-upload"
+                                    data-answer="{{ encode($answer->id) }}" data-id="{{ $answer->id }}">
 
-                            <button type="button" class="btn btn-primary btn-upload"
-                                data-answer="{{ encode($answer->id) }}" data-id="{{ $answer->id }}">
+                                    <i data-feather="upload" class="me-1"></i>
 
-                                <i data-feather="upload" class="me-1"></i>
+                                    Add
 
-                                Add
-
-                            </button>
-
+                                </button>
+                            @endif
                         </div>
 
                     </div>

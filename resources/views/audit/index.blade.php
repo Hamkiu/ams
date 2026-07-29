@@ -24,6 +24,13 @@
                             {{ $member->auditGroup->auditTemplate->name }}
 
                         </p>
+                        <p>
+
+                            <b>Klausa :</b>
+
+                            {{ $member->auditGroup->auditTemplate->klausa }}
+
+                        </p>
 
                         <p>
                             <b>Tarikh Cadangan Audit:</b>
@@ -36,7 +43,7 @@
                         <p>
                             <b>Status :</b>
 
-                            {{ $member->auditGroup->status }}
+                            {{ $member->status }}
 
                         </p>
                         <p>
@@ -70,13 +77,17 @@
                             @endforeach
 
                         </ul>
+                        @if ($member->status == 'SELESAI')
+                            <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-success">
+                                Lihat Audit
+                            </a>
+                        @else
+                            <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-primary">
 
-                        <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-primary">
+                                Buka Audit
 
-                            Buka Audit
-
-                        </a>
-
+                            </a>
+                        @endif
                     </div>
 
                 </div>

@@ -33,4 +33,8 @@ class AuditGroupsMembers extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
     }
+    public function isCompleted()
+    {
+        return $this->status === 'SELESAI';
+    }
 }

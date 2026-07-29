@@ -38,7 +38,11 @@ class AuditController extends Controller
             ->get()
             ->keyBy('audit_item_id');
 
-        return view('audit.show', compact('group', 'answers'));
+        $member = $group->members()
+            ->where('user_id', \Auth::user()->id)
+            ->firstOrFail();
+
+        return view('audit.show', compact('group', 'answers', 'member'));
     }
 
     public function store(Request $request)
@@ -213,7 +217,9 @@ class AuditController extends Controller
 
     public function listattachment(Request $request)
     {
-        $tfiles = AuditFiles::where('ref_id', decode($request->answer))->get();
+        $tfiles = AuditFiles::with('auditAnswer')
+            ->where('ref_id', decode($request->answer))
+            ->get();
 
         $datatable = Datatables::of($tfiles)
             ->addIndexColumn()
@@ -225,8 +231,12 @@ class AuditController extends Controller
             })
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
-                $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '" class="btn btn-success btn-sm" title="Download"><i class="material-icons-outlined">download</i></a>';
-                $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                if ($row->auditAnswer->member->isCompleted()) {
+                    $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '" class="btn btn-success btn-sm" title="Download"><i class="material-icons-outlined">download</i></a>';
+                } else {
+                    $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '" class="btn btn-success btn-sm" title="Download"><i class="material-icons-outlined">download</i></a>';
+                    $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                }
                 return $btn;
             })
             ->rawColumns(['file_name', 'created_at', 'tindakan'])
@@ -253,5 +263,73 @@ class AuditController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Lampiran berjaya dihapus.');
+    }
+
+    public function submit(Request $request)
+    {
+        $groupId = decode($request->audit_group_id);
+
+        $group = AuditGroups::findOrFail($groupId);
+
+        $member = $group->members()
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        // Bilangan item template
+        $totalItem = $group->auditTemplate->items()->count();
+
+        // Semua jawapan auditor
+        $answers = AuditAnswers::with([
+            'auditItem.checklists',
+            'checklists'
+        ])
+            ->where('audit_group_id', $groupId)
+            ->where('created_by', auth()->id())
+            ->get();
+
+        // Bilangan jawapan yang lengkap
+        $completed = $answers
+            ->filter(fn($answer) => $answer->isCompleted())
+            ->count();
+
+        // Semak semua item telah lengkap
+        if ($completed < $totalItem) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Masih terdapat item audit yang belum lengkap.'
+            ], 422);
+        }
+
+        // Update status auditor
+        $member->status = 'SELESAI';
+        $member->completed_at = now();
+        $member->save();
+
+        // Jika semua ahli kumpulan selesai
+        $allCompleted = $group->members()
+            ->where('status', '!=', 'SELESAI')
+            ->doesntExist();
+
+        if ($allCompleted) {
+
+            $group->status = 'SELESAI';
+            $group->completed_at = now();
+            $group->save();
+        }
+
+        auditTrail(
+            'Submit',
+            'Audit',
+            'Audit',
+            $groupId,
+            'Audit berjaya dihantar',
+            auth()->id()
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Audit berjaya dihantar.'
+        ]);
     }
 }

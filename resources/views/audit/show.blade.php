@@ -1,8 +1,19 @@
 @extends('layouts.master')
-
 @section('title', 'Audit')
 @section('content')
     @include('include.error')
+    @php
+        $readonly = $member->isCompleted();
+    @endphp
+    @if ($readonly)
+        <div class="alert alert-success">
+
+            <i data-feather="check-circle"></i>
+
+            Audit ini telah dihantar dan tidak lagi boleh diubah.
+
+        </div>
+    @endif
     <div class="card shadow-sm mb-4">
 
         <div class="card-body">
@@ -105,8 +116,6 @@
         @foreach ($group->auditTemplate->items as $item)
             @php
                 $answer = $answers[$item->id] ?? null;
-
-                $completed = $answer && !empty($answer->bukti_audit) && $answer->checklists->count() > 0;
             @endphp
 
             <form action="{{ route('audit.store') }}" method="POST" enctype="multipart/form-data">
@@ -131,7 +140,7 @@
 
                                 <div class="mt-2 mt-lg-0">
 
-                                    @if ($completed)
+                                    @if ($answer?->isCompleted())
                                         <span class="badge bg-success">
                                             Selesai
                                         </span>
@@ -218,7 +227,8 @@
                                                 <div class="form-check mb-2">
 
                                                     <input class="form-check-input" type="checkbox" name="checklist_id[]"
-                                                        value="{{ $checklist->id }}" @checked($answer && $answer->checklists->contains('audit_checklist_id', $checklist->id))>
+                                                        value="{{ $checklist->id }}" @checked($answer && $answer->checklists->contains('audit_checklist_id', $checklist->id))
+                                                        @disabled($readonly)>
 
                                                     <label class="form-check-label">
 
@@ -242,7 +252,7 @@
                                         <div class="col-lg-9 col-md-8">
 
                                             <textarea class="form-control" rows="4" style="resize:vertical" name="penemuan_lain"
-                                                id="penemuan_lain_{{ $item->id }}">{{ $answer->penemuan_lain ?? '' }}</textarea>
+                                                id="penemuan_lain_{{ $item->id }}" @readonly($readonly)>{{ $answer->penemuan_lain ?? '' }}</textarea>
 
                                         </div>
 
@@ -268,19 +278,19 @@
                                 </div>
 
                             </div>
+                            @if (!$readonly)
+                                <div class="d-grid d-md-flex justify-content-md-end mt-4">
 
-                            <div class="d-grid d-md-flex justify-content-md-end mt-4">
+                                    <button type="submit" class="btn btn-primary">
 
-                                <button type="submit" class="btn btn-primary">
+                                        <i class="bx bx-save me-1"></i>
 
-                                    <i class="bx bx-save me-1"></i>
+                                        Simpan Item
 
-                                    Simpan Item
+                                    </button>
 
-                                </button>
-
-                            </div>
-
+                                </div>
+                            @endif
                         </div>
 
                     </div>
@@ -291,6 +301,20 @@
         @endforeach
 
     </div>
+    @if (!$readonly)
+        <div class="card-footer mt-4 text-center">
+
+            <button type="button" class="btn btn-success px-5 btn-submit-audit" data-group="{{ encode($group->id) }}">
+
+                <i data-feather="send" class="me-1"></i>
+
+                <b>Hantar Audit</b>
+
+            </button>
+
+        </div>
+        <br>
+    @endif
 
 @endsection
 @push('scripts')
@@ -326,6 +350,11 @@
                         editors[itemId] = editor;
 
                         console.log('Editor ' + itemId + ' loaded');
+                        if (@json($readonly)) {
+
+                            editor.enableReadOnlyMode('audit');
+
+                        }
 
                     })
                     .catch(error => {
@@ -473,6 +502,76 @@
                     });
 
                 }
+
+            });
+
+        });
+
+        $(document).on('click', '.btn-submit-audit', function() {
+
+            let groupId = $(this).data('group');
+
+            Swal.fire({
+
+                title: 'Hantar Audit?',
+                text: 'Selepas dihantar, audit akan ditandakan sebagai selesai.',
+                icon: 'question',
+
+                showCancelButton: true,
+
+                confirmButtonText: 'Ya, Hantar',
+
+                cancelButtonText: 'Batal'
+
+            }).then((result) => {
+
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                $.ajax({
+
+                    url: "{{ route('audit.submit') }}",
+
+                    type: "POST",
+
+                    data: {
+
+                        _token: "{{ csrf_token() }}",
+
+                        audit_group_id: groupId
+
+                    },
+
+                    success: function(res) {
+
+                        Swal.fire({
+
+                            icon: 'success',
+
+                            text: res.message
+
+                        }).then(() => {
+
+                            window.location.href = "{{ route('audit') }}";
+
+                        });
+
+                    },
+
+                    error: function(xhr) {
+
+                        Swal.fire({
+
+                            icon: 'error',
+
+                            text: xhr.responseJSON.message
+
+                        });
+
+                    }
+
+                });
 
             });
 

@@ -41,4 +41,24 @@ class AuditAnswers extends Model
     {
         return $this->hasMany(AuditAnswerChecklists::class, 'audit_answer_id', 'id');
     }
+    public function member()
+    {
+        return $this->belongsTo(
+            AuditGroupsMembers::class,
+            'user_id',
+            'user_id'
+        );
+    }
+    public function isCompleted()
+    {
+        $hasChecklist = $this->auditItem->checklists()->exists();
+
+        if ($hasChecklist) {
+
+            return !empty($this->bukti_audit)
+                && $this->checklists()->exists();
+        }
+
+        return !empty($this->bukti_audit);
+    }
 }

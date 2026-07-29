@@ -23,4 +23,9 @@ class AuditFiles extends Model
     {
         return encrypt($this->id);
     }
+    // AuditFiles.php
+    public function auditAnswer()
+    {
+        return $this->belongsTo(AuditAnswers::class, 'ref_id');
+    }
 }

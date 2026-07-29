@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('listattachment', [AuditController::class, 'listattachment'])->name('audit.listattachment');
             Route::get('download/{id}', [AuditController::class, 'download'])->name('auditfiles.download');
             Route::get('delete/{id}', [AuditController::class, 'delete'])->name('auditfiles.delete');
+            Route::post('submit', [AuditController::class, 'submit'])->name('audit.submit');
         });
     });
 

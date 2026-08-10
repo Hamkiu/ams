@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Services\KkpTokenService;
+
 class APIController extends Controller
 {
     public function cariPekerja(Request $request)
@@ -20,13 +21,30 @@ class APIController extends Controller
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ])->withBody($payload, 'application/json')
-            ->get(config('services.kkp.url_pekerja'));
+                ->get(config('services.kkp.url_pekerja'));
 
             return response()->json([
                 'http_status' => $response->status(),
                 'body' => $response->json(),
             ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => true,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
+    public function senaraiJabatan(Request $request)
+    {
+        try {
+            $token = KkpTokenService::getToken();
+            $response = Http::withHeaders([
+                'x-access-token' => $token,
+                'Accept' => 'application/json',
+            ])->get(config('services.kkp.url_senarai_jabatan'));
+
+            return response()->json($response->json());
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => true,

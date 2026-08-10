@@ -44,6 +44,7 @@ return [
         'static_token' => env('KKP_API_STATIC_TOKEN'),
 
         'url_pekerja' => env('KKP_API_PEKERJA'),
+        'url_senarai_jabatan' => env('API_SENARAI_JABATAN'),
     ],
 
 ];

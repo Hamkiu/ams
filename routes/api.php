@@ -9,3 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/cari-pekerja', [APIController::class, 'cariPekerja']);
+
+Route::post('/senarai-jabatan', [APIController::class, 'senaraiJabatan']);

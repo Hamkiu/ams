@@ -1,8 +1,9 @@
 @extends('layouts.master')
 @section('title', 'Edit Audit Group')
 @section('content')
-@include('include.error')
-    <form action="{{ route('auditgroup.update', encode($auditGroup->id)) }}" method="POST" id="store_audit_group_form" enctype="multipart/form-data">
+    @include('include.error')
+    <form action="{{ route('auditgroup.update', encode($auditGroup->id)) }}" method="POST" id="store_audit_group_form"
+        enctype="multipart/form-data">
         @csrf
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -21,10 +22,12 @@
                             <select name="template" class="form-control select2">
                                 <option value="">-- Pilih Template --</option>
                                 @forelse ($auditTemplates as $auditTemplate)
-                                    <option value="{{ $auditTemplate->id }}" {{ $auditTemplate->id == $auditGroup->audit_template_id ? 'selected' : '' }}>{{ $auditTemplate->name }}</option>
+                                    <option value="{{ $auditTemplate->id }}"
+                                        {{ $auditTemplate->id == $auditGroup->audit_template_id ? 'selected' : '' }}>
+                                        {{ $auditTemplate->name }}</option>
                                 @empty
                                 @endforelse
-                            </select>                    
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -35,14 +38,18 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group mb-3">
-                            <label for="name">Jabatan / Unit</label>
-                            <input type="text" name="jabatan" class="form-control" value="{{ $auditGroup->jabatan }}">
+                            <label for="jabatan">Jabatan / Unit</label>
+
+                            <select name="jabatan" id="jabatan" class="form-control">
+                                <option value="">-- Pilih Jabatan / Unit --</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class="form-group mb-3">
                             <label for="name">Cadangan Tarikh</label>
-                            <input type="date" name="tarikh" class="form-control" value="{{ old('tarikh', optional($auditGroup->tarikh)->format('Y-m-d')) }}">
+                            <input type="date" name="tarikh" class="form-control"
+                                value="{{ old('tarikh', optional($auditGroup->tarikh)->format('Y-m-d')) }}">
                         </div>
                     </div>
                 </div>
@@ -61,41 +68,41 @@
     @include('auditgroup.member.index')
 @endsection
 @push('scripts')
-<script>
-    $(document).ready(function () {
-        @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berjaya!',
-                text: "{{ session('success') }}",
-                timer: 3000,
-                showConfirmButton: true
-            });        
-        @endif
-
-        $('#user_id').on('change', function () {
-
-            let jabatan = $(this).find(':selected').data('jabatan') || '';
-
-            $('#jabatan').val(jabatan);
-
-        });
-
-        $('body').on('click','.addAttOpen',function (e) {
-            e.preventDefault();
-            var user_id = document.forms["auditGroupMemberForm"]["user_id"].value;
-            var role = document.forms["auditGroupMemberForm"]["role"].value;
-            if (user_id == "" || role == "") {
+    <script>
+        $(document).ready(function() {
+            @if (session('success'))
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Sila pilih juruaudit dan isi peranan',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                return;
-            }
-            var fd = new FormData($("#auditGroupMemberForm")[0]);
+                    icon: 'success',
+                    title: 'Berjaya!',
+                    text: "{{ session('success') }}",
+                    timer: 3000,
+                    showConfirmButton: true
+                });
+            @endif
+
+            $('#user_id').on('change', function() {
+
+                let jabatan = $(this).find(':selected').data('jabatan') || '';
+
+                $('#jabatan').val(jabatan);
+
+            });
+
+            $('body').on('click', '.addAttOpen', function(e) {
+                e.preventDefault();
+                var user_id = document.forms["auditGroupMemberForm"]["user_id"].value;
+                var role = document.forms["auditGroupMemberForm"]["role"].value;
+                if (user_id == "" || role == "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Sila pilih juruaudit dan isi peranan',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    return;
+                }
+                var fd = new FormData($("#auditGroupMemberForm")[0]);
 
                 Swal.fire({
                     title: 'Adakah anda pasti?',
@@ -105,13 +112,13 @@
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya, tambahkan!'
-                    }).then((result) => {
+                }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
                             url: '{{ route('auditgroupmember.store', encode($auditGroup->id)) }}',
                             data: fd,
-                            dataType:'JSON',
-                            type:'POST',
+                            dataType: 'JSON',
+                            type: 'POST',
                             processData: false,
                             contentType: false,
                             success: function(data) {
@@ -120,33 +127,36 @@
                                     title: data.message,
                                     showConfirmButton: true,
                                     timer: 5000
-                                }).then(function () {
-                                    window.location.href ="{{ route('auditgroup.edit', encode ($auditGroup->id)) }}"
+                                }).then(function() {
+                                    window.location.href =
+                                        "{{ route('auditgroup.edit', encode($auditGroup->id)) }}"
                                 });
-                            },error: function(xhr) {
+                            },
+                            error: function(xhr) {
 
-                            let message = 'Ralat telah berlaku.';
+                                let message = 'Ralat telah berlaku.';
 
-                            if (xhr.responseJSON) {
+                                if (xhr.responseJSON) {
 
-                                if (xhr.responseJSON.message) {
-                                    message = xhr.responseJSON.message;
-                                } else if (xhr.responseJSON.errors) {
-                                    message = Object.values(xhr.responseJSON.errors)[0][0];
+                                    if (xhr.responseJSON.message) {
+                                        message = xhr.responseJSON.message;
+                                    } else if (xhr.responseJSON.errors) {
+                                        message = Object.values(xhr.responseJSON
+                                            .errors)[0][0];
+                                    }
+
                                 }
 
-                            }
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: message,
-                                showConfirmButton: true
-                            });
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: message,
+                                    showConfirmButton: true
+                                });
 
                             }
                         });
-                    }else{
+                    } else {
                         Swal.fire({
                             icon: 'info',
                             title: 'Dibatalkan',
@@ -155,61 +165,114 @@
                         })
                     }
                 });
-        });
+            });
 
-        $('#groupMember').DataTable({
+            $('#groupMember').DataTable({
 
-            processing: true,
-            serverSide: true,
-            pageLength: 5,
+                processing: true,
+                serverSide: true,
+                pageLength: 5,
 
-            lengthMenu: [
-                [5, 10, 25, -1],
-                [5, 10, 25, "Semua"]
-            ],
+                lengthMenu: [
+                    [5, 10, 25, -1],
+                    [5, 10, 25, "Semua"]
+                ],
 
-            ajax: {
-                url: "{{ route('auditgroupmember.list', encode($auditGroup->id)) }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}"
-                }
-            },
+                ajax: {
+                    url: "{{ route('auditgroupmember.list', encode($auditGroup->id)) }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    }
+                },
 
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', width: '2%'},
-                {
-                    data: 'sort',
-                    name: 'sort',
-                    width: '2%',
-                    className: 'text-center'
-                },
-                {
-                    data: 'user_id',
-                    name: 'user_id'
-                },
-                {
-                    data: 'jabatan',
-                    name: 'jabatan',
-                    width: '4%'
-                },
-                {
-                    data: 'role',
-                    name: 'role'
-                },
-                {
-                    data: 'created_by',
-                    name: 'created_by'
-                },
-                {
-                    data: 'tindakan',
-                    name: 'tindakan',
-                    orderable: false,
-                    searchable: false
-                }
-            ],
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        className: 'text-center',
+                        width: '2%'
+                    },
+                    {
+                        data: 'sort',
+                        name: 'sort',
+                        width: '2%',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'user_id',
+                        name: 'user_id'
+                    },
+                    {
+                        data: 'jabatan',
+                        name: 'jabatan',
+                        width: '4%'
+                    },
+                    {
+                        data: 'role',
+                        name: 'role'
+                    },
+                    {
+                        data: 'created_by',
+                        name: 'created_by'
+                    },
+                    {
+                        data: 'tindakan',
+                        name: 'tindakan',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
 
             });
-    });
-</script>
+
+            // Ambil old() jika validation gagal,
+            // jika tiada, ambil value daripada database
+            let selectedJabatan = @json(old('jabatan', $auditGroup->jabatan));
+
+            $.ajax({
+                url: "{{ url('/api/senarai-jabatan') }}",
+                type: "POST",
+
+                success: function(response) {
+
+                    let jabatan = $('#jabatan');
+
+                    jabatan.empty();
+                    jabatan.append(
+                        '<option value="">-- Pilih Jabatan / Unit --</option>'
+                    );
+
+                    let namaJabatan = new Set();
+
+                    $.each(response.senaraiJabatan, function(index, item) {
+
+                        let nama = item.PTJ_PTJPKNAME.trim();
+
+                        // Elakkan duplicate nama jabatan
+                        if (namaJabatan.has(nama)) {
+                            return;
+                        }
+
+                        namaJabatan.add(nama);
+
+                        let option = $('<option>', {
+                            value: nama,
+                            text: nama
+                        });
+
+                        // Select jabatan sedia ada
+                        if (selectedJabatan === nama) {
+                            option.prop('selected', true);
+                        }
+
+                        jabatan.append(option);
+                    });
+                },
+
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    </script>
 @endpush

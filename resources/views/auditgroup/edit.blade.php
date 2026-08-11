@@ -2,6 +2,9 @@
 @section('title', 'Edit Audit Group')
 @section('content')
     @include('include.error')
+    @php
+        $isLocked = in_array($auditGroup->status, ['DALAM PROSES', 'SELESAI']);
+    @endphp
     <form action="{{ route('auditgroup.update', encode($auditGroup->id)) }}" method="POST" id="store_audit_group_form"
         enctype="multipart/form-data">
         @csrf
@@ -19,7 +22,7 @@
                     <div class="col-md-3">
                         <div class="form-group mb-3">
                             <label for="name">Nama Template</label>
-                            <select name="template" class="form-control select2">
+                            <select name="template" class="form-control select2" {{ $isLocked ? 'disabled' : '' }}>
                                 <option value="">-- Pilih Template --</option>
                                 @forelse ($auditTemplates as $auditTemplate)
                                     <option value="{{ $auditTemplate->id }}"
@@ -33,14 +36,15 @@
                     <div class="col-md-3">
                         <div class="form-group mb-3">
                             <label for="name">Nama / Nombor Group</label>
-                            <input type="text" name="name" class="form-control" value="{{ $auditGroup->name }}">
+                            <input type="text" name="name" class="form-control" value="{{ $auditGroup->name }}"
+                                {{ $isLocked ? 'disabled' : '' }}>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group mb-3">
                             <label for="jabatan">Jabatan / Unit</label>
 
-                            <select name="jabatan" id="jabatan" class="form-control">
+                            <select name="jabatan" id="jabatan" class="form-control" {{ $isLocked ? 'disabled' : '' }}>
                                 <option value="">-- Pilih Jabatan / Unit --</option>
                             </select>
                         </div>
@@ -48,7 +52,7 @@
                     <div class="col-md-2">
                         <div class="form-group mb-3">
                             <label for="name">Cadangan Tarikh</label>
-                            <input type="date" name="tarikh" class="form-control"
+                            <input type="date" name="tarikh" class="form-control" {{ $isLocked ? 'disabled' : '' }}
                                 value="{{ old('tarikh', optional($auditGroup->tarikh)->format('Y-m-d')) }}">
                         </div>
                     </div>
@@ -56,9 +60,11 @@
 
             </div>
             <div class="card-footer d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary">
-                    Kemaskini
-                </button>
+                @if (!$isLocked)
+                    <button type="submit" class="btn btn-primary">
+                        Kemaskini
+                    </button>
+                @endif
                 <a href="{{ route('auditgroup') }}" class="btn btn-secondary ms-2">
                     Kembali
                 </a>
@@ -82,9 +88,9 @@
 
             $('#user_id').on('change', function() {
 
-                let jabatan = $(this).find(':selected').data('jabatan') || '';
+                let jabatan_member = $(this).find(':selected').data('jabatan') || '';
 
-                $('#jabatan').val(jabatan);
+                $('#jabatan_member').val(jabatan_member);
 
             });
 

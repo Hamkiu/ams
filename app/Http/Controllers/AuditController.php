@@ -71,6 +71,7 @@ class AuditController extends Controller
         ]);
 
         $isNew = !$answer->exists;
+
         if ($isNew) {
             $answer->created_by = \Auth::user()->id;
         }
@@ -78,10 +79,12 @@ class AuditController extends Controller
         $answer->penemuan_lain = $request->penemuan_lain;
         $answer->bukti_audit = $request->bukti_audit;
         $answer->save();
+
         //status audit group members
         $member = AuditGroupsMembers::where('audit_group_id', $request->audit_group_id)
             ->where('user_id', \Auth::user()->id)
             ->first();
+
         if ($member && $member->status == 'BELUM BERMULA') {
 
             $member->status = 'DALAM PROSES';
@@ -91,7 +94,20 @@ class AuditController extends Controller
             $member->save();
         }
 
+        //status audit group
+        $group = AuditGroups::find($request->audit_group_id);
+
+        if ($group && $group->status == 'BELUM BERMULA') {
+
+            $group->status = 'DALAM PROSES';
+
+            $group->started_at = now();
+
+            $group->save();
+        }
+
         $answer->checklists()->delete();
+
         if ($request->filled('checklist_id')) {
 
             foreach ($request->checklist_id as $checklistId) {

@@ -30,38 +30,40 @@ class AuditGroupsMembersController extends Controller
      */
     public function store(Request $request, $id)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'role'    => 'required|in:Leader,Member',
-            ], 
+        $validated = $request->validate(
             [
-            'user_id.required' => 'Juruaudit wajib dipilih',
-            'user_id.exists'   => 'Juruaudit tidak ditemukan',
-            'role.required'    => 'Peranan wajib dipilih',
-            'role.in'          => 'Peranan tidak sah',
-        ]);
-    
+                'user_id' => 'required|exists:users,id',
+                'role'    => 'required|in:Leader,Member',
+            ],
+            [
+                'user_id.required' => 'Juruaudit wajib dipilih',
+                'user_id.exists'   => 'Juruaudit tidak ditemukan',
+                'role.required'    => 'Peranan wajib dipilih',
+                'role.in'          => 'Peranan tidak sah',
+            ]
+        );
+
         $auditGroupId = decode($id);
-    
+
         // Semak juruaudit telah wujud dalam kumpulan
         $existMember = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
             ->where('user_id', $request->user_id)
             ->exists();
-    
+
         if ($existMember) {
             return response()->json([
                 'success' => false,
                 'message' => 'Juruaudit ini telah berada di dalam kumpulan.',
             ], 422);
         }
-    
+
         // Semak Ketua Juruaudit hanya seorang
         if ($request->role == 'Leader') {
-    
+
             $existLeader = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
                 ->where('role', 'Leader')
                 ->exists();
-    
+
             if ($existLeader) {
                 return response()->json([
                     'success' => false,
@@ -69,15 +71,15 @@ class AuditGroupsMembersController extends Controller
                 ], 422);
             }
         }
-    
+
         // Susunan ahli
         $sort = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
             ->max('sort');
-    
+
         $sort = $sort ? $sort + 1 : 1;
-    
+
         $auditGroup = AuditGroups::findOrFail($auditGroupId);
-    
+
         $auditGroup->members()->create([
             'audit_group_id' => $auditGroupId,
             'user_id'        => $request->user_id,
@@ -87,7 +89,7 @@ class AuditGroupsMembersController extends Controller
             'remarks'        => $request->remarks,
             'created_by'     => auth()->id(),
         ]);
-    
+
         auditTrail(
             'Create',
             'Tetapan Audit',
@@ -96,7 +98,7 @@ class AuditGroupsMembersController extends Controller
             $auditGroup->name,
             auth()->id()
         );
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Juruaudit berjaya ditambahkan.',
@@ -121,11 +123,14 @@ class AuditGroupsMembersController extends Controller
             ->addColumn('created_by', function ($row) {
                 $name = optional($row->user)->name;
                 $date = date('d/m/Y H:i:a', strtotime($row->created_at));
-                return $name.'<br/>&emsp;'.$date;
+                return $name . '<br/>&emsp;' . $date;
             })
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
-                $btn .= ' <a href="'.route('auditgroupmember.destroy', encode($row->id)).'" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+                if (in_array($row->auditGroup->status, ['DALAM PROSES', 'SELESAI'])) {
+                    return '-';
+                }
+                $btn .= ' <a href="' . route('auditgroupmember.destroy', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                 return $btn;
             })
             ->rawColumns(['user_id', 'jabatan', 'role', 'created_by', 'updated_by', 'tindakan'])

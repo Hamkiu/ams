@@ -23,7 +23,7 @@ Breadcrumbs::for('user.create', function ($trail) {
 
 Breadcrumbs::for('user.edit', function ($trail, $id) {
     $trail->parent('user');
-    $trail->push('Edit Pengguna',route('user.edit', $id));
+    $trail->push('Edit Pengguna', route('user.edit', $id));
 });
 
 // Audit Trail
@@ -38,18 +38,25 @@ Breadcrumbs::for('audittemplate', function ($trail) {
     $trail->push('Audit Template', route('audittemplate'));
 });
 
+// Audit Template Preview
+Breadcrumbs::for('audittemplate.preview', function ($trail, $id) {
+    $auditTemplate = AuditTemplate::find(decode($id));
+    $trail->parent('audittemplate');
+    $trail->push($auditTemplate->id, route('audittemplate.preview', $id));
+});
+
 // Audit Template Items
 Breadcrumbs::for('audittemplate.items', function ($trail, $id) {
     $auditTemplate = AuditTemplate::find(decode($id));
     $trail->parent('audittemplate');
-    $trail->push( $auditTemplate->id, route('audittemplate.items', $id));
+    $trail->push($auditTemplate->id, route('audittemplate.items', $id));
 });
 
 // Audit Template Checklist
 Breadcrumbs::for('audittemplate.checklist', function ($trail, $id) {
     $auditTemplateItems = AuditTemplateItems::find(decode($id));
     $trail->parent('audittemplate.items', encode($auditTemplateItems->audit_template_id));
-    $trail->push( $auditTemplateItems->perkara, route('audittemplate.checklist', $id));
+    $trail->push($auditTemplateItems->perkara, route('audittemplate.checklist', $id));
 });
 
 // Audit Group
@@ -69,6 +76,13 @@ Breadcrumbs::for('auditgroup.edit', function ($trail, $id) {
     $auditGroup = AuditGroups::find(decode($id));
     $trail->parent('auditgroup');
     $trail->push($auditGroup->name, route('auditgroup.edit', $id));
+});
+
+// Audit Group Answers
+Breadcrumbs::for('auditgroup.answers', function ($trail, $id) {
+    $auditGroup = AuditGroups::find(decode($id));
+    $trail->parent('auditgroup');
+    $trail->push($auditGroup->name, route('auditgroup.answers', $id));
 });
 
 // Audit

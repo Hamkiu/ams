@@ -100,8 +100,11 @@ class AuditGroupsController extends Controller
                 if ($row->status == 'BELUM BERMULA') {
                     $btn .= ' <a href="' . route('auditgroup.edit', encode($row->id)) . '" class="btn btn-warning btn-sm" title="Edit"><i class="material-icons-outlined">edit</i></a>';
                     $btn .= ' <a href="' . route('auditgroup.destroy', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
-                } else {
+                } else if ($row->status == 'DALAM PROSES') {
                     $btn .= ' <a href="' . route('auditgroup.edit', encode($row->id)) . '" class="btn btn-info btn-sm" title="View"><i class="material-icons-outlined">open_in_new</i></a>';
+                } else {
+                    $btn .= ' <a href="' . route('auditgroup.edit', encode($row->id)) . '" class="btn btn-success btn-sm" title="View"><i class="material-icons-outlined">open_in_new</i></a>';
+                    $btn .= ' <a href="' . route('auditgroup.answers', encode($row->id)) . '" class="btn btn-secondary btn-sm" title="Lihat Jawapan"><i class="material-icons-outlined">fact_check</i></a>';
                 }
                 return $btn;
             })
@@ -172,5 +175,24 @@ class AuditGroupsController extends Controller
         $auditGroup->delete();
         auditTrail('Delete', 'Tetapan Audit', 'Audit Group', $auditGroup->id, $auditGroup->name, \Auth::user()->id);
         return redirect()->back()->with('success', 'Group berjaya dihapus');
+    }
+
+    public function answers($id)
+    {
+        $auditGroup = AuditGroups::with([
+            'auditTemplate.items.checklists',
+            'members.pengguna',
+            'answers.auditor',
+            'answers.checklists',
+            'answers.files',
+        ])->findOrFail(decode($id));
+
+        if ($auditGroup->status != 'SELESAI') {
+            return redirect()
+                ->route('auditgroup')
+                ->with('error', 'Jawapan audit hanya boleh dilihat setelah audit selesai.');
+        }
+
+        return view('auditgroup.answer', compact('auditGroup'));
     }
 }

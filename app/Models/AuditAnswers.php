@@ -61,4 +61,9 @@ class AuditAnswers extends Model
 
         return !empty($this->bukti_audit);
     }
+
+    public function files()
+    {
+        return $this->hasMany(AuditFiles::class, 'ref_id', 'id');
+    }
 }

@@ -34,7 +34,6 @@ Route::middleware(['auth'])->group(function () {
             Route::post('store', [AuditController::class, 'store'])->name('audit.store');
             Route::post('attachment', [AuditController::class, 'attachment'])->name('audit.attachment');
             Route::post('listattachment', [AuditController::class, 'listattachment'])->name('audit.listattachment');
-            Route::get('download/{id}', [AuditController::class, 'download'])->name('auditfiles.download');
             Route::get('delete/{id}', [AuditController::class, 'delete'])->name('auditfiles.delete');
             Route::post('submit', [AuditController::class, 'submit'])->name('audit.submit');
         });
@@ -72,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('show/{id}', [AuditTemplateController::class, 'show'])->name('audittemplate.show');
             Route::get('publish/{id}', [AuditTemplateController::class, 'publish'])->name('audittemplate.publish');
             Route::get('archive/{id}', [AuditTemplateController::class, 'archive'])->name('audittemplate.archive');
-
+            Route::get('preview/{id}', [AuditTemplateController::class, 'preview'])->name('audittemplate.preview');
 
             Route::prefix('templateitems')->group(function () {
                 Route::get('/{id}', [AuditTemplateItemsController::class, 'index'])->name('audittemplate.items');
@@ -103,6 +102,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('edit/{id}', [AuditGroupsController::class, 'edit'])->name('auditgroup.edit');
             Route::post('update/{id}', [AuditGroupsController::class, 'update'])->name('auditgroup.update');
             Route::get('destroy/{id}', [AuditGroupsController::class, 'destroy'])->name('auditgroup.destroy');
+            Route::get('answers/{id}', [AuditGroupsController::class, 'answers'])->name('auditgroup.answers');
         });
 
         Route::prefix('auditgroupmember')->group(function () {
@@ -113,6 +113,11 @@ Route::middleware(['auth'])->group(function () {
             Route::post('update/{id}', [AuditGroupsMembersController::class, 'update'])->name('auditgroupmember.update');
             Route::get('destroy/{id}', [AuditGroupsMembersController::class, 'destroy'])->name('auditgroupmember.destroy');
         });
+    });
+
+    Route::middleware('role:Admin|Auditor')->group(function () {
+
+        Route::get('audit/download/{id}', [AuditController::class, 'download'])->name('auditfiles.download');
     });
 });
 

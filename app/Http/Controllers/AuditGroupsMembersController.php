@@ -83,7 +83,7 @@ class AuditGroupsMembersController extends Controller
         $auditGroup->members()->create([
             'audit_group_id' => $auditGroupId,
             'user_id'        => $request->user_id,
-            'jabatan'        => $request->jabatan,
+            'jabatan'        => $request->jabatan_member,
             'sort'           => $sort,
             'role'           => $request->role,
             'remarks'        => $request->remarks,

@@ -6,125 +6,90 @@
     @push('styles')
         <style>
             /*
-        |--------------------------------------------------------------------------
-        | CKEDITOR CONTENT
-        |--------------------------------------------------------------------------
-        */
+                    |--------------------------------------------------------------------------
+                    | ADMIN READONLY CKEDITOR
+                    |--------------------------------------------------------------------------
+                    */
 
-            .audit-content {
-                display: block;
-                width: 100% !important;
-                max-width: 100% !important;
-                min-width: 0 !important;
+            #auditAnswers .ck-editor {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+            }
 
-                overflow: hidden !important;
+            #auditAnswers .ck-editor__main {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+            }
+
+            #auditAnswers .ck-editor__editable {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+
+                min-height: 100px;
 
                 overflow-wrap: anywhere;
                 word-break: break-word;
-
-                box-sizing: border-box;
             }
 
-            /*
-        |--------------------------------------------------------------------------
-        | CKEDITOR IMAGE WRAPPER
-        |--------------------------------------------------------------------------
-        */
-
-            .audit-content figure,
-            .audit-content figure.image,
-            .audit-content .image,
-            .audit-content .image_resized {
-                display: block !important;
-
-                width: 100% !important;
-                max-width: 100% !important;
-                min-width: 0 !important;
-
-                margin: 0 !important;
-                padding: 0 !important;
-
-                float: none !important;
-
-                box-sizing: border-box !important;
-            }
 
             /*
-        |--------------------------------------------------------------------------
-        | CKEDITOR IMAGE
-        |--------------------------------------------------------------------------
-        */
+                    |--------------------------------------------------------------------------
+                    | CKEDITOR IMAGE
+                    |--------------------------------------------------------------------------
+                    */
 
-            .audit-content img,
-            .audit-content figure img,
-            .audit-content figure.image img,
-            .audit-content .image img,
-            .audit-content .image_resized img {
-                display: block !important;
-
-                width: 100% !important;
-                max-width: 100% !important;
-                min-width: 0 !important;
-
-                height: auto !important;
-
-                margin: 0 auto !important;
-                padding: 0 !important;
-
-                object-fit: contain !important;
-
-                box-sizing: border-box !important;
-            }
-
-            /*
-        |--------------------------------------------------------------------------
-        | CKEDITOR ALIGNMENT
-        |--------------------------------------------------------------------------
-        */
-
-            .audit-content .image-style-side,
-            .audit-content .image-style-align-left,
-            .audit-content .image-style-align-right,
-            .audit-content .image-style-align-center {
-                float: none !important;
-
-                width: 100% !important;
-                max-width: 100% !important;
-
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-
-            /*
-        |--------------------------------------------------------------------------
-        | TABLE
-        |--------------------------------------------------------------------------
-        */
-
-            .audit-content table {
-                width: 100% !important;
+            #auditAnswers .ck-content figure.image {
                 max-width: 100% !important;
             }
 
-            /*
-        |--------------------------------------------------------------------------
-        | VIDEO / IFRAME
-        |--------------------------------------------------------------------------
-        */
-
-            .audit-content iframe,
-            .audit-content video {
-                width: 100% !important;
+            #auditAnswers .ck-content figure.image img,
+            #auditAnswers .ck-content img {
                 max-width: 100% !important;
                 height: auto !important;
             }
 
 
             /*
-                        |--------------------------------------------------------------------------
-                        | LONG TEXT
-                        |--------------------------------------------------------------------------
-                        */
+                    |--------------------------------------------------------------------------
+                    | CKEDITOR TABLE
+                    |--------------------------------------------------------------------------
+                    */
+
+            #auditAnswers .ck-content figure.table {
+                width: 100%;
+                max-width: 100%;
+
+                overflow-x: auto;
+            }
+
+            #auditAnswers .ck-content figure.table table {
+                width: 100%;
+            }
+
+
+            /*
+                    |--------------------------------------------------------------------------
+                    | AUDITOR CARD
+                    |--------------------------------------------------------------------------
+                    */
+
+            .auditor-answer-card {
+                width: 100%;
+                max-width: 100%;
+                min-width: 0;
+
+                overflow: hidden;
+            }
+
+
+            /*
+                    |--------------------------------------------------------------------------
+                    | LONG TEXT
+                    |--------------------------------------------------------------------------
+                    */
 
             #auditAnswers .text-break {
                 overflow-wrap: anywhere;
@@ -133,50 +98,13 @@
 
 
             /*
-                        |--------------------------------------------------------------------------
-                        | ACCORDION
-                        |--------------------------------------------------------------------------
-                        */
-
-            #auditAnswers,
-            #auditAnswers .accordion-item,
-            #auditAnswers .accordion-collapse,
-            #auditAnswers .accordion-body {
-                max-width: 100%;
-                min-width: 0;
-            }
-
-
-            /*
-                        |--------------------------------------------------------------------------
-                        | AUDITOR CARD
-                        |--------------------------------------------------------------------------
-                        */
-
-            .auditor-answer-card {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
-                overflow: hidden;
-            }
-
-            .auditor-answer-card .card-body {
-                max-width: 100%;
-                min-width: 0;
-            }
-
-
-            /*
-                        |--------------------------------------------------------------------------
-                        | TABLET / MOBILE
-                        |--------------------------------------------------------------------------
-                        */
+                    |--------------------------------------------------------------------------
+                    | TABLET / MOBILE
+                    |--------------------------------------------------------------------------
+                    */
 
             @media (max-width: 767.98px) {
 
-                /*
-                             * Download button penuh pada mobile/tablet kecil.
-                             */
                 .download-wrapper {
                     width: 100%;
                 }
@@ -185,50 +113,47 @@
                     width: 100%;
                 }
 
-                /*
-                             * Pastikan kandungan CKEditor tidak menyebabkan
-                             * horizontal overflow.
-                             */
-                .audit-content {
-                    max-width: 100%;
-                    overflow-x: hidden;
-                }
 
-                .audit-content figure,
-                .audit-content .image,
-                .audit-content .image_resized {
+                /*
+                         * CKEditor
+                         */
+                #auditAnswers .ck-editor,
+                #auditAnswers .ck-editor__main,
+                #auditAnswers .ck-editor__editable {
+                    width: 100% !important;
                     max-width: 100% !important;
                 }
 
-                .audit-content img,
-                .audit-content figure img,
-                .audit-content .image img,
-                .audit-content .image_resized img {
+
+                /*
+                         * Gambar CKEditor
+                         */
+                #auditAnswers .ck-content figure.image {
+                    max-width: 100% !important;
+                }
+
+                #auditAnswers .ck-content img {
                     max-width: 100% !important;
                     height: auto !important;
                 }
+
             }
 
 
             /*
-                        |--------------------------------------------------------------------------
-                        | MOBILE
-                        |--------------------------------------------------------------------------
-                        */
+                    |--------------------------------------------------------------------------
+                    | MOBILE
+                    |--------------------------------------------------------------------------
+                    */
 
             @media (max-width: 575.98px) {
 
-                /*
-                             * Kurangkan padding card utama.
-                             */
                 .card-body {
                     padding-left: 0.75rem;
                     padding-right: 0.75rem;
                 }
 
-                /*
-                             * Accordion.
-                             */
+
                 #auditAnswers .accordion-button {
                     padding: 0.85rem;
                 }
@@ -237,9 +162,7 @@
                     padding: 0.75rem;
                 }
 
-                /*
-                             * Card jawapan auditor.
-                             */
+
                 #auditAnswers .auditor-answer-card .card-header {
                     padding: 0.75rem;
                 }
@@ -248,41 +171,22 @@
                     padding: 0.75rem;
                 }
 
-                /*
-                             * Elakkan horizontal scroll.
-                             */
-                #auditAnswers {
-                    width: 100%;
-                    max-width: 100%;
-                    overflow-x: hidden;
-                }
 
                 /*
-                             * Gambar CKEditor pada mobile.
-                             */
-                .audit-content figure,
-                .audit-content .image,
-                .audit-content .image_resized {
-                    max-width: 100% !important;
+                         * CKEditor content
+                         */
+                #auditAnswers .ck-editor__editable {
+                    padding: 10px !important;
                 }
 
-                .audit-content img,
-                .audit-content figure img,
-                .audit-content .image img,
-                .audit-content .image_resized img {
-                    display: block !important;
-                    max-width: 100% !important;
-                    width: auto !important;
-                    height: auto !important;
-                    object-fit: contain;
-                }
 
                 /*
-                             * Footer button.
-                             */
+                         * Footer
+                         */
                 .card-footer .btn {
                     width: 100%;
                 }
+
             }
         </style>
     @endpush
@@ -503,7 +407,8 @@
 
                         {{-- CONTENT ITEM --}}
                         <div id="item{{ $item->id }}" class="accordion-collapse collapse"
-                            aria-labelledby="heading{{ $item->id }}" data-bs-parent="#auditAnswers">
+                            data-item="{{ $item->id }}" aria-labelledby="heading{{ $item->id }}"
+                            data-bs-parent="#auditAnswers">
 
                             <div class="accordion-body">
 
@@ -686,19 +591,12 @@
                                                 ================================== --}}
                                                 <div class="mb-4">
 
-                                                    <h6>
+                                                    <h6 class="mb-2">
                                                         Bukti Audit
                                                     </h6>
 
-                                                    <div
-                                                        class="border rounded
-                                                                p-2 p-md-3
-                                                                bg-light
-                                                                audit-content">
-
-                                                        {!! $answer->bukti_audit ?? '-' !!}
-
-                                                    </div>
+                                                    <textarea class="form-control bukti-audit-admin" id="bukti_audit_{{ $item->id }}_{{ $member->user_id }}"
+                                                        rows="6">{{ $answer->bukti_audit ?? '' }}</textarea>
 
                                                 </div>
 
@@ -838,3 +736,77 @@
     </div>
 
 @endsection
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script>
+        const adminEditors = {};
+
+        document.querySelectorAll('#auditAnswers .accordion-collapse')
+            .forEach(function(collapse) {
+
+                collapse.addEventListener('shown.bs.collapse', function() {
+
+                    const itemId = this.dataset.item;
+
+                    /*
+                     * Dalam satu item mungkin ada 2-3 auditor.
+                     * Jadi cari SEMUA textarea CKEditor dalam accordion ini.
+                     */
+                    this.querySelectorAll('.bukti-audit-admin')
+                        .forEach(function(textarea) {
+
+                            const editorId = textarea.id;
+
+                            /*
+                             * Kalau editor sudah pernah initialize,
+                             * jangan initialize semula.
+                             */
+                            if (adminEditors[editorId]) {
+                                return;
+                            }
+
+
+                            ClassicEditor
+                                .create(textarea)
+                                .then(editor => {
+
+                                    adminEditors[editorId] = editor;
+
+                                    /*
+                                     * Admin hanya boleh melihat.
+                                     */
+                                    editor.enableReadOnlyMode('admin');
+
+
+                                    /*
+                                     * Sembunyikan toolbar sebab Admin
+                                     * tidak perlu edit.
+                                     */
+                                    const toolbar =
+                                        editor.ui.view.toolbar.element;
+
+                                    if (toolbar) {
+                                        toolbar.style.display = 'none';
+                                    }
+
+
+                                    console.log(
+                                        'Admin readonly editor ' +
+                                        editorId +
+                                        ' loaded'
+                                    );
+
+                                })
+                                .catch(error => {
+
+                                    console.error(error);
+
+                                });
+
+                        });
+
+                });
+
+            });
+    </script>
+@endpush

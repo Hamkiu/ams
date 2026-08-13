@@ -329,8 +329,9 @@ class AuditController extends Controller
 
         if ($allCompleted) {
 
-            $group->status = 'SELESAI';
-            $group->completed_at = now();
+            $group->status = 'MENUNGGU KESIMPULAN';
+
+            // Jangan set completed_at lagi
             $group->save();
         }
 

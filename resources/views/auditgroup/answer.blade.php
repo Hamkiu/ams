@@ -6,40 +6,32 @@
     @push('styles')
         <style>
             /*
-                    |--------------------------------------------------------------------------
-                    | ADMIN READONLY CKEDITOR
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | ADMIN READONLY CKEDITOR
+                |--------------------------------------------------------------------------
+                */
 
-            #auditAnswers .ck-editor {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
-            }
-
-            #auditAnswers .ck-editor__main {
+            #auditAnswers .ck-editor,
+            #auditAnswers .ck-editor__main,
+            #auditAnswers .ck-editor__editable {
                 width: 100%;
                 max-width: 100%;
                 min-width: 0;
             }
 
             #auditAnswers .ck-editor__editable {
-                width: 100%;
-                max-width: 100%;
-                min-width: 0;
-
                 min-height: 100px;
-
                 overflow-wrap: anywhere;
                 word-break: break-word;
+                background-color: #ffffff;
             }
 
 
             /*
-                    |--------------------------------------------------------------------------
-                    | CKEDITOR IMAGE
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | CKEDITOR IMAGE
+                |--------------------------------------------------------------------------
+                */
 
             #auditAnswers .ck-content figure.image {
                 max-width: 100% !important;
@@ -47,49 +39,66 @@
 
             #auditAnswers .ck-content figure.image img,
             #auditAnswers .ck-content img {
+                display: block;
                 max-width: 100% !important;
                 height: auto !important;
             }
 
 
             /*
-                    |--------------------------------------------------------------------------
-                    | CKEDITOR TABLE
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | CKEDITOR TABLE
+                |--------------------------------------------------------------------------
+                */
 
             #auditAnswers .ck-content figure.table {
                 width: 100%;
                 max-width: 100%;
-
                 overflow-x: auto;
+
+                -webkit-overflow-scrolling: touch;
             }
 
             #auditAnswers .ck-content figure.table table {
                 width: 100%;
+                max-width: 100%;
             }
 
 
             /*
-                    |--------------------------------------------------------------------------
-                    | AUDITOR CARD
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | CARD JAWAPAN JURUAUDIT
+                |--------------------------------------------------------------------------
+                */
 
-            .auditor-answer-card {
+            #auditAnswers .auditor-answer-card {
                 width: 100%;
                 max-width: 100%;
                 min-width: 0;
-
                 overflow: hidden;
+            }
+
+            #auditAnswers .auditor-answer-card>.card-body {
+                min-width: 0;
             }
 
 
             /*
-                    |--------------------------------------------------------------------------
-                    | LONG TEXT
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | LAMPIRAN
+                |--------------------------------------------------------------------------
+                */
+
+            #auditAnswers .attachment-item {
+                background-color: #ffffff;
+            }
+
+
+            /*
+                |--------------------------------------------------------------------------
+                | LONG TEXT
+                |--------------------------------------------------------------------------
+                */
 
             #auditAnswers .text-break {
                 overflow-wrap: anywhere;
@@ -98,13 +107,16 @@
 
 
             /*
-                    |--------------------------------------------------------------------------
-                    | TABLET / MOBILE
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | TABLET / MOBILE
+                |--------------------------------------------------------------------------
+                */
 
             @media (max-width: 767.98px) {
 
+                /*
+                     * Button download penuh pada skrin kecil
+                     */
                 .download-wrapper {
                     width: 100%;
                 }
@@ -115,23 +127,25 @@
 
 
                 /*
-                         * CKEditor
-                         */
+                     * CKEditor
+                     */
                 #auditAnswers .ck-editor,
                 #auditAnswers .ck-editor__main,
                 #auditAnswers .ck-editor__editable {
                     width: 100% !important;
                     max-width: 100% !important;
+                    min-width: 0 !important;
                 }
 
 
                 /*
-                         * Gambar CKEditor
-                         */
+                     * Gambar CKEditor
+                     */
                 #auditAnswers .ck-content figure.image {
                     max-width: 100% !important;
                 }
 
+                #auditAnswers .ck-content figure.image img,
                 #auditAnswers .ck-content img {
                     max-width: 100% !important;
                     height: auto !important;
@@ -141,19 +155,25 @@
 
 
             /*
-                    |--------------------------------------------------------------------------
-                    | MOBILE
-                    |--------------------------------------------------------------------------
-                    */
+                |--------------------------------------------------------------------------
+                | MOBILE
+                |--------------------------------------------------------------------------
+                */
 
             @media (max-width: 575.98px) {
 
+                /*
+                     * Card utama
+                     */
                 .card-body {
                     padding-left: 0.75rem;
                     padding-right: 0.75rem;
                 }
 
 
+                /*
+                     * Accordion
+                     */
                 #auditAnswers .accordion-button {
                     padding: 0.85rem;
                 }
@@ -163,6 +183,9 @@
                 }
 
 
+                /*
+                     * Card jawapan juruaudit
+                     */
                 #auditAnswers .auditor-answer-card .card-header {
                     padding: 0.75rem;
                 }
@@ -173,16 +196,16 @@
 
 
                 /*
-                         * CKEditor content
-                         */
+                     * CKEditor
+                     */
                 #auditAnswers .ck-editor__editable {
                     padding: 10px !important;
                 }
 
 
                 /*
-                         * Footer
-                         */
+                     * Footer
+                     */
                 .card-footer .btn {
                     width: 100%;
                 }
@@ -458,13 +481,13 @@
                                     @endphp
 
 
-                                    <div class="card auditor-answer-card mb-3">
+                                    <div class="card auditor-answer-card mb-3 bg-light shadow-sm">
 
 
                                         {{-- =========================================
                                             AUDITOR HEADER
                                         ========================================== --}}
-                                        <div class="card-header">
+                                        <div class="card-header bg-dark text-white">
 
                                             <div
                                                 class="d-flex flex-column flex-sm-row
@@ -508,7 +531,7 @@
                                         {{-- =========================================
                                             JAWAPAN AUDITOR
                                         ========================================== --}}
-                                        <div class="card-body">
+                                        <div class="card-body bg-light">
 
                                             @if ($answer)
                                                 {{-- =================================
@@ -614,7 +637,7 @@
                                                     @forelse ($answer->files as $file)
                                                         <div
                                                             class="border rounded
-                                                                    p-2 p-md-3 mb-2">
+                                                                    p-2 p-md-3 mb-2 attachment-item">
 
                                                             <div
                                                                 class="d-flex

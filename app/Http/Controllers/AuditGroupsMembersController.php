@@ -127,7 +127,7 @@ class AuditGroupsMembersController extends Controller
             })
             ->addColumn('tindakan', function ($row) {
                 $btn = '';
-                if (in_array($row->auditGroup->status, ['DALAM PROSES', 'SELESAI'])) {
+                if (in_array($row->auditGroup->status, ['DALAM PROSES', 'MENUNGGU KESIMPULAN', 'SELESAI'])) {
                     return '-';
                 }
                 $btn .= ' <a href="' . route('auditgroupmember.destroy', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';

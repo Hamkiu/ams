@@ -78,14 +78,25 @@
 
                         </ul>
                         @if ($member->status == 'SELESAI')
-                            <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-success">
+                            {{-- Button lihat jawapan sendiri --}}
+                            <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-secondary">
                                 Lihat Audit
                             </a>
+
+                            {{-- Hanya Ketua Juruaudit --}}
+                            @if ($member->role == 'Leader')
+                                <a href="" class="btn btn-success   ">
+
+                                    <i class="material-icons-outlined align-middle" style="font-size: 18px;">
+                                        note_add
+                                    </i>
+
+                                    Rumusan Audit
+                                </a>
+                            @endif
                         @else
                             <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-primary">
-
                                 Buka Audit
-
                             </a>
                         @endif
                     </div>

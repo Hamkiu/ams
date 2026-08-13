@@ -102,6 +102,8 @@ class AuditGroupsController extends Controller
                     $btn .= ' <a href="' . route('auditgroup.destroy', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
                 } else if ($row->status == 'DALAM PROSES') {
                     $btn .= ' <a href="' . route('auditgroup.edit', encode($row->id)) . '" class="btn btn-secondary btn-sm" title="View"><i class="material-icons-outlined">open_in_new</i></a>';
+                } else if ($row->status == 'MENUNGGU KESIMPULAN') {
+                    $btn .= ' <a href="' . route('auditgroup.edit', encode($row->id)) . '" class="btn btn-secondary btn-sm" title="View"><i class="material-icons-outlined">open_in_new</i></a>';
                 } else {
                     $btn .= ' <a href="' . route('auditgroup.edit', encode($row->id)) . '" class="btn btn-secondary btn-sm" title="View"><i class="material-icons-outlined">open_in_new</i></a>';
                     $btn .= ' <a href="' . route('auditgroup.answers', encode($row->id)) . '" class="btn btn-success btn-sm" title="Lihat Jawapan"><i class="material-icons-outlined">fact_check</i></a>';

@@ -11,6 +11,7 @@ class AuditFiles extends Model
     protected $appends = ['encrypt_id'];
     protected $fillable = [
         'ref_id',
+        'ref_type',
         'file_name_ori',
         'file_name',
         'file_path',

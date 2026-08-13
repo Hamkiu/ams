@@ -97,3 +97,10 @@ Breadcrumbs::for('audit.show', function ($trail, $id) {
     $trail->parent('audit');
     $trail->push($auditGroup->name, route('audit.show', $id));
 });
+
+// Audit Summary
+Breadcrumbs::for('audit.summary', function ($trail, $id) {
+    $auditGroup = AuditGroups::find(decode($id));
+    $trail->parent('audit');
+    $trail->push($auditGroup->name, route('audit.summary', $id));
+});

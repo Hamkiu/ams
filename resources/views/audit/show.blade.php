@@ -368,11 +368,14 @@
         });
 
         $(document).ready(function() {
+
             $('.attachment-table').each(function() {
 
                 let table = $(this);
 
-                let answer = table.data('answer');
+                // Generic reference
+                let refId = table.data('ref');
+                let refType = table.data('type');
 
                 table.DataTable({
 
@@ -392,7 +395,8 @@
 
                             d._token = "{{ csrf_token() }}";
 
-                            d.answer = answer;
+                            d.ref_id = refId;
+                            d.ref_type = refType;
 
                         }
 
@@ -425,6 +429,8 @@
                 });
 
             });
+
+
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -434,16 +440,18 @@
                     showConfirmButton: true
                 });
             @endif
+
         });
 
         $(document).on('click', '.btn-upload', function() {
 
-            let encodedAnswer = $(this).data('answer');
-            let answerId = $(this).data('id');
+            let encodedRef = $(this).data('ref');
+            let refType = $(this).data('type');
+            let refId = $(this).data('id');
 
-            let input = $('#attachment_' + answerId)[0];
+            let input = $('#attachment_' + refType + '_' + refId)[0];
 
-            if (input.files.length === 0) {
+            if (!input || input.files.length === 0) {
 
                 Swal.fire({
                     icon: 'warning',
@@ -455,7 +463,8 @@
 
             let formData = new FormData();
 
-            formData.append('audit_answer_id', encodedAnswer);
+            formData.append('ref_id', encodedRef);
+            formData.append('ref_type', refType);
 
             $.each(input.files, function(i, file) {
                 formData.append('tfiles[]', file);
@@ -474,7 +483,6 @@
                 data: formData,
 
                 processData: false,
-
                 contentType: false,
 
                 success: function(res) {
@@ -486,19 +494,14 @@
                         window.location.reload();
                     });
 
-                    input.value = "";
-
-                    $('#attachmentTable_' + answerId)
-                        .DataTable()
-                        .ajax.reload();
-
                 },
 
                 error: function(xhr) {
 
                     Swal.fire({
                         icon: 'error',
-                        text: xhr.responseJSON.message
+                        text: xhr.responseJSON?.message ??
+                            'Ralat semasa memuat naik lampiran.'
                     });
 
                 }

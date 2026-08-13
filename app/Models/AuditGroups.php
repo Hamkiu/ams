@@ -57,4 +57,8 @@ class AuditGroups extends Model
     {
         return $this->hasMany(AuditAnswers::class, 'audit_group_id', 'id');
     }
+    public function conclusion()
+    {
+        return $this->hasOne(AuditGroupConclusion::class, 'audit_group_id', 'id');
+    }
 }

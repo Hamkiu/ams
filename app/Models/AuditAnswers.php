@@ -64,6 +64,6 @@ class AuditAnswers extends Model
 
     public function files()
     {
-        return $this->hasMany(AuditFiles::class, 'ref_id', 'id');
+        return $this->hasMany(AuditFiles::class, 'ref_id', 'id')->where('ref_type', 'answer');
     }
 }

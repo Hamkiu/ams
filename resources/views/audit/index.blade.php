@@ -83,15 +83,17 @@
                                 Lihat Audit
                             </a>
 
-                            {{-- Hanya Ketua Juruaudit --}}
-                            @if ($member->role == 'Leader')
-                                <a href="" class="btn btn-success   ">
+                            {{-- Hanya Ketua Juruaudit dan semua auditor telah selesai --}}
+                            @if ($member->role == 'Leader' && $member->auditGroup->status == 'MENUNGGU KESIMPULAN')
+                                <a href="{{ route('audit.summary', encode($member->auditGroup->id)) }}"
+                                    class="btn btn-success">
 
                                     <i class="material-icons-outlined align-middle" style="font-size: 18px;">
                                         note_add
                                     </i>
 
-                                    Rumusan Audit
+                                    Tambah Rumusan
+
                                 </a>
                             @endif
                         @else

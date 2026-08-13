@@ -1,8 +1,9 @@
 @extends('layouts.master')
 
-@section('title', 'Jawapan Audit')
+@section('title', 'Rumusan Audit')
 
 @section('content')
+    @include('include.error')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('template/assets/css/maklumbalas-audit.css') }}">
     @endpush
@@ -17,7 +18,7 @@
                 <div>
                     <h5 class="mb-1">
                         <i data-feather="clipboard"></i>
-                        Keputusan Audit
+                        Rumusan Audit
                     </h5>
 
                     <small class="text-muted">
@@ -411,7 +412,7 @@
                                                         Bukti Audit
                                                     </h6>
 
-                                                    <textarea class="form-control bukti-audit-admin" id="bukti_audit_{{ $item->id }}_{{ $member->user_id }}"
+                                                    <textarea class="form-control bukti-audit-leader" id="bukti_audit_{{ $item->id }}_{{ $member->user_id }}"
                                                         rows="6">{{ $answer->bukti_audit ?? '' }}</textarea>
 
                                                 </div>
@@ -527,7 +528,6 @@
 
         </div>
 
-
         {{-- =========================================================
             FOOTER
         ========================================================== --}}
@@ -535,7 +535,7 @@
 
             <div class="d-flex justify-content-end">
 
-                <a href="{{ route('auditgroup') }}" class="btn btn-secondary">
+                <a href="{{ route('audit') }}" class="btn btn-secondary">
 
                     <i class="material-icons-outlined align-middle" style="font-size: 18px;">
                         arrow_back
@@ -550,6 +550,8 @@
         </div>
 
     </div>
+
+    @include('audit.summary.leader')
 
 @endsection
 @push('scripts')
@@ -568,7 +570,7 @@
                      * Dalam satu item mungkin ada 2-3 auditor.
                      * Jadi cari SEMUA textarea CKEditor dalam accordion ini.
                      */
-                    this.querySelectorAll('.bukti-audit-admin')
+                    this.querySelectorAll('.bukti-audit-leader')
                         .forEach(function(textarea) {
 
                             const editorId = textarea.id;
@@ -591,7 +593,7 @@
                                     /*
                                      * Admin hanya boleh melihat.
                                      */
-                                    editor.enableReadOnlyMode('admin');
+                                    editor.enableReadOnlyMode('leader');
 
 
                                     /*
@@ -607,7 +609,7 @@
 
 
                                     console.log(
-                                        'Admin readonly editor ' +
+                                        'Leader readonly editor ' +
                                         editorId +
                                         ' loaded'
                                     );
@@ -624,5 +626,38 @@
                 });
 
             });
+
+        const conclusionTextarea = document.querySelector('#conclusion');
+
+        if (conclusionTextarea) {
+
+            ClassicEditor
+                .create(conclusionTextarea, {
+                    ckfinder: {
+                        uploadUrl: '{{ route('image.upload', ['_token' => csrf_token()]) }}'
+                    }
+                })
+                .then(editor => {
+
+                    console.log('Conclusion editor loaded');
+
+                })
+                .catch(error => {
+
+                    console.error(error);
+
+                });
+
+        }
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berjaya!',
+                text: "{{ session('success') }}",
+                timer: 3000,
+                showConfirmButton: true
+            });
+        @endif
     </script>
 @endpush

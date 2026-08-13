@@ -5,8 +5,8 @@
             {{-- TABLE --}}
             <div class="col-lg-9">
 
-                <table class="table attachment-table" id="dtattachment_{{ $answer->id }}"
-                    data-answer="{{ encode($answer->id) }}" style="width: 100%;">
+                <table class="table attachment-table" id="dtattachment_answer_{{ $answer->id }}"
+                    data-ref="{{ encode($answer->id) }}" data-type="answer" style="width: 100%;">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -37,8 +37,8 @@
                         <div class="mb-3">
 
                             <input type="file" class="form-control attachment-file"
-                                id="attachment_{{ $answer->id }}" data-answer="{{ encode($answer->id) }}" multiple
-                                @disabled($readonly)>
+                                id="attachment_answer_{{ $answer->id }}" data-ref="{{ encode($answer->id) }}"
+                                data-type="answer" multiple @disabled($readonly)>
 
                             <small class="text-muted">
                                 doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
@@ -51,10 +51,10 @@
                         <div class="d-grid">
                             @if (!$readonly)
                                 <button type="button" class="btn btn-primary btn-upload"
-                                    data-answer="{{ encode($answer->id) }}" data-id="{{ $answer->id }}">
+                                    data-ref="{{ encode($answer->id) }}" data-type="answer"
+                                    data-id="{{ $answer->id }}">
 
                                     <i data-feather="upload" class="me-1"></i>
-
                                     Add
 
                                 </button>

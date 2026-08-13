@@ -1,0 +1,206 @@
+/*
+                                            |--------------------------------------------------------------------------
+                                            | ADMIN READONLY CKEDITOR
+                                            |--------------------------------------------------------------------------
+                                            */
+
+#auditAnswers .ck-editor,
+#auditAnswers .ck-editor__main,
+#auditAnswers .ck-editor__editable {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+#auditAnswers .ck-editor__editable {
+    min-height: 100px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    background-color: #ffffff;
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | CKEDITOR IMAGE
+                                            |--------------------------------------------------------------------------
+                                            */
+
+#auditAnswers .ck-content figure.image {
+    max-width: 100% !important;
+}
+
+#auditAnswers .ck-content figure.image img,
+#auditAnswers .ck-content img {
+    display: block;
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | CKEDITOR TABLE
+                                            |--------------------------------------------------------------------------
+                                            */
+
+#auditAnswers .ck-content figure.table {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+#auditAnswers .ck-content figure.table table {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | CARD JAWAPAN JURUAUDIT
+                                            |--------------------------------------------------------------------------
+                                            */
+
+#auditAnswers .auditor-answer-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+#auditAnswers .auditor-answer-card>.card-body {
+    min-width: 0;
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | LAMPIRAN
+                                            |--------------------------------------------------------------------------
+                                            */
+
+#auditAnswers .attachment-item {
+    background-color: #ffffff;
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | LONG TEXT
+                                            |--------------------------------------------------------------------------
+                                            */
+
+#auditAnswers .text-break {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | TABLET / MOBILE
+                                            |--------------------------------------------------------------------------
+                                            */
+
+@media (max-width: 767.98px) {
+
+    /*
+                                                 * Button download penuh pada skrin kecil
+                                                 */
+    .download-wrapper {
+        width: 100%;
+    }
+
+    .download-btn {
+        width: 100%;
+    }
+
+
+    /*
+                                                 * CKEditor
+                                                 */
+    #auditAnswers .ck-editor,
+    #auditAnswers .ck-editor__main,
+    #auditAnswers .ck-editor__editable {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+    }
+
+
+    /*
+                                                 * Gambar CKEditor
+                                                 */
+    #auditAnswers .ck-content figure.image {
+        max-width: 100% !important;
+    }
+
+    #auditAnswers .ck-content figure.image img,
+    #auditAnswers .ck-content img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+}
+
+
+/*
+                                            |--------------------------------------------------------------------------
+                                            | MOBILE
+                                            |--------------------------------------------------------------------------
+                                            */
+
+@media (max-width: 575.98px) {
+
+    /*
+                                                 * Card utama
+                                                 */
+    .card-body {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+
+    /*
+                                                 * Accordion
+                                                 */
+    #auditAnswers .accordion-button {
+        padding: 0.85rem;
+    }
+
+    #auditAnswers .accordion-body {
+        padding: 0.75rem;
+    }
+
+
+    /*
+                                                 * Card jawapan juruaudit
+                                                 */
+    #auditAnswers .auditor-answer-card .card-header {
+        padding: 0.75rem;
+    }
+
+    #auditAnswers .auditor-answer-card .card-body {
+        padding: 0.75rem;
+    }
+
+
+    /*
+                                                 * CKEditor
+                                                 */
+    #auditAnswers .ck-editor__editable {
+        padding: 10px !important;
+    }
+
+
+    /*
+                                                 * Footer
+                                                 */
+    .card-footer .btn {
+        width: 100%;
+    }
+
+}

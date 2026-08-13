@@ -47,7 +47,7 @@ class AuditGroupsController extends Controller
         $auditGroup = AuditGroups::create([
             'id' => $groupId,
             'audit_template_id' => $request->template,
-            'name' => $request->name,
+            'name' => strtoupper($request->name),
             'jabatan' => $request->jabatan,
             'tarikh' => $request->tarikh,
             'created_by' => \Auth::user()->id,
@@ -159,7 +159,7 @@ class AuditGroupsController extends Controller
             'jabatan.required' => 'Jabatan wajib diisi',
         ]);
         $auditGroup = AuditGroups::find(decode($id));
-        $auditGroup->name = $request->name;
+        $auditGroup->name = strtoupper($request->name);
         $auditGroup->audit_template_id = $request->template;
         $auditGroup->jabatan = $request->jabatan;
         $auditGroup->tarikh = $request->tarikh;

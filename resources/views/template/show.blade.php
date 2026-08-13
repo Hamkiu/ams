@@ -4,7 +4,7 @@
         <h5 class="modal-title">
             Edit Template : {{ $auditTemplate->id }}
         </h5>
-    
+
         <a href="javascript:;" class="primaery-menu-close" data-bs-dismiss="modal">
             <i class="material-icons-outlined">close</i>
         </a>
@@ -17,42 +17,32 @@
             <div class="col-md-5">
                 <div class="form-group mb-3">
                     <label>Nama Template</label>
-                    <input type="text"
-                           name="name"
-                           class="form-control"
-                           value="{{ old('name', $auditTemplate->name) }}">
+                    <input type="text" name="name" class="form-control text-uppercase"
+                        value="{{ old('name', $auditTemplate->name) }}">
                 </div>
             </div>
 
             <div class="col-md-3">
                 <div class="form-group mb-3">
                     <label>No Rujukan</label>
-                    <input type="text"
-                           name="no_rujukan"
-                           class="form-control"
-                           value="{{ old('no_rujukan', $auditTemplate->no_rujukan) }}">
+                    <input type="text" name="no_rujukan" class="form-control text-uppercase"
+                        value="{{ old('no_rujukan', $auditTemplate->no_rujukan) }}">
                 </div>
             </div>
 
             <div class="col-md-2">
                 <div class="form-group mb-3">
                     <label>No Pindaan</label>
-                    <input type="number"
-                           name="no_pindaan"
-                           class="form-control"
-                           min="0"
-                           step="1"
-                           value="{{ old('no_pindaan', $auditTemplate->no_pindaan) }}">
+                    <input type="number" name="no_pindaan" class="form-control" min="0" step="1"
+                        value="{{ old('no_pindaan', $auditTemplate->no_pindaan) }}">
                 </div>
             </div>
 
             <div class="col-md-2">
                 <div class="form-group mb-3">
                     <label>Version</label>
-                    <input type="text"
-                           name="version"
-                           class="form-control"
-                           value="{{ old('version', $auditTemplate->version) }}">
+                    <input type="text" name="version" class="form-control"
+                        value="{{ old('version', $auditTemplate->version) }}">
                 </div>
             </div>
 
@@ -63,26 +53,23 @@
             <div class="col-md-6">
                 <div class="form-group mb-3">
                     <label>Description</label>
-                    <textarea name="description"
-                              class="form-control"
-                              rows="3">{{ old('description', $auditTemplate->description) }}</textarea>
+                    <textarea name="description" class="form-control" rows="3">{{ old('description', $auditTemplate->description) }}</textarea>
                 </div>
             </div>
 
             <div class="col-md-4">
                 <div class="form-group mb-3">
                     <label>Klausa</label>
-                    <input type="text" name="klausa" class="form-control" value="{{ old('klausa', $auditTemplate->klausa) }}">
+                    <input type="text" name="klausa" class="form-control text-uppercase"
+                        value="{{ old('klausa', $auditTemplate->klausa) }}">
                 </div>
             </div>
 
             <div class="col-md-2">
                 <div class="form-group mb-3">
                     <label>Tarikh Berkuatkuasa</label>
-                    <input type="date"
-                           name="tarikh_berkuatkuasa"
-                           class="form-control"
-                           value="{{ old('tarikh_berkuatkuasa', optional($auditTemplate->tarikh_berkuatkuasa)->format('Y-m-d')) }}">
+                    <input type="date" name="tarikh_berkuatkuasa" class="form-control"
+                        value="{{ old('tarikh_berkuatkuasa', optional($auditTemplate->tarikh_berkuatkuasa)->format('Y-m-d')) }}">
                 </div>
             </div>
 
@@ -91,12 +78,10 @@
     </div>
 
     <div class="modal-footer border-top-0">
-        <button type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Tutup
         </button>
-    
+
         <button type="submit" class="btn btn-primary">
             Simpan
         </button>

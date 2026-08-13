@@ -36,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('listattachment', [AuditController::class, 'listattachment'])->name('audit.listattachment');
             Route::get('delete/{id}', [AuditController::class, 'delete'])->name('auditfiles.delete');
             Route::post('submit', [AuditController::class, 'submit'])->name('audit.submit');
+            Route::get('summary/{id}', [AuditController::class, 'summary'])->name('audit.summary');
+            Route::post('store-conclusion', [AuditController::class, 'storeConclusion'])->name('audit.store-conclusion');
         });
     });
 

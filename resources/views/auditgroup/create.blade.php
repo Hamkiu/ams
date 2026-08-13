@@ -30,7 +30,8 @@
                     <div class="col-md-3">
                         <div class="form-group mb-3">
                             <label for="name">Nama / Nombor Group</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}">
+                            <input type="text" name="name" class="form-control text-uppercase"
+                                value="{{ old('name') }}">
                         </div>
                     </div>
                     <div class="col-md-4">

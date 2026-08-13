@@ -36,8 +36,8 @@
                     <div class="col-md-3">
                         <div class="form-group mb-3">
                             <label for="name">Nama / Nombor Group</label>
-                            <input type="text" name="name" class="form-control" value="{{ $auditGroup->name }}"
-                                {{ $isLocked ? 'disabled' : '' }}>
+                            <input type="text" name="name" class="form-control text-uppercase"
+                                value="{{ $auditGroup->name }}" {{ $isLocked ? 'disabled' : '' }}>
                         </div>
                     </div>
                     <div class="col-md-4">

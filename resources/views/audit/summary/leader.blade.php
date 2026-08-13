@@ -1,0 +1,144 @@
+{{-- RUMUSAN / KESIMPULAN --}}
+<div class="card">
+
+    <div class="card-header">
+        <h5 class="mb-0">Rumusan / Kesimpulan Ketua Kumpulan</h5>
+    </div>
+
+    <form action="{{ route('audit.store-conclusion') }}" method="POST">
+        @csrf
+
+        <input type="hidden" name="audit_group_id" value="{{ encode($auditGroup->id) }}">
+
+        <div class="card-body">
+
+            <div class="mb-4">
+
+                <label for="conclusion" class="form-label">
+                    Rumusan / Kesimpulan
+                </label>
+
+                <textarea name="conclusion" id="conclusion" class="form-control" rows="8">{{ old('conclusion', $auditGroup->conclusion?->conclusion) }}</textarea>
+
+                @error('conclusion')
+                    <div class="text-danger mt-1">
+                        {{ $message }}
+                    </div>
+                @enderror
+
+            </div>
+
+        </div>
+
+        <div class="card-footer clearfix">
+
+            <button type="submit" class="btn btn-success float-end">
+
+                @if ($auditGroup->conclusion)
+                    <i data-feather="edit" class="me-1"></i>
+                    Kemaskini
+                @else
+                    <i data-feather="save" class="me-1"></i>
+                    Simpan
+                @endif
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+{{-- ATTACHMENT RUMUSAN --}}
+@if ($auditGroup->conclusion)
+    <div class="card mt-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">Lampiran Rumusan / Kesimpulan</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                {{-- TABLE ATTACHMENT --}}
+                <div class="col-lg-9 mb-3 mb-lg-0">
+
+                    <table class="table attachment-table" id="dtattachment_conclusion_{{ $auditGroup->conclusion->id }}"
+                        data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
+                        style="width: 100%;">
+
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>File Name</th>
+                                <th>Created Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                {{-- UPLOAD PANEL --}}
+                <div class="col-lg-3">
+
+                    <div class="card border shadow-sm">
+
+                        <div class="card-header bg-light">
+                            <strong>Attachment(s)</strong>
+                        </div>
+
+                        <div class="card-body">
+
+                            <div class="mb-3">
+
+                                <input type="file" class="form-control attachment-file"
+                                    id="attachment_conclusion_{{ $auditGroup->conclusion->id }}"
+                                    data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
+                                    multiple>
+
+                                <small class="text-muted">
+                                    doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
+                                    <br>
+                                    <strong>Maximum 10 MB</strong>
+                                </small>
+
+                            </div>
+
+                            <div class="d-grid">
+
+                                <button type="button" class="btn btn-primary btn-upload"
+                                    data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
+                                    data-id="{{ $auditGroup->conclusion->id }}">
+
+                                    <i data-feather="upload" class="me-1"></i>
+                                    Add
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+@else
+    <div class="alert alert-warning mt-3">
+        Sila simpan rumusan / kesimpulan terlebih dahulu sebelum memuat naik lampiran.
+    </div>
+@endif

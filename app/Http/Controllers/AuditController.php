@@ -7,8 +7,10 @@ use App\Models\AuditGroupsMembers;
 use App\Models\AuditAnswers;
 use App\Models\AuditAnswerChecklists;
 use App\Models\AuditFiles;
+use App\Models\AuditGroupConclusion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class AuditController extends Controller
@@ -153,8 +155,32 @@ class AuditController extends Controller
 
     public function attachment(Request $request)
     {
-        $answerId = decode($request->audit_answer_id);
+        $request->validate([
+            'ref_id' => 'required',
+            'ref_type' => 'required|in:answer,conclusion',
+        ]);
 
+        $refId = decode($request->ref_id);
+        $refType = $request->ref_type;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan reference wujud
+        |--------------------------------------------------------------------------
+        */
+        if ($refType === 'answer') {
+
+            AuditAnswers::findOrFail($refId);
+        } elseif ($refType === 'conclusion') {
+
+            AuditGroupConclusion::findOrFail($refId);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan fail dipilih
+        |--------------------------------------------------------------------------
+        */
         if (!$request->hasFile('tfiles')) {
 
             return response()->json([
@@ -175,10 +201,22 @@ class AuditController extends Controller
             'svg'
         ];
 
+        /*
+        |--------------------------------------------------------------------------
+        | Upload File
+        |--------------------------------------------------------------------------
+        */
         foreach ($request->file('tfiles') as $file) {
 
-            $extension = strtolower($file->getClientOriginalExtension());
+            $extension = strtolower(
+                $file->getClientOriginalExtension()
+            );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Semak extension
+            |--------------------------------------------------------------------------
+            */
             if (!in_array($extension, $allowed)) {
 
                 return response()->json([
@@ -187,6 +225,11 @@ class AuditController extends Controller
                 ], 422);
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | Maximum 10MB
+            |--------------------------------------------------------------------------
+            */
             if ($file->getSize() > 10485760) {
 
                 return response()->json([
@@ -199,29 +242,47 @@ class AuditController extends Controller
 
             $newName = uniqid('AUDIT_');
 
+            /*
+            |--------------------------------------------------------------------------
+            | Folder berasingan mengikut reference
+            |--------------------------------------------------------------------------
+            |
+            | uploads/audit/answer/1/
+            | uploads/audit/conclusion/1/
+            |
+            */
             $path = $file->storeAs(
-                'uploads/audit/' . $answerId,
+                'uploads/audit/' . $refType . '/' . $refId,
                 $newName . '.' . $extension,
                 'public'
             );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Simpan maklumat file
+            |--------------------------------------------------------------------------
+            */
             AuditFiles::create([
-
-                'ref_id' => $answerId,
+                'ref_id' => $refId,
+                'ref_type' => $refType,
                 'file_name_ori' => $filename,
                 'file_name' => $newName,
                 'file_path' => $path,
                 'file_ext' => $extension,
-
             ]);
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Audit Trail
+        |--------------------------------------------------------------------------
+        */
         auditTrail(
             'Upload',
             'Audit',
             'Attachment',
-            $answerId,
-            'Attachment',
+            $refId,
+            ucfirst($refType) . ' Attachment',
             \Auth::user()->id
         );
 
@@ -233,29 +294,88 @@ class AuditController extends Controller
 
     public function listattachment(Request $request)
     {
-        $tfiles = AuditFiles::with('auditAnswer')
-            ->where('ref_id', decode($request->answer))
+        $request->validate([
+            'ref_id' => 'required',
+            'ref_type' => 'required|in:answer,conclusion',
+        ]);
+
+        $refId = decode($request->ref_id);
+        $refType = $request->ref_type;
+
+        $tfiles = AuditFiles::where('ref_id', $refId)
+            ->where('ref_type', $refType)
             ->get();
 
         $datatable = Datatables::of($tfiles)
             ->addIndexColumn()
+
             ->addColumn('file_name', function ($row) {
                 return $row->file_name_ori;
             })
+
             ->addColumn('created_at', function ($row) {
                 return $row->created_at->format('d/m/Y H:i:s');
             })
-            ->addColumn('tindakan', function ($row) {
+
+            ->addColumn('tindakan', function ($row) use ($refType) {
+
                 $btn = '';
-                if ($row->auditAnswer->member->isCompleted()) {
-                    $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '" class="btn btn-success btn-sm" title="Download"><i class="material-icons-outlined">download</i></a>';
-                } else {
-                    $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '" class="btn btn-success btn-sm" title="Download"><i class="material-icons-outlined">download</i></a>';
-                    $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '" class="btn btn-danger btn-sm" title="Delete"><i class="material-icons-outlined">delete</i></a>';
+
+                // Download sentiasa dibenarkan
+                $btn .= ' <a href="' . route('auditfiles.download', encode($row->id)) . '"
+                            class="btn btn-success btn-sm"
+                            title="Download">
+                            <i class="material-icons-outlined">download</i>
+                          </a>';
+
+                /*
+                |--------------------------------------------------------------------------
+                | Attachment Jawapan Auditor
+                |--------------------------------------------------------------------------
+                */
+                if ($refType === 'answer') {
+
+                    $answer = AuditAnswers::with('member')
+                        ->find($row->ref_id);
+
+                    if ($answer && !$answer->member->isCompleted()) {
+
+                        $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '"
+                                    class="btn btn-danger btn-sm"
+                                    title="Delete">
+                                    <i class="material-icons-outlined">delete</i>
+                                  </a>';
+                    }
                 }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Attachment Rumusan Ketua
+                |--------------------------------------------------------------------------
+                */ elseif ($refType === 'conclusion') {
+
+                    $conclusion = AuditGroupConclusion::find($row->ref_id);
+
+                    // Belum submit rumusan = masih boleh delete
+                    if ($conclusion && is_null($conclusion->submitted_at)) {
+
+                        $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '"
+                                    class="btn btn-danger btn-sm"
+                                    title="Delete">
+                                    <i class="material-icons-outlined">delete</i>
+                                  </a>';
+                    }
+                }
+
                 return $btn;
             })
-            ->rawColumns(['file_name', 'created_at', 'tindakan'])
+
+            ->rawColumns([
+                'file_name',
+                'created_at',
+                'tindakan'
+            ])
+
             ->make(true);
 
         return $datatable;
@@ -263,18 +383,50 @@ class AuditController extends Controller
 
     public function download($id)
     {
-        $tfiles = AuditFiles::find(decode($id));
-        $pathToFile = storage_path('app/public/' . $tfiles->file_path);
-        auditTrail('Download', 'Audit', 'Attachment', $tfiles->ref_id, $tfiles->file_name_ori, \Auth::user()->id);
-        return response()->download($pathToFile, $tfiles->file_name_ori);
+        $tfiles = AuditFiles::findOrFail(decode($id));
+
+        $pathToFile = storage_path(
+            'app/public/' . $tfiles->file_path
+        );
+
+        auditTrail(
+            'Download',
+            'Audit',
+            'Attachment',
+            $tfiles->ref_id,
+            $tfiles->file_name_ori,
+            \Auth::user()->id
+        );
+
+        return response()->download(
+            $pathToFile,
+            $tfiles->file_name_ori
+        );
     }
 
     public function delete($id)
     {
-        $tfiles = AuditFiles::find(decode($id));
+        $tfiles = AuditFiles::findOrFail(decode($id));
+
+        $refId = $tfiles->ref_id;
+        $fileName = $tfiles->file_name_ori;
+
+        // Delete physical file
+        if (Storage::disk('public')->exists($tfiles->file_path)) {
+            Storage::disk('public')->delete($tfiles->file_path);
+        }
+
+        // Delete database record
         $tfiles->delete();
 
-        auditTrail('Delete', 'Audit', 'Attachment', $tfiles->ref_id, $tfiles->file_name_ori, \Auth::user()->id);
+        auditTrail(
+            'Delete',
+            'Audit',
+            'Attachment',
+            $refId,
+            $fileName,
+            \Auth::user()->id
+        );
 
         return redirect()
             ->back()
@@ -348,5 +500,143 @@ class AuditController extends Controller
             'success' => true,
             'message' => 'Audit berjaya dihantar.'
         ]);
+    }
+
+    public function summary($id)
+    {
+        $groupId = decode($id);
+
+        // Pastikan user yang login memang ahli group ini
+        $currentMember = AuditGroupsMembers::where('audit_group_id', $groupId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        // Hanya Ketua Juruaudit dibenarkan
+        if ($currentMember->role !== 'Leader') {
+            abort(403, 'Hanya Ketua Juruaudit dibenarkan membuat rumusan audit.');
+        }
+
+        // Ambil Audit Group beserta semua data berkaitan
+        $auditGroup = AuditGroups::with([
+            'auditTemplate.items.checklists',
+            'members.pengguna',
+            'answers.auditor',
+            'answers.checklists',
+            'conclusion', // TAMBAH INI
+        ])->findOrFail($groupId);
+
+        // Rumusan hanya boleh dibuat selepas semua auditor selesai
+        if ($auditGroup->status !== 'MENUNGGU KESIMPULAN') {
+            return redirect()
+                ->route('audit')
+                ->with('error', 'Rumusan audit hanya boleh dibuat selepas semua juruaudit selesai.');
+        }
+
+        return view('audit.summary', compact(
+            'auditGroup',
+            'currentMember'
+        ));
+    }
+
+    public function storeConclusion(Request $request)
+    {
+        /*
+    |--------------------------------------------------------------------------
+    | Validation
+    |--------------------------------------------------------------------------
+    */
+        $request->validate([
+            'audit_group_id' => 'required',
+            'conclusion' => 'required|string',
+        ], [
+            'audit_group_id.required' => 'Audit group tidak ditemukan.',
+            'conclusion.required' => 'Rumusan / kesimpulan wajib diisi.',
+        ]);
+
+        $groupId = decode($request->audit_group_id);
+
+        /*
+    |--------------------------------------------------------------------------
+    | Audit Group
+    |--------------------------------------------------------------------------
+    */
+        $auditGroup = AuditGroups::findOrFail($groupId);
+
+        /*
+    |--------------------------------------------------------------------------
+    | Pastikan user adalah Ketua Juruaudit
+    |--------------------------------------------------------------------------
+    */
+        $currentMember = AuditGroupsMembers::where('audit_group_id', $groupId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        if ($currentMember->role !== 'Leader') {
+            abort(403, 'Hanya Ketua Juruaudit dibenarkan membuat rumusan audit.');
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Pastikan group berada pada status yang betul
+    |--------------------------------------------------------------------------
+    */
+        if ($auditGroup->status !== 'MENUNGGU KESIMPULAN') {
+
+            return redirect()
+                ->route('audit')
+                ->with(
+                    'error',
+                    'Rumusan audit hanya boleh dibuat selepas semua juruaudit selesai.'
+                );
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Simpan / Update Rumusan
+    |--------------------------------------------------------------------------
+    */
+        $conclusion = AuditGroupConclusion::updateOrCreate(
+            [
+                'audit_group_id' => $groupId,
+            ],
+            [
+                'conclusion' => $request->conclusion,
+                'updated_by' => auth()->id(),
+            ]
+        );
+
+        /*
+    |--------------------------------------------------------------------------
+    | Set created_by untuk record baru
+    |--------------------------------------------------------------------------
+    */
+        if ($conclusion->wasRecentlyCreated) {
+
+            $conclusion->created_by = auth()->id();
+            $conclusion->save();
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Audit Trail
+    |--------------------------------------------------------------------------
+    */
+        auditTrail(
+            $conclusion->wasRecentlyCreated ? 'Create' : 'Update',
+            'Audit',
+            'Conclusion',
+            $conclusion->id,
+            'Rumusan / Kesimpulan Ketua Juruaudit',
+            auth()->id()
+        );
+
+        /*
+    |--------------------------------------------------------------------------
+    | Redirect balik ke Summary
+    |--------------------------------------------------------------------------
+    */
+        return redirect()
+            ->route('audit.summary', encode($groupId))
+            ->with('success', 'Rumusan / kesimpulan berjaya disimpan.');
     }
 }

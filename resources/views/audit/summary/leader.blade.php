@@ -29,23 +29,23 @@
             </div>
 
         </div>
+        @if (!$readonly)
+            <div class="card-footer clearfix">
 
-        <div class="card-footer clearfix">
+                <button type="submit" class="btn btn-warning float-end">
 
-            <button type="submit" class="btn btn-success float-end">
+                    @if ($auditGroup->conclusion)
+                        <i data-feather="edit" class="me-1"></i>
+                        Kemaskini
+                    @else
+                        <i data-feather="save" class="me-1"></i>
+                        Simpan
+                    @endif
 
-                @if ($auditGroup->conclusion)
-                    <i data-feather="edit" class="me-1"></i>
-                    Kemaskini
-                @else
-                    <i data-feather="save" class="me-1"></i>
-                    Simpan
-                @endif
+                </button>
 
-            </button>
-
-        </div>
-
+            </div>
+        @endif
     </form>
 
 </div>
@@ -89,47 +89,47 @@
 
                 {{-- UPLOAD PANEL --}}
                 <div class="col-lg-3">
+                    @if (!$readonly)
+                        <div class="card border shadow-sm">
 
-                    <div class="card border shadow-sm">
+                            <div class="card-header bg-light">
+                                <strong>Attachment(s)</strong>
+                            </div>
 
-                        <div class="card-header bg-light">
-                            <strong>Attachment(s)</strong>
-                        </div>
+                            <div class="card-body">
 
-                        <div class="card-body">
+                                <div class="mb-3">
 
-                            <div class="mb-3">
+                                    <input type="file" class="form-control attachment-file"
+                                        id="attachment_conclusion_{{ $auditGroup->conclusion->id }}"
+                                        data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
+                                        multiple>
 
-                                <input type="file" class="form-control attachment-file"
-                                    id="attachment_conclusion_{{ $auditGroup->conclusion->id }}"
-                                    data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
-                                    multiple>
+                                    <small class="text-muted">
+                                        doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
+                                        <br>
+                                        <strong>Maximum 10 MB</strong>
+                                    </small>
 
-                                <small class="text-muted">
-                                    doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
-                                    <br>
-                                    <strong>Maximum 10 MB</strong>
-                                </small>
+                                </div>
+
+                                <div class="d-grid">
+
+                                    <button type="button" class="btn btn-primary btn-upload"
+                                        data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
+                                        data-id="{{ $auditGroup->conclusion->id }}">
+
+                                        <i data-feather="upload" class="me-1"></i>
+                                        Add
+
+                                    </button>
+
+                                </div>
 
                             </div>
 
-                            <div class="d-grid">
-
-                                <button type="button" class="btn btn-primary btn-upload"
-                                    data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
-                                    data-id="{{ $auditGroup->conclusion->id }}">
-
-                                    <i data-feather="upload" class="me-1"></i>
-                                    Add
-
-                                </button>
-
-                            </div>
-
                         </div>
-
-                    </div>
-
+                    @endif
                 </div>
 
             </div>
@@ -137,6 +137,21 @@
         </div>
 
     </div>
+    {{-- FINAL SUBMIT --}}
+    @if (is_null($auditGroup->conclusion->submitted_at))
+        <div class="mt-4">
+
+            <button type="button" class="btn btn-success w-100 py-2" id="btnSubmitConclusion"
+                data-id="{{ encode($auditGroup->conclusion->id) }}">
+
+                <i data-feather="send" class="me-1"></i>
+                Hantar Rumusan
+
+            </button>
+
+        </div>
+        <br>
+    @endif
 @else
     <div class="alert alert-warning mt-3">
         Sila simpan rumusan / kesimpulan terlebih dahulu sebelum memuat naik lampiran.

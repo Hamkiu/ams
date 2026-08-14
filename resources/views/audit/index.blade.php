@@ -63,13 +63,29 @@
                         <ul class="mb-3">
 
                             @foreach ($member->auditGroup->members as $groupMember)
-                                <li>
+                                <li class="mb-1">
 
                                     {{ $groupMember->pengguna->name }}
 
+                                    {{-- Role --}}
                                     @if ($groupMember->role == 'Leader')
                                         <span class="badge bg-primary ms-2">
                                             Ketua
+                                        </span>
+                                    @endif
+
+                                    {{-- Status --}}
+                                    @if ($groupMember->status == 'SELESAI')
+                                        <span class="badge bg-success ms-1">
+                                            Selesai
+                                        </span>
+                                    @elseif ($groupMember->status == 'DALAM PROSES')
+                                        <span class="badge bg-warning text-dark ms-1">
+                                            Dalam Proses
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary ms-1">
+                                            Belum Bermula
                                         </span>
                                     @endif
 
@@ -78,23 +94,45 @@
 
                         </ul>
                         @if ($member->status == 'SELESAI')
+
                             {{-- Button lihat jawapan sendiri --}}
                             <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-secondary">
                                 Lihat Audit
                             </a>
 
-                            {{-- Hanya Ketua Juruaudit dan semua auditor telah selesai --}}
-                            @if ($member->role == 'Leader' && $member->auditGroup->status == 'MENUNGGU KESIMPULAN')
-                                <a href="{{ route('audit.summary', encode($member->auditGroup->id)) }}"
-                                    class="btn btn-success">
 
-                                    <i class="material-icons-outlined align-middle" style="font-size: 18px;">
-                                        note_add
-                                    </i>
+                            {{-- Hanya Ketua Juruaudit --}}
+                            @if ($member->role == 'Leader')
+                                {{-- Belum hantar rumusan --}}
+                                @if ($member->auditGroup->status == 'MENUNGGU KESIMPULAN')
+                                    <a href="{{ route('audit.summary', encode($member->auditGroup->id)) }}"
+                                        class="btn btn-success">
 
-                                    Tambah Rumusan
+                                        <i class="material-icons-outlined align-middle" style="font-size: 18px;">
+                                            note_add
+                                        </i>
 
-                                </a>
+                                        @if ($member->auditGroup->conclusion)
+                                            Kemaskini Rumusan
+                                        @else
+                                            Tambah Rumusan
+                                        @endif
+
+                                    </a>
+
+                                    {{-- Rumusan sudah dihantar --}}
+                                @elseif ($member->auditGroup->status == 'MENUNGGU ULASAN')
+                                    <a href="{{ route('audit.summary', encode($member->auditGroup->id)) }}"
+                                        class="btn btn-info">
+
+                                        <i class="material-icons-outlined align-middle" style="font-size: 18px;">
+                                            visibility
+                                        </i>
+
+                                        Lihat Rumusan
+
+                                    </a>
+                                @endif
                             @endif
                         @else
                             <a href="{{ route('audit.show', encode($member->auditGroup->id)) }}" class="btn btn-primary">

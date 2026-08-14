@@ -526,25 +526,29 @@ class AuditController extends Controller
         ])->findOrFail($groupId);
 
         // Rumusan hanya boleh dibuat selepas semua auditor selesai
-        if ($auditGroup->status !== 'MENUNGGU KESIMPULAN') {
+        if (!in_array($auditGroup->status, [
+            'MENUNGGU KESIMPULAN',
+            'MENUNGGU ULASAN',
+        ])) {
             return redirect()
                 ->route('audit')
-                ->with('error', 'Rumusan audit hanya boleh dibuat selepas semua juruaudit selesai.');
+                ->with('error', 'Rumusan audit tidak boleh diakses.');
         }
-
+        $readonly = $auditGroup->conclusion?->submitted_at !== null;
         return view('audit.summary', compact(
             'auditGroup',
-            'currentMember'
+            'currentMember',
+            'readonly'
         ));
     }
 
     public function storeConclusion(Request $request)
     {
         /*
-    |--------------------------------------------------------------------------
-    | Validation
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
         $request->validate([
             'audit_group_id' => 'required',
             'conclusion' => 'required|string',
@@ -556,17 +560,17 @@ class AuditController extends Controller
         $groupId = decode($request->audit_group_id);
 
         /*
-    |--------------------------------------------------------------------------
-    | Audit Group
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Audit Group
+        |--------------------------------------------------------------------------
+        */
         $auditGroup = AuditGroups::findOrFail($groupId);
 
         /*
-    |--------------------------------------------------------------------------
-    | Pastikan user adalah Ketua Juruaudit
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Pastikan user adalah Ketua Juruaudit
+        |--------------------------------------------------------------------------
+        */
         $currentMember = AuditGroupsMembers::where('audit_group_id', $groupId)
             ->where('user_id', auth()->id())
             ->firstOrFail();
@@ -576,10 +580,10 @@ class AuditController extends Controller
         }
 
         /*
-    |--------------------------------------------------------------------------
-    | Pastikan group berada pada status yang betul
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Pastikan group berada pada status yang betul
+        |--------------------------------------------------------------------------
+        */
         if ($auditGroup->status !== 'MENUNGGU KESIMPULAN') {
 
             return redirect()
@@ -591,10 +595,10 @@ class AuditController extends Controller
         }
 
         /*
-    |--------------------------------------------------------------------------
-    | Simpan / Update Rumusan
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Simpan / Update Rumusan
+        |--------------------------------------------------------------------------
+        */
         $conclusion = AuditGroupConclusion::updateOrCreate(
             [
                 'audit_group_id' => $groupId,
@@ -606,10 +610,10 @@ class AuditController extends Controller
         );
 
         /*
-    |--------------------------------------------------------------------------
-    | Set created_by untuk record baru
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Set created_by untuk record baru
+        |--------------------------------------------------------------------------
+        */
         if ($conclusion->wasRecentlyCreated) {
 
             $conclusion->created_by = auth()->id();
@@ -617,10 +621,10 @@ class AuditController extends Controller
         }
 
         /*
-    |--------------------------------------------------------------------------
-    | Audit Trail
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Audit Trail
+        |--------------------------------------------------------------------------
+        */
         auditTrail(
             $conclusion->wasRecentlyCreated ? 'Create' : 'Update',
             'Audit',
@@ -631,12 +635,121 @@ class AuditController extends Controller
         );
 
         /*
-    |--------------------------------------------------------------------------
-    | Redirect balik ke Summary
-    |--------------------------------------------------------------------------
-    */
+        |--------------------------------------------------------------------------
+        | Redirect balik ke Summary
+        |--------------------------------------------------------------------------
+        */
         return redirect()
             ->route('audit.summary', encode($groupId))
             ->with('success', 'Rumusan / kesimpulan berjaya disimpan.');
+    }
+
+    public function submitConclusion(Request $request)
+    {
+        $request->validate([
+            'conclusion_id' => 'required',
+        ]);
+
+        $conclusionId = decode($request->conclusion_id);
+
+        $conclusion = AuditGroupConclusion::with('auditGroup')
+            ->findOrFail($conclusionId);
+
+        $auditGroup = $conclusion->auditGroup;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan user adalah Ketua Juruaudit
+        |--------------------------------------------------------------------------
+        */
+        $currentMember = AuditGroupsMembers::where(
+            'audit_group_id',
+            $auditGroup->id
+        )
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$currentMember || $currentMember->role !== 'Leader') {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya Ketua Juruaudit dibenarkan menghantar rumusan.'
+            ], 403);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan status group betul
+        |--------------------------------------------------------------------------
+        */
+        if ($auditGroup->status !== 'MENUNGGU KESIMPULAN') {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Status audit tidak membenarkan rumusan dihantar.'
+            ], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan belum pernah submit
+        |--------------------------------------------------------------------------
+        */
+        if ($conclusion->submitted_at) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Rumusan audit telah dihantar sebelum ini.'
+            ], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan rumusan mempunyai kandungan
+        |--------------------------------------------------------------------------
+        */
+        if (blank(strip_tags($conclusion->conclusion))) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Sila lengkapkan rumusan / kesimpulan terlebih dahulu.'
+            ], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Submit Conclusion
+        |--------------------------------------------------------------------------
+        */
+        $conclusion->submitted_at = now();
+        $conclusion->updated_by = auth()->id();
+        $conclusion->save();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Status Audit Group
+        |--------------------------------------------------------------------------
+        */
+        $auditGroup->status = 'MENUNGGU ULASAN';
+        $auditGroup->save();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Audit Trail
+        |--------------------------------------------------------------------------
+        */
+        auditTrail(
+            'Submit',
+            'Audit',
+            'Conclusion',
+            $conclusion->id,
+            'Rumusan audit dihantar oleh Ketua Juruaudit',
+            auth()->id()
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Rumusan audit berjaya dihantar.'
+        ]);
     }
 }

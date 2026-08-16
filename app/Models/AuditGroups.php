@@ -61,4 +61,8 @@ class AuditGroups extends Model
     {
         return $this->hasOne(AuditGroupConclusion::class, 'audit_group_id', 'id');
     }
+    public function review()
+    {
+        return $this->hasOne(AuditAdminReviews::class, 'audit_group_id', 'id');
+    }
 }

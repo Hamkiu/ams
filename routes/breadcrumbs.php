@@ -104,3 +104,16 @@ Breadcrumbs::for('audit.summary', function ($trail, $id) {
     $trail->parent('audit');
     $trail->push($auditGroup->name, route('audit.summary', $id));
 });
+
+// Audit Admin Review
+Breadcrumbs::for('auditadminreview', function ($trail) {
+    $trail->parent('dashboard');
+    $trail->push('Audit Admin Review', route('auditadminreview'));
+});
+
+// Audit Admin Review Create
+Breadcrumbs::for('auditadminreview.create', function ($trail, $id) {
+    $auditGroup = AuditGroups::find(decode($id));
+    $trail->parent('auditadminreview');
+    $trail->push($auditGroup->name, route('auditadminreview.create', $id));
+});

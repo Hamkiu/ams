@@ -120,8 +120,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('auditadminreview')->group(function () {
             Route::get('/', [AuditAdminReviewsController::class, 'index'])->name('auditadminreview');
-            Route::any('list/{id}', [AuditAdminReviewsController::class, 'list'])->name('auditadminreview.list');
-            Route::post('store/{id}', [AuditAdminReviewsController::class, 'store'])->name('auditadminreview.store');
+            Route::any('list', [AuditAdminReviewsController::class, 'list'])->name('auditadminreview.list');
+            Route::get('create/{id}', [AuditAdminReviewsController::class, 'create'])->name('auditadminreview.create');
+            Route::post('store', [AuditAdminReviewsController::class, 'store'])->name('auditadminreview.store');
             Route::get('edit/{id}', [AuditAdminReviewsController::class, 'edit'])->name('auditadminreview.edit');
             Route::post('update/{id}', [AuditAdminReviewsController::class, 'update'])->name('auditadminreview.update');
             Route::get('destroy/{id}', [AuditAdminReviewsController::class, 'destroy'])->name('auditadminreview.destroy');

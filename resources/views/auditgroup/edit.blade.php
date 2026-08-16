@@ -3,7 +3,12 @@
 @section('content')
     @include('include.error')
     @php
-        $isLocked = in_array($auditGroup->status, ['DALAM PROSES', 'MENUNGGU KESIMPULAN', 'SELESAI']);
+        $isLocked = in_array($auditGroup->status, [
+            'DALAM PROSES',
+            'MENUNGGU KESIMPULAN',
+            'MENUNGGU ULASAN',
+            'SELESAI',
+        ]);
     @endphp
     <form action="{{ route('auditgroup.update', encode($auditGroup->id)) }}" method="POST" id="store_audit_group_form"
         enctype="multipart/form-data">

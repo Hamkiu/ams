@@ -11,6 +11,7 @@ use App\Http\Controllers\AuditGroupsController;
 use App\Http\Controllers\AuditGroupsMembersController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\UploadImageController;
+use App\Http\Controllers\AuditAdminReviewsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -115,6 +116,15 @@ Route::middleware(['auth'])->group(function () {
             Route::get('edit/{id}', [AuditGroupsMembersController::class, 'edit'])->name('auditgroupmember.edit');
             Route::post('update/{id}', [AuditGroupsMembersController::class, 'update'])->name('auditgroupmember.update');
             Route::get('destroy/{id}', [AuditGroupsMembersController::class, 'destroy'])->name('auditgroupmember.destroy');
+        });
+
+        Route::prefix('auditadminreview')->group(function () {
+            Route::get('/', [AuditAdminReviewsController::class, 'index'])->name('auditadminreview');
+            Route::any('list/{id}', [AuditAdminReviewsController::class, 'list'])->name('auditadminreview.list');
+            Route::post('store/{id}', [AuditAdminReviewsController::class, 'store'])->name('auditadminreview.store');
+            Route::get('edit/{id}', [AuditAdminReviewsController::class, 'edit'])->name('auditadminreview.edit');
+            Route::post('update/{id}', [AuditAdminReviewsController::class, 'update'])->name('auditadminreview.update');
+            Route::get('destroy/{id}', [AuditAdminReviewsController::class, 'destroy'])->name('auditadminreview.destroy');
         });
     });
 

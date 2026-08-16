@@ -25,6 +25,7 @@ class ModelSeeder extends Seeder
             'Audit Log',
             'Tetapan Audit',
             'Audit',
+            'Ulasan Admin',
         ];
 
         $component_icon = [
@@ -33,6 +34,7 @@ class ModelSeeder extends Seeder
             'Audit Log' => 'history',
             'Tetapan Audit' => 'admin_panel_settings',
             'Audit' => 'fact_check',
+            'Ulasan Admin' => 'cases',
         ];
 
         $sub_components = [];
@@ -52,20 +54,23 @@ class ModelSeeder extends Seeder
         // Audit
         array_push($sub_components, ['sub_components_name' => 'Senarai Audit', 'sub_components' => 'audit', 'route' => 'audit', 'components_no' => 5]);
 
-        foreach($components as $component) {
+        // Ulasan Admin
+        array_push($sub_components, ['sub_components_name' => 'Senarai Group', 'sub_components' => 'auditadminreview', 'route' => 'auditadminreview', 'components_no' => 6]);
+
+        foreach ($components as $component) {
             $sub_component_no = 1;
-            foreach($sub_components as $sub_component) {
-                if($sub_component['components_no'] == $components_no) {
+            foreach ($sub_components as $sub_component) {
+                if ($sub_component['components_no'] == $components_no) {
                     Models::create([
-                        'id'=>$id,
-                        'module'=>'Administrator',
-                        'component_no'=>$components_no,
-                        'components'=>$component,
-                        'sub_components_no'=>$sub_component_no,
-                        'sub_components_name'=>$sub_component['sub_components_name'],
-                        'sub_components'=>$sub_component['sub_components'],
-                        'route'=>$sub_component['route'],
-                        'comp_icon'=>$component_icon[$component],
+                        'id' => $id,
+                        'module' => 'Administrator',
+                        'component_no' => $components_no,
+                        'components' => $component,
+                        'sub_components_no' => $sub_component_no,
+                        'sub_components_name' => $sub_component['sub_components_name'],
+                        'sub_components' => $sub_component['sub_components'],
+                        'route' => $sub_component['route'],
+                        'comp_icon' => $component_icon[$component],
                         // 'icon'=>$sub_component['icon']
                     ]);
                     $id++;

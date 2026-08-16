@@ -24,43 +24,41 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
-    
+
         view()->composer('*', function ($view) {
-    
+
             if (!Schema::hasTable('models')) {
                 return;
             }
-    
+
             $query = Models::query();
-    
+
             if (auth()->check()) {
-    
+
                 $user = auth()->user();
-    
+
                 if ($user->hasRole('Admin')) {
-    
+
                     $query->whereIn('sub_components', [
-                        
+
                         'dashboard',
                         'user',
                         'audittrail',
                         'audittemplate',
-                        'auditgroup'
+                        'auditgroup',
+                        'auditadminreview'
                     ]);
-    
                 } else if ($user->hasRole('Auditor')) {
-    
+
                     $query->whereIn('sub_components', [
                         'audit'
                     ]);
-    
                 }
-    
             }
-    
+
             $models = $query->get();
             $components = $models->groupBy('components');
-    
+
             $view->with('components', $components);
         });
     }

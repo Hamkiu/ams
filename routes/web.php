@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('publish/{id}', [AuditTemplateController::class, 'publish'])->name('audittemplate.publish');
             Route::get('archive/{id}', [AuditTemplateController::class, 'archive'])->name('audittemplate.archive');
             Route::get('preview/{id}', [AuditTemplateController::class, 'preview'])->name('audittemplate.preview');
+            Route::get('duplicate/{id}', [AuditTemplateController::class, 'duplicate'])->name('audittemplate.duplicate');
 
             Route::prefix('templateitems')->group(function () {
                 Route::get('/{id}', [AuditTemplateItemsController::class, 'index'])->name('audittemplate.items');

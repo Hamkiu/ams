@@ -7,6 +7,7 @@ use App\Models\AuditTemplateItems;
 use App\Models\AuditItemChecklist;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class AuditTemplateController extends Controller
 {
@@ -106,9 +107,11 @@ class AuditTemplateController extends Controller
                     return $btn;
                 } else if ($row->status == 'PUBLISHED') {
                     $btn .= ' <a href="' . route('audittemplate.preview', encode($row->id)) . '" class="btn btn-info btn-sm" title="Preview"><i class="material-icons-outlined">preview</i></a>';
-                    $btn .= ' <a href="' . route('audittemplate.archive', encode($row->id)) . '" class="btn btn-secondary btn-sm" title="Archive"><i class="material-icons-outlined">archive</i></a>';
+                    $btn .= ' <a href="' . route('audittemplate.duplicate', encode($row->id)) . '" class="btn btn-secondary btn-sm" title="Duplicate"><i class="material-icons-outlined">copy</i></a>';
+                    $btn .= ' <a href="' . route('audittemplate.archive', encode($row->id)) . '" class="btn btn-dark btn-sm" title="Archive"><i class="material-icons-outlined">archive</i></a>';
                 } else if ($row->status == 'ARCHIVED') {
                     $btn .= ' <a href="' . route('audittemplate.items', encode($row->id)) . '" class="btn btn-warning btn-sm" title="Items"><i class="material-icons-outlined">settings</i></a>';
+                    $btn .= ' <a href="' . route('audittemplate.duplicate', encode($row->id)) . '" class="btn btn-warning btn-sm" title="Duplicate"><i class="material-icons-outlined">copy</i></a>';
                     $btn .= ' <a href="' . route('audittemplate.publish', encode($row->id)) . '" class="btn btn-success btn-sm" title="Publish"><i class="material-icons-outlined">publish</i></a>';
                 }
                 return $btn;
@@ -201,5 +204,111 @@ class AuditTemplateController extends Controller
         ])->findOrFail(decode($id));
 
         return view('template.preview', compact('auditTemplate'));
+    }
+
+    public function duplicate($id)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            /*
+        |--------------------------------------------------------------------------
+        | AMBIL TEMPLATE ASAL
+        |--------------------------------------------------------------------------
+        */
+
+            $auditTemplate = AuditTemplate::with('items.checklists')
+                ->findOrFail(decode($id));
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | DUPLICATE TEMPLATE
+        |--------------------------------------------------------------------------
+        */
+
+            $templateId = generateId('AT', 'audit_templates', 'id');
+
+            $newTemplate = AuditTemplate::create([
+                'id' => $templateId,
+                'name' => $auditTemplate->name . ' - SALINAN',
+                'no_rujukan' => $auditTemplate->no_rujukan,
+                'klausa' => $auditTemplate->klausa,
+                'no_pindaan' => $auditTemplate->no_pindaan,
+                'version' => $auditTemplate->version,
+                'tarikh_berkuatkuasa' => $auditTemplate->tarikh_berkuatkuasa,
+                'description' => $auditTemplate->description,
+                'status' => 'DRAFT',
+                'created_by' => \Auth::user()->id,
+            ]);
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | DUPLICATE ITEM
+        |--------------------------------------------------------------------------
+        */
+
+            foreach ($auditTemplate->items as $item) {
+
+                $newItem = AuditTemplateItems::create([
+                    'audit_template_id' => $newTemplate->id,
+                    'sort' => $item->sort,
+                    'perkara' => $item->perkara,
+                    'no_klausa' => $item->no_klausa,
+                    'klausa' => $item->klausa,
+                    'keterangan' => $item->keterangan,
+                    'is_active' => $item->is_active,
+                    'created_by' => \Auth::user()->id,
+                ]);
+
+
+                /*
+            |--------------------------------------------------------------------------
+            | DUPLICATE CHECKLIST ITEM
+            |--------------------------------------------------------------------------
+            */
+
+                foreach ($item->checklists as $checklist) {
+
+                    AuditItemChecklist::create([
+                        'items_id' => $newItem->id,
+                        'name' => $checklist->name,
+                        'created_by' => \Auth::user()->id,
+                    ]);
+                }
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | AUDIT TRAIL
+        |--------------------------------------------------------------------------
+        */
+
+            auditTrail(
+                'Create',
+                'Tetapan Audit',
+                'Duplicate Audit Template',
+                $newTemplate->id,
+                $newTemplate->name,
+                \Auth::user()->id
+            );
+
+
+            DB::commit();
+
+            return redirect()
+                ->route('audittemplate')
+                ->with('success', 'Template audit berjaya diduplikasi');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()
+                ->route('audittemplate')
+                ->with('error', 'Template audit gagal diduplikasi: ' . $e->getMessage());
+        }
     }
 }

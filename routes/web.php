@@ -127,6 +127,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('edit/{id}', [AuditAdminReviewsController::class, 'edit'])->name('auditadminreview.edit');
             Route::post('update/{id}', [AuditAdminReviewsController::class, 'update'])->name('auditadminreview.update');
             Route::get('destroy/{id}', [AuditAdminReviewsController::class, 'destroy'])->name('auditadminreview.destroy');
+            Route::post('attachment', [AuditAdminReviewsController::class, 'attachment'])->name('auditadminreview.attachment');
+            Route::post('listattachment', [AuditAdminReviewsController::class, 'listattachment'])->name('auditadminreview.listattachment');
+            Route::get('delete/{id}', [AuditAdminReviewsController::class, 'delete'])->name('auditadminreview.delete');
+            Route::post('submit', [AuditAdminReviewsController::class, 'submitReview'])->name('auditadminreview.submit');
+            Route::get('print/{id}', [AuditAdminReviewsController::class, 'print'])->name('auditadminreview.print');
         });
     });
 

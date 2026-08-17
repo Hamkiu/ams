@@ -3,6 +3,9 @@
 
     <div class="card-header">
         <h5 class="mb-0">Rumusan / Kesimpulan Ketua Kumpulan</h5>
+        <small class="text-muted">
+            Sila isi rumusan / kesimpulan terlebih dahulu sebelum memuat naik lampiran.
+        </small>
     </div>
 
     <form action="{{ route('audit.store-conclusion') }}" method="POST">

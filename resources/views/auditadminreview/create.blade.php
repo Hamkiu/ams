@@ -3,6 +3,7 @@
 @section('title', 'Jawapan Audit')
 
 @section('content')
+    @include('include.error')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('template/assets/css/maklumbalas-audit.css') }}">
     @endpush
@@ -649,5 +650,246 @@
                 });
 
         }
+
+        const reviewTextarea = document.querySelector('#review');
+
+        if (reviewTextarea) {
+
+            ClassicEditor
+                .create(reviewTextarea, {
+                    ckfinder: {
+                        uploadUrl: '{{ route('image.upload', ['_token' => csrf_token()]) }}'
+                    }
+                })
+                .then(editor => {
+
+                    @if ($readonly)
+
+                        editor.enableReadOnlyMode('admin-review');
+
+                        const toolbar = editor.ui.view.toolbar.element;
+
+                        if (toolbar) {
+                            toolbar.style.display = 'none';
+                        }
+                    @endif
+
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+        }
+
+        $(document).on('click', '.btn-upload', function() {
+
+            let encodedRef = $(this).data('ref');
+            let refType = $(this).data('type');
+            let refId = $(this).data('id');
+
+            let input = $('#attachment_' + refType + '_' + refId)[0];
+
+            if (!input || input.files.length === 0) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    text: 'Sila pilih fail terlebih dahulu.'
+                });
+
+                return;
+            }
+
+            let formData = new FormData();
+
+            formData.append('ref_id', encodedRef);
+            formData.append('ref_type', refType);
+
+            $.each(input.files, function(i, file) {
+                formData.append('tfiles[]', file);
+            });
+
+            $.ajax({
+
+                url: "{{ route('auditadminreview.attachment') }}",
+
+                type: "POST",
+
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                data: formData,
+
+                processData: false,
+                contentType: false,
+
+                success: function(res) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        text: res.message
+                    }).then(() => {
+                        window.location.reload();
+                    });
+
+                },
+
+                error: function(xhr) {
+
+                    Swal.fire({
+                        icon: 'error',
+                        text: xhr.responseJSON?.message ??
+                            'Ralat semasa memuat naik lampiran.'
+                    });
+
+                }
+
+            });
+
+        });
+
+        $('.attachment-table').each(function() {
+
+            let table = $(this);
+
+            // Generic reference
+            let refId = table.data('ref');
+            let refType = table.data('type');
+
+            table.DataTable({
+
+                processing: true,
+
+                serverSide: true,
+
+                pageLength: 10,
+
+                ajax: {
+
+                    url: "{{ route('auditadminreview.listattachment') }}",
+
+                    type: "POST",
+
+                    data: function(d) {
+
+                        d._token = "{{ csrf_token() }}";
+
+                        d.ref_id = refId;
+                        d.ref_type = refType;
+
+                    }
+
+                },
+
+                columns: [
+
+                    {
+                        data: 'DT_RowIndex',
+                        className: 'text-center',
+                        width: '2%'
+                    },
+
+                    {
+                        data: 'file_name'
+                    },
+
+                    {
+                        data: 'created_at'
+                    },
+
+                    {
+                        data: 'tindakan',
+                        orderable: false,
+                        searchable: false
+                    }
+
+                ]
+
+            });
+
+        });
+
+        $(document).on('click', '#btnSubmitReview', function() {
+
+            let reviewId = $(this).data('id');
+
+            Swal.fire({
+                title: 'Selesaikan Audit?',
+                text: 'Ulasan yang telah dihantar tidak boleh dikemaskini lagi.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hantar',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                $.ajax({
+
+                    url: "{{ route('auditadminreview.submit') }}",
+
+                    type: "POST",
+
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+
+                    data: {
+                        review_id: reviewId
+                    },
+
+                    success: function(res) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berjaya!',
+                            text: res.message
+                        }).then(() => {
+
+                            window.location.href =
+                                "{{ route('auditadminreview') }}";
+
+                        });
+
+                    },
+
+                    error: function(xhr) {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Tidak Berjaya',
+                            text: xhr.responseJSON?.message ??
+                                'Ralat semasa menghantar ulasan.'
+                        });
+
+                    }
+
+                });
+
+            });
+
+        });
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berjaya!',
+                text: "{{ session('success') }}",
+                timer: 3000,
+                showConfirmButton: true
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                timer: 3000,
+                showConfirmButton: true
+            });
+        @endif
     </script>
 @endpush

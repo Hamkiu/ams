@@ -2,7 +2,39 @@
 <div class="card">
 
     <div class="card-header">
-        <h5 class="mb-0">Rumusan / Kesimpulan Ketua Audit</h5>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+            {{-- KIRI --}}
+            <div>
+                <h5 class="mb-0">
+                    Rumusan / Kesimpulan Ketua Audit
+                </h5>
+
+                <small class="text-muted">
+                    Sila isi ulasan terlebih dahulu sebelum memuat naik lampiran.
+                </small>
+            </div>
+
+
+            {{-- KANAN --}}
+            @if ($auditGroup->review?->submitted_at)
+                <div class="text-end">
+
+                    <span class="badge bg-success mb-1">
+                        SELESAI
+                    </span>
+
+                    <div class="small text-muted">
+                        Dihantar:
+                        {{ $auditGroup->review->submitted_at->format('d/m/Y H:i:s') }}
+                    </div>
+
+                </div>
+            @endif
+
+        </div>
+
     </div>
 
     <form action="{{ route('auditadminreview.store') }}" method="POST">
@@ -101,8 +133,7 @@
 
                                     <input type="file" class="form-control attachment-file"
                                         id="attachment_review_{{ $auditGroup->review->id }}"
-                                        data-ref="{{ encode($auditGroup->conclusion->id) }}" data-type="conclusion"
-                                        multiple>
+                                        data-ref="{{ encode($auditGroup->review->id) }}" data-type="review" multiple>
 
                                     <small class="text-muted">
                                         doc, docx, pdf, txt, jpeg, png, jpg, gif, svg

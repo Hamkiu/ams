@@ -121,7 +121,7 @@
                                     </a>
 
                                     {{-- Rumusan sudah dihantar --}}
-                                @elseif ($member->auditGroup->status == 'MENUNGGU ULASAN')
+                                @elseif ($member->auditGroup->status == 'MENUNGGU ULASAN' || $member->auditGroup->status == 'SELESAI')
                                     <a href="{{ route('audit.summary', encode($member->auditGroup->id)) }}"
                                         class="btn btn-info">
 

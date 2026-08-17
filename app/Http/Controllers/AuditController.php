@@ -529,6 +529,7 @@ class AuditController extends Controller
         if (!in_array($auditGroup->status, [
             'MENUNGGU KESIMPULAN',
             'MENUNGGU ULASAN',
+            'SELESAI',
         ])) {
             return redirect()
                 ->route('audit')

@@ -11,6 +11,7 @@ class AuditAnswerChecklists extends Model
     protected $fillable = [
         'audit_answer_id',
         'audit_checklist_id',
+        'status',
     ];
     public function auditAnswer()
     {

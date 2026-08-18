@@ -224,17 +224,70 @@
                                         <div class="col-lg-9 col-md-8">
 
                                             @foreach ($item->checklists as $checklist)
-                                                <div class="form-check mb-2">
+                                                @php
+                                                    $checklistAnswer = $answer?->checklists->firstWhere(
+                                                        'audit_checklist_id',
+                                                        $checklist->id,
+                                                    );
 
-                                                    <input class="form-check-input" type="checkbox" name="checklist_id[]"
-                                                        value="{{ $checklist->id }}" @checked($answer && $answer->checklists->contains('audit_checklist_id', $checklist->id))
-                                                        @disabled($readonly)>
+                                                    $status = $checklistAnswer?->status;
+                                                @endphp
 
-                                                    <label class="form-check-label">
+                                                <div class="mb-3">
 
+                                                    {{-- NAMA CHECKLIST --}}
+                                                    <div class="fw-semibold mb-2">
                                                         {{ $checklist->name }}
+                                                    </div>
 
-                                                    </label>
+                                                    {{-- PILIHAN --}}
+                                                    <div class="d-flex flex-wrap gap-3">
+
+                                                        {{-- AKUR --}}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="checklist_status[{{ $checklist->id }}]"
+                                                                id="akur_{{ $item->id }}_{{ $checklist->id }}"
+                                                                value="AKUR" @checked($status === 'AKUR')
+                                                                @disabled($readonly)>
+
+                                                            <label class="form-check-label"
+                                                                for="akur_{{ $item->id }}_{{ $checklist->id }}">
+                                                                Akur
+                                                            </label>
+                                                        </div>
+
+
+                                                        {{-- TIDAK AKUR --}}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="checklist_status[{{ $checklist->id }}]"
+                                                                id="tidak_akur_{{ $item->id }}_{{ $checklist->id }}"
+                                                                value="TIDAK AKUR" @checked($status === 'TIDAK AKUR')
+                                                                @disabled($readonly)>
+
+                                                            <label class="form-check-label"
+                                                                for="tidak_akur_{{ $item->id }}_{{ $checklist->id }}">
+                                                                Tidak Akur
+                                                            </label>
+                                                        </div>
+
+
+                                                        {{-- TIDAK BERKAITAN --}}
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="checklist_status[{{ $checklist->id }}]"
+                                                                id="tidak_berkaitan_{{ $item->id }}_{{ $checklist->id }}"
+                                                                value="TIDAK BERKAITAN" @checked($status === 'TIDAK BERKAITAN')
+                                                                @disabled($readonly)>
+
+                                                            <label class="form-check-label"
+                                                                for="tidak_berkaitan_{{ $item->id }}_{{ $checklist->id }}">
+                                                                Tidak Berkaitan
+                                                            </label>
+                                                        </div>
+
+                                                    </div>
 
                                                 </div>
                                             @endforeach

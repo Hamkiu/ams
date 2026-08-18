@@ -337,35 +337,44 @@
                                                         Checklist
                                                     </h6>
 
-
                                                     @forelse ($item->checklists as $checklist)
                                                         @php
-                                                            $isChecked = $answer->checklists
-                                                                ->where('audit_checklist_id', $checklist->id)
-                                                                ->isNotEmpty();
+                                                            $checklistAnswer = $answer->checklists->firstWhere(
+                                                                'audit_checklist_id',
+                                                                $checklist->id,
+                                                            );
+
+                                                            $status = $checklistAnswer?->status;
                                                         @endphp
 
+                                                        <div
+                                                            class="d-flex align-items-start justify-content-between gap-3 mb-2">
 
-                                                        <div class="d-flex align-items-start mb-2">
-
-                                                            <div class="me-2 flex-shrink-0">
-
-                                                                @if ($isChecked)
-                                                                    <span class="text-success fw-bold">
-                                                                        ✓
-                                                                    </span>
-                                                                @else
-                                                                    <span class="text-muted">
-                                                                        -
-                                                                    </span>
-                                                                @endif
-
+                                                            {{-- NAMA CHECKLIST --}}
+                                                            <div class="flex-grow-1 text-break" style="min-width: 0;">
+                                                                {{ $checklist->name }}
                                                             </div>
 
+                                                            {{-- STATUS --}}
+                                                            <div class="flex-shrink-0">
 
-                                                            <div class="flex-grow-1 text-break" style="min-width: 0;">
-
-                                                                {{ $checklist->name }}
+                                                                @if ($status === 'AKUR')
+                                                                    <span class="badge bg-success">
+                                                                        AKUR
+                                                                    </span>
+                                                                @elseif ($status === 'TIDAK AKUR')
+                                                                    <span class="badge bg-danger">
+                                                                        TIDAK AKUR
+                                                                    </span>
+                                                                @elseif ($status === 'TIDAK BERKAITAN')
+                                                                    <span class="badge bg-secondary">
+                                                                        TIDAK BERKAITAN
+                                                                    </span>
+                                                                @else
+                                                                    <span class="badge bg-light text-dark">
+                                                                        BELUM DIJAWAB
+                                                                    </span>
+                                                                @endif
 
                                                             </div>
 

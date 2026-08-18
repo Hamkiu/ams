@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\AuditTemplateItems;
 
 class AuditController extends Controller
 {
@@ -49,27 +50,77 @@ class AuditController extends Controller
 
     public function store(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
         $validated = $request->validate(
             [
                 'audit_group_id' => 'required|exists:audit_groups,id',
                 'audit_item_id' => 'required|exists:audit_template_items,id',
                 'penemuan_lain' => 'required|string',
                 'bukti_audit' => 'required|string',
+
+                'checklist_status' => 'required|array',
+                'checklist_status.*' => 'required|in:AKUR,TIDAK AKUR,TIDAK BERKAITAN',
             ],
             [
-                'audit_group_id.required' => 'Audit group wajib diisi',
-                'audit_group_id.exists' => 'Audit group tidak ditemukan',
-                'audit_item_id.required' => 'Audit item wajib diisi',
-                'audit_item_id.exists' => 'Audit item tidak ditemukan',
-                'penemuan_lain.required' => 'Penemuan lain wajib diisi',
-                'bukti_audit.required' => 'Bukti audit wajib diisi',
+                'audit_group_id.required' => 'Audit group wajib diisi.',
+                'audit_group_id.exists' => 'Audit group tidak ditemukan.',
+
+                'audit_item_id.required' => 'Audit item wajib diisi.',
+                'audit_item_id.exists' => 'Audit item tidak ditemukan.',
+
+                'penemuan_lain.required' => 'Penemuan lain wajib diisi.',
+                'bukti_audit.required' => 'Bukti audit wajib diisi.',
+
+                'checklist_status.required' => 'Sila pilih status bagi semua senarai semak.',
+                'checklist_status.array' => 'Format senarai semak tidak sah.',
+                'checklist_status.*.required' => 'Semua senarai semak wajib dijawab.',
+                'checklist_status.*.in' => 'Status senarai semak tidak sah.',
             ]
         );
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | DAPATKAN ITEM & CHECKLIST
+        |--------------------------------------------------------------------------
+        */
+        $item = AuditTemplateItems::with('checklists')
+            ->findOrFail($request->audit_item_id);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PASTIKAN SEMUA CHECKLIST DIJAWAB
+        |--------------------------------------------------------------------------
+        */
+        $totalChecklist = $item->checklists->count();
+
+        $totalAnswered = count($request->checklist_status ?? []);
+
+        if ($totalAnswered !== $totalChecklist) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'checklist_status' =>
+                    'Sila pilih Akur, Tidak Akur atau Tidak Berkaitan bagi semua senarai semak.'
+                ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN / UPDATE AUDIT ANSWER
+        |--------------------------------------------------------------------------
+        */
         $answer = AuditAnswers::firstOrNew([
             'audit_group_id' => $request->audit_group_id,
-            'audit_item_id'  => $request->audit_item_id,
-            'user_id'        => \Auth::user()->id,
+            'audit_item_id' => $request->audit_item_id,
+            'user_id' => \Auth::user()->id,
         ]);
 
         $isNew = !$answer->exists;
@@ -78,52 +129,83 @@ class AuditController extends Controller
             $answer->created_by = \Auth::user()->id;
         }
 
+        $answer->updated_by = \Auth::user()->id;
+
         $answer->penemuan_lain = $request->penemuan_lain;
         $answer->bukti_audit = $request->bukti_audit;
+
         $answer->save();
 
-        //status audit group members
-        $member = AuditGroupsMembers::where('audit_group_id', $request->audit_group_id)
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS AUDIT GROUP MEMBER
+        |--------------------------------------------------------------------------
+        */
+        $member = AuditGroupsMembers::where(
+            'audit_group_id',
+            $request->audit_group_id
+        )
             ->where('user_id', \Auth::user()->id)
             ->first();
+
 
         if ($member && $member->status == 'BELUM BERMULA') {
 
             $member->status = 'DALAM PROSES';
-
             $member->started_at = now();
+            $member->updated_by = \Auth::user()->id;
 
             $member->save();
         }
 
-        //status audit group
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS AUDIT GROUP
+        |--------------------------------------------------------------------------
+        */
         $group = AuditGroups::find($request->audit_group_id);
+
 
         if ($group && $group->status == 'BELUM BERMULA') {
 
             $group->status = 'DALAM PROSES';
-
             $group->started_at = now();
+            $group->updated_by = \Auth::user()->id;
 
             $group->save();
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | DELETE CHECKLIST ANSWER LAMA
+        |--------------------------------------------------------------------------
+        */
         $answer->checklists()->delete();
 
-        if ($request->filled('checklist_id')) {
 
-            foreach ($request->checklist_id as $checklistId) {
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN CHECKLIST ANSWER BARU
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->checklist_status as $checklistId => $status) {
 
-                AuditAnswerChecklists::create([
-
-                    'audit_answer_id'   => $answer->id,
-
-                    'audit_checklist_id' => $checklistId,
-
-                ]);
-            }
+            AuditAnswerChecklists::create([
+                'audit_answer_id' => $answer->id,
+                'audit_checklist_id' => $checklistId,
+                'status' => $status,
+            ]);
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | AUDIT TRAIL
+        |--------------------------------------------------------------------------
+        */
         if ($isNew) {
 
             auditTrail(
@@ -150,6 +232,12 @@ class AuditController extends Controller
             $message = 'Item (' . $answer->auditItem->perkara . ') telah berjaya dikemaskini.';
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN
+        |--------------------------------------------------------------------------
+        */
         return back()->with('success', $message);
     }
 

@@ -41,6 +41,16 @@ class AuditAnswers extends Model
     {
         return $this->hasMany(AuditAnswerChecklists::class, 'audit_answer_id', 'id');
     }
+
+    public function review()
+    {
+        return $this->hasOne(
+            AuditAnswerReviews::class,
+            'audit_answer_id',
+            'id'
+        );
+    }
+
     public function member()
     {
         return $this->belongsTo(
@@ -51,15 +61,24 @@ class AuditAnswers extends Model
     }
     public function isCompleted()
     {
-        $hasChecklist = $this->auditItem->checklists()->exists();
-
-        if ($hasChecklist) {
-
-            return !empty($this->bukti_audit)
-                && $this->checklists()->exists();
+        if (empty($this->bukti_audit)) {
+            return false;
         }
 
-        return !empty($this->bukti_audit);
+        $totalChecklist = $this->auditItem
+            ->checklists()
+            ->count();
+
+        // Item tiada checklist
+        if ($totalChecklist === 0) {
+            return true;
+        }
+
+        $totalAnswered = $this->checklists()
+            ->whereNotNull('status')
+            ->count();
+
+        return $totalAnswered === $totalChecklist;
     }
 
     public function files()

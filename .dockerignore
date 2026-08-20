@@ -17,4 +17,4 @@ bootstrap/cache/*.php
 ams_backup.sql
 *.sql
 
-docker/oracle/*.zip
+# docker/oracle/*.zip

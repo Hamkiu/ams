@@ -460,7 +460,7 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>{{ $member->pengguna->name ?? '-' }}</td>
-                            <td>{{ $member->role == 'Leader' ? 'Ketua Juruaudit' : 'Juruaudit' }}</td>
+                            <td>{{ $member->role == 'Leader' ? 'Ketua Kumpulan Audit' : 'Juruaudit Dalaman' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -499,7 +499,7 @@
                         <div class="auditor-title">
                             Juruaudit: {{ $member->pengguna->name ?? '-' }}
                             @if ($member->role == 'Leader')
-                                <span class="role-label">(Ketua Juruaudit)</span>
+                                <span class="role-label">(Ketua Kumpulan Audit)</span>
                             @endif
                         </div>
 

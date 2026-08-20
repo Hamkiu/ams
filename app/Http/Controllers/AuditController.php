@@ -594,36 +594,94 @@ class AuditController extends Controller
     {
         $groupId = decode($id);
 
-        // Pastikan user yang login memang ahli group ini
+        /*
+        |--------------------------------------------------------------------------
+        | PASTIKAN USER ADALAH AHLI GROUP
+        |--------------------------------------------------------------------------
+        */
         $currentMember = AuditGroupsMembers::where('audit_group_id', $groupId)
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        // Hanya Ketua Juruaudit dibenarkan
+
+        /*
+        |--------------------------------------------------------------------------
+        | HANYA KETUA KUMPULAN AUDIT
+        |--------------------------------------------------------------------------
+        */
         if ($currentMember->role !== 'Leader') {
-            abort(403, 'Hanya Ketua Juruaudit dibenarkan membuat rumusan audit.');
+
+            abort(
+                403,
+                'Hanya Ketua Kumpulan Audit dibenarkan membuat rumusan audit.'
+            );
         }
 
-        // Ambil Audit Group beserta semua data berkaitan
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL AUDIT GROUP
+        |--------------------------------------------------------------------------
+        */
         $auditGroup = AuditGroups::with([
+
+            // Template
             'auditTemplate.items.checklists',
+
+            // Members
             'members.pengguna',
+
+            // Jawapan asal auditor
             'answers.auditor',
             'answers.checklists',
-            'conclusion', // TAMBAH INI
+            'answers.files',
+
+            // Pindaan Ketua Juruaudit
+            'answers.review.checklists',
+
+            // Rumusan
+            'conclusion',
+
         ])->findOrFail($groupId);
 
-        // Rumusan hanya boleh dibuat selepas semua auditor selesai
+
+        /*
+        |--------------------------------------------------------------------------
+        | SEMAK STATUS AUDIT
+        |--------------------------------------------------------------------------
+        */
         if (!in_array($auditGroup->status, [
             'MENUNGGU KESIMPULAN',
             'MENUNGGU ULASAN',
             'SELESAI',
         ])) {
+
             return redirect()
                 ->route('audit')
-                ->with('error', 'Rumusan audit tidak boleh diakses.');
+                ->with(
+                    'error',
+                    'Rumusan audit tidak boleh diakses.'
+                );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | READONLY
+        |--------------------------------------------------------------------------
+        |
+        | Selepas Ketua menghantar rumusan, semua pindaan dan rumusan
+        | tidak lagi boleh dikemaskini.
+        |
+        */
         $readonly = $auditGroup->conclusion?->submitted_at !== null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        */
         return view('audit.summary', compact(
             'auditGroup',
             'currentMember',
@@ -657,7 +715,7 @@ class AuditController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Pastikan user adalah Ketua Juruaudit
+        | Pastikan user adalah Ketua Kumpulan Audit
         |--------------------------------------------------------------------------
         */
         $currentMember = AuditGroupsMembers::where('audit_group_id', $groupId)
@@ -665,7 +723,7 @@ class AuditController extends Controller
             ->firstOrFail();
 
         if ($currentMember->role !== 'Leader') {
-            abort(403, 'Hanya Ketua Juruaudit dibenarkan membuat rumusan audit.');
+            abort(403, 'Hanya Ketua Kumpulan Audit dibenarkan membuat rumusan audit.');
         }
 
         /*
@@ -679,7 +737,7 @@ class AuditController extends Controller
                 ->route('audit')
                 ->with(
                     'error',
-                    'Rumusan audit hanya boleh dibuat selepas semua juruaudit selesai.'
+                    'Rumusan audit hanya boleh dibuat selepas semua juruaudit dalaman selesai.'
                 );
         }
 
@@ -719,7 +777,7 @@ class AuditController extends Controller
             'Audit',
             'Conclusion',
             $conclusion->id,
-            'Rumusan / Kesimpulan Ketua Juruaudit',
+            'Rumusan / Kesimpulan Ketua Kumpulan Audit',
             auth()->id()
         );
 
@@ -748,7 +806,7 @@ class AuditController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Pastikan user adalah Ketua Juruaudit
+        | Pastikan user adalah Ketua Kumpulan Audit
         |--------------------------------------------------------------------------
         */
         $currentMember = AuditGroupsMembers::where(
@@ -762,7 +820,7 @@ class AuditController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Hanya Ketua Juruaudit dibenarkan menghantar rumusan.'
+                'message' => 'Hanya Ketua Kumpulan Audit dibenarkan menghantar rumusan.'
             ], 403);
         }
 
@@ -832,7 +890,7 @@ class AuditController extends Controller
             'Audit',
             'Conclusion',
             $conclusion->id,
-            'Rumusan audit dihantar oleh Ketua Juruaudit',
+            'Rumusan audit dihantar oleh Ketua Kumpulan Audit',
             auth()->id()
         );
 

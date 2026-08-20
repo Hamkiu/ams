@@ -1,5 +1,5 @@
 {{-- =========================================================
-    RUMUSAN / KESIMPULAN KETUA JURUAUDIT
+    RUMUSAN / KESIMPULAN KETUA KUMPULAN AUDIT
 ========================================================= --}}
 <div class="card mt-4">
 

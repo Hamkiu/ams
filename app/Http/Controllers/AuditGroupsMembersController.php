@@ -36,8 +36,8 @@ class AuditGroupsMembersController extends Controller
                 'role'    => 'required|in:Leader,Member',
             ],
             [
-                'user_id.required' => 'Juruaudit wajib dipilih',
-                'user_id.exists'   => 'Juruaudit tidak ditemukan',
+                'user_id.required' => 'Juruaudit Dalaman wajib dipilih',
+                'user_id.exists'   => 'Juruaudit Dalaman tidak ditemukan',
                 'role.required'    => 'Peranan wajib dipilih',
                 'role.in'          => 'Peranan tidak sah',
             ]
@@ -45,7 +45,7 @@ class AuditGroupsMembersController extends Controller
 
         $auditGroupId = decode($id);
 
-        // Semak juruaudit telah wujud dalam kumpulan
+        // Semak juruaudit dalaman telah wujud dalam kumpulan
         $existMember = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
             ->where('user_id', $request->user_id)
             ->exists();
@@ -53,11 +53,11 @@ class AuditGroupsMembersController extends Controller
         if ($existMember) {
             return response()->json([
                 'success' => false,
-                'message' => 'Juruaudit ini telah berada di dalam kumpulan.',
+                'message' => 'Juruaudit Dalaman ini telah berada di dalam kumpulan.',
             ], 422);
         }
 
-        // Semak Ketua Juruaudit hanya seorang
+        // Semak Ketua Kumpulan Audit hanya seorang
         if ($request->role == 'Leader') {
 
             $existLeader = AuditGroupsMembers::where('audit_group_id', $auditGroupId)
@@ -67,7 +67,7 @@ class AuditGroupsMembersController extends Controller
             if ($existLeader) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Ketua Juruaudit telah ditetapkan bagi kumpulan ini.',
+                    'message' => 'Ketua Kumpulan Audit telah ditetapkan bagi kumpulan ini.',
                 ], 422);
             }
         }
@@ -169,6 +169,6 @@ class AuditGroupsMembersController extends Controller
         $auditGroupMember = AuditGroupsMembers::find(decode($id));
         $auditGroupMember->delete();
         auditTrail('Delete', 'Tetapan Audit', 'Audit Group Member', $auditGroupMember->id, $auditGroupMember->name, \Auth::user()->id);
-        return redirect()->route('auditgroup.edit', encode($auditGroupMember->audit_group_id))->with('success', 'Juruaudit berjaya dihapus');
+        return redirect()->route('auditgroup.edit', encode($auditGroupMember->audit_group_id))->with('success', 'Juruaudit dalaman berjaya dihapus');
     }
 }

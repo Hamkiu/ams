@@ -12,6 +12,7 @@ use App\Http\Controllers\AuditGroupsMembersController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\UploadImageController;
 use App\Http\Controllers\AuditAdminReviewsController;
+use App\Http\Controllers\AuditAnswerReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -40,6 +41,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('summary/{id}', [AuditController::class, 'summary'])->name('audit.summary');
             Route::post('store-conclusion', [AuditController::class, 'storeConclusion'])->name('audit.store-conclusion');
             Route::post('submit-conclusion', [AuditController::class, 'submitConclusion'])->name('audit.submit-conclusion');
+
+            // answer-review
+            Route::get(
+                'answer-review/{id}/edit',
+                [AuditAnswerReviewController::class, 'edit']
+            )->name('audit.answer-review.edit');
+
+            Route::post(
+                'answer-review/store',
+                [AuditAnswerReviewController::class, 'store']
+            )->name('audit.answer-review.store');
         });
     });
 

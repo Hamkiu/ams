@@ -77,11 +77,11 @@
                                                     <option value="">-- Pilih Peranan --</option>
 
                                                     <option value="Leader" {{ $hasLeader ? 'disabled' : '' }}>
-                                                        Ketua Juruaudit
+                                                        Ketua Kumpulan Audit
                                                     </option>
 
                                                     <option value="Member">
-                                                        Ahli Juruaudit
+                                                        Juruaudit Dalaman
                                                     </option>
                                                 </select>
                                             </div>

@@ -1,8 +1,9 @@
 @extends('layouts.master')
 
-@section('title', 'Jawapan Audit')
+@section('title', 'Rumusan Audit')
 
 @section('content')
+    @include('include.error')
     @push('styles')
         <link rel="stylesheet" href="{{ asset('template/assets/css/maklumbalas-audit.css') }}">
     @endpush
@@ -17,7 +18,7 @@
                 <div>
                     <h5 class="mb-1">
                         <i data-feather="clipboard"></i>
-                        Keputusan Audit
+                        Rumusan Audit
                     </h5>
 
                     <small class="text-muted">
@@ -100,14 +101,14 @@
 
 
             {{-- =========================================================
-                SENARAI JURUAUDIT
+                SENARAI JURUAUDIT DALAMAN
             ========================================================== --}}
             <div class="card bg-light mb-4">
 
                 <div class="card-body">
 
                     <h6 class="mb-3">
-                        Juruaudit
+                        Juruaudit Dalaman
                     </h6>
 
                     <div class="row g-2">
@@ -336,35 +337,44 @@
                                                         Checklist
                                                     </h6>
 
-
                                                     @forelse ($item->checklists as $checklist)
                                                         @php
-                                                            $isChecked = $answer->checklists
-                                                                ->where('audit_checklist_id', $checklist->id)
-                                                                ->isNotEmpty();
+                                                            $checklistAnswer = $answer->checklists->firstWhere(
+                                                                'audit_checklist_id',
+                                                                $checklist->id,
+                                                            );
+
+                                                            $status = $checklistAnswer?->status;
                                                         @endphp
 
+                                                        <div
+                                                            class="d-flex align-items-start justify-content-between gap-3 mb-2">
 
-                                                        <div class="d-flex align-items-start mb-2">
-
-                                                            <div class="me-2 flex-shrink-0">
-
-                                                                @if ($isChecked)
-                                                                    <span class="text-success fw-bold">
-                                                                        ✓
-                                                                    </span>
-                                                                @else
-                                                                    <span class="text-muted">
-                                                                        -
-                                                                    </span>
-                                                                @endif
-
+                                                            {{-- NAMA CHECKLIST --}}
+                                                            <div class="flex-grow-1 text-break" style="min-width: 0;">
+                                                                {{ $checklist->name }}
                                                             </div>
 
+                                                            {{-- STATUS --}}
+                                                            <div class="flex-shrink-0">
 
-                                                            <div class="flex-grow-1 text-break" style="min-width: 0;">
-
-                                                                {{ $checklist->name }}
+                                                                @if ($status === 'AKUR')
+                                                                    <span class="badge bg-success">
+                                                                        AKUR
+                                                                    </span>
+                                                                @elseif ($status === 'TIDAK AKUR')
+                                                                    <span class="badge bg-danger">
+                                                                        TIDAK AKUR
+                                                                    </span>
+                                                                @elseif ($status === 'TIDAK BERKAITAN')
+                                                                    <span class="badge bg-secondary">
+                                                                        TIDAK BERKAITAN
+                                                                    </span>
+                                                                @else
+                                                                    <span class="badge bg-light text-dark">
+                                                                        BELUM DIJAWAB
+                                                                    </span>
+                                                                @endif
 
                                                             </div>
 
@@ -411,7 +421,7 @@
                                                         Bukti Audit
                                                     </h6>
 
-                                                    <textarea class="form-control bukti-audit-admin" id="bukti_audit_{{ $item->id }}_{{ $member->user_id }}"
+                                                    <textarea class="form-control bukti-audit-leader" id="bukti_audit_{{ $item->id }}_{{ $member->user_id }}"
                                                         rows="6">{{ $answer->bukti_audit ?? '' }}</textarea>
 
                                                 </div>
@@ -499,7 +509,7 @@
                                                 <div class="alert alert-warning mb-0">
 
                                                     Tiada jawapan direkodkan untuk
-                                                    juruaudit ini.
+                                                    juruaudit dalaman ini.
 
                                                 </div>
                                             @endif
@@ -527,7 +537,6 @@
 
         </div>
 
-
         {{-- =========================================================
             FOOTER
         ========================================================== --}}
@@ -535,7 +544,7 @@
 
             <div class="d-flex justify-content-end">
 
-                <a href="{{ route('auditgroup') }}" class="btn btn-secondary">
+                <a href="{{ route('audit') }}" class="btn btn-secondary">
 
                     <i class="material-icons-outlined align-middle" style="font-size: 18px;">
                         arrow_back
@@ -550,6 +559,8 @@
         </div>
 
     </div>
+
+    @include('audit.summary.leader')
 
 @endsection
 @push('scripts')
@@ -568,7 +579,7 @@
                      * Dalam satu item mungkin ada 2-3 auditor.
                      * Jadi cari SEMUA textarea CKEditor dalam accordion ini.
                      */
-                    this.querySelectorAll('.bukti-audit-admin')
+                    this.querySelectorAll('.bukti-audit-leader')
                         .forEach(function(textarea) {
 
                             const editorId = textarea.id;
@@ -591,7 +602,7 @@
                                     /*
                                      * Admin hanya boleh melihat.
                                      */
-                                    editor.enableReadOnlyMode('admin');
+                                    editor.enableReadOnlyMode('leader');
 
 
                                     /*
@@ -607,7 +618,7 @@
 
 
                                     console.log(
-                                        'Admin readonly editor ' +
+                                        'Leader readonly editor ' +
                                         editorId +
                                         ' loaded'
                                     );
@@ -624,5 +635,236 @@
                 });
 
             });
+
+        const conclusionTextarea = document.querySelector('#conclusion');
+
+        if (conclusionTextarea) {
+
+            ClassicEditor
+                .create(conclusionTextarea, {
+                    ckfinder: {
+                        uploadUrl: '{{ route('image.upload', ['_token' => csrf_token()]) }}'
+                    }
+                })
+                .then(editor => {
+
+                    @if ($readonly)
+
+                        editor.enableReadOnlyMode('conclusion');
+
+                        const toolbar = editor.ui.view.toolbar.element;
+
+                        if (toolbar) {
+                            toolbar.style.display = 'none';
+                        }
+                    @endif
+
+                    console.log('Conclusion editor loaded');
+
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+        }
+
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berjaya!',
+                text: "{{ session('success') }}",
+                timer: 3000,
+                showConfirmButton: true
+            });
+        @endif
+
+        $(document).on('click', '.btn-upload', function() {
+            let encodedRef = $(this).data('ref');
+            let refType = $(this).data('type');
+            let refId = $(this).data('id');
+
+            let input = $('#attachment_' + refType + '_' + refId)[0];
+
+            if (!input || input.files.length === 0) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    text: 'Sila pilih fail terlebih dahulu.'
+                });
+
+                return;
+            }
+
+            let formData = new FormData();
+
+            formData.append('ref_id', encodedRef);
+            formData.append('ref_type', refType);
+
+            $.each(input.files, function(i, file) {
+                formData.append('tfiles[]', file);
+            });
+
+            $.ajax({
+
+                url: "{{ route('audit.attachment') }}",
+
+                type: "POST",
+
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
+                data: formData,
+
+                processData: false,
+                contentType: false,
+
+                success: function(res) {
+
+                    Swal.fire({
+                        icon: 'success',
+                        text: res.message
+                    }).then(() => {
+                        window.location.reload();
+                    });
+
+                },
+
+                error: function(xhr) {
+
+                    Swal.fire({
+                        icon: 'error',
+                        text: xhr.responseJSON?.message ??
+                            'Ralat semasa memuat naik lampiran.'
+                    });
+
+                }
+
+            });
+
+        });
+
+        $('.attachment-table').each(function() {
+
+            let table = $(this);
+
+            // Generic reference
+            let refId = table.data('ref');
+            let refType = table.data('type');
+
+            table.DataTable({
+
+                processing: true,
+
+                serverSide: true,
+
+                pageLength: 10,
+
+                ajax: {
+
+                    url: "{{ route('audit.listattachment') }}",
+
+                    type: "POST",
+
+                    data: function(d) {
+
+                        d._token = "{{ csrf_token() }}";
+
+                        d.ref_id = refId;
+                        d.ref_type = refType;
+
+                    }
+
+                },
+
+                columns: [
+
+                    {
+                        data: 'DT_RowIndex',
+                        className: 'text-center',
+                        width: '2%'
+                    },
+
+                    {
+                        data: 'file_name'
+                    },
+
+                    {
+                        data: 'created_at'
+                    },
+
+                    {
+                        data: 'tindakan',
+                        orderable: false,
+                        searchable: false
+                    }
+
+                ]
+
+            });
+
+        });
+
+        $(document).on('click', '#btnSubmitConclusion', function() {
+
+            let conclusionId = $(this).data('id');
+
+            Swal.fire({
+                title: 'Hantar Rumusan?',
+                text: 'Rumusan yang telah dihantar tidak boleh dikemaskini lagi.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hantar',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+
+                if (!result.isConfirmed) {
+                    return;
+                }
+
+                $.ajax({
+
+                    url: "{{ route('audit.submit-conclusion') }}",
+
+                    type: "POST",
+
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+
+                    data: {
+                        conclusion_id: conclusionId
+                    },
+
+                    success: function(res) {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berjaya!',
+                            text: res.message
+                        }).then(() => {
+
+                            window.location.href = "{{ route('audit') }}";
+
+                        });
+
+                    },
+
+                    error: function(xhr) {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Tidak Berjaya',
+                            text: xhr.responseJSON?.message ??
+                                'Ralat semasa menghantar rumusan.'
+                        });
+
+                    }
+
+                });
+
+            });
+
+        });
     </script>
 @endpush

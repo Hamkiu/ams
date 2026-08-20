@@ -101,7 +101,7 @@
                             </a>
 
 
-                            {{-- Hanya Ketua Juruaudit --}}
+                            {{-- Hanya Ketua Kumpulan Audit --}}
                             @if ($member->role == 'Leader')
                                 {{-- Belum hantar rumusan --}}
                                 @if ($member->auditGroup->status == 'MENUNGGU KESIMPULAN')

@@ -1,101 +1,95 @@
 services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
 
-  app:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
+        container_name: ams_app
 
-    container_name: ams_app
+        working_dir: /var/www/html
 
-    working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
 
-    volumes:
-      - .:/var/www/html
+        env_file:
+            - .env.docker
 
-    env_file:
-      - .env.docker
+        depends_on:
+            - db
 
-    depends_on:
-      - db
+    nginx:
+        image: nginx:alpine
 
+        container_name: ams_nginx
 
-  nginx:
-    image: nginx:alpine
+        restart: unless-stopped
 
-    container_name: ams_nginx
+        ports:
+            - "8080:80"
 
-    restart: unless-stopped
+        volumes:
+            - .:/var/www/html
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
 
-    ports:
-      - "8080:80"
+        depends_on:
+            - app
 
-    volumes:
-      - .:/var/www/html
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    db:
+        image: mysql:8.0
 
-    depends_on:
-      - app
+        container_name: ams_db
 
+        restart: unless-stopped
 
-  db:
-    image: mysql:8.0
+        environment:
+            MYSQL_DATABASE: ams
+            MYSQL_USER: ams
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
 
-    container_name: ams_db
+        ports:
+            - "3307:3306"
 
-    restart: unless-stopped
+        volumes:
+            - ams_db_data:/var/lib/mysql
 
-    environment:
-      MYSQL_DATABASE: ams
-      MYSQL_USER: ams
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: root
+    node:
+        image: node:22
 
-    ports:
-      - "3307:3306"
+        container_name: ams_node
 
-    volumes:
-      - ams_db_data:/var/lib/mysql  
+        working_dir: /var/www/html
 
-  node:
-    image: node:22
+        volumes:
+            - .:/var/www/html
 
-    container_name: ams_node
+        ports:
+            - "5173:5173"
 
-    working_dir: /var/www/html
+        command: npm run dev -- --host 0.0.0.0
 
-    volumes:
-      - .:/var/www/html
+    queue:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
 
-    ports:
-      - "5173:5173"
+        container_name: ams_queue
 
-    command: npm run dev -- --host 0.0.0.0
+        working_dir: /var/www/html
 
-  queue:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
+        volumes:
+            - .:/var/www/html
 
-    container_name: ams_queue
+        env_file:
+            - .env.docker
 
-    working_dir: /var/www/html
+        command: php artisan queue:work --tries=1 --timeout=90
 
-    volumes:
-      - .:/var/www/html
+        restart: unless-stopped
 
-    env_file:
-      - .env.docker
-
-    command: php artisan queue:work --tries=1 --timeout=90
-
-    restart: unless-stopped
-
-    depends_on:
-      - db
-      
-
-
+        depends_on:
+            - db
 
 volumes:
-  ams_db_data:
-  node_modules:
+    ams_db_data:
+    node_modules:

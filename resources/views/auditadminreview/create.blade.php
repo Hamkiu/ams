@@ -86,12 +86,12 @@
                 <div class="col-12 col-sm-4 col-lg-2">
 
                     <label class="text-muted d-block">
-                        Bil. Juruaudit
+                        Bil. Juruaudit Dalaman
                     </label>
 
                     <div>
                         <span class="badge bg-primary">
-                            {{ $auditGroup->members->count() }} Juruaudit
+                            {{ $auditGroup->members->count() }} Juruaudit Dalaman
                         </span>
                     </div>
 
@@ -101,14 +101,14 @@
 
 
             {{-- =========================================================
-                SENARAI JURUAUDIT
+                SENARAI JURUAUDIT DALAMAN
             ========================================================== --}}
             <div class="card bg-light mb-4">
 
                 <div class="card-body">
 
                     <h6 class="mb-3">
-                        Juruaudit
+                        Juruaudit Dalaman
                     </h6>
 
                     <div class="row g-2">
@@ -142,11 +142,11 @@
 
                                                 @if ($member->role == 'Leader')
                                                     <span class="badge bg-primary">
-                                                        Ketua Juruaudit
+                                                        Ketua Kumpulan Audit
                                                     </span>
                                                 @else
                                                     <span class="badge bg-secondary">
-                                                        Ahli Juruaudit
+                                                        Juruaudit Dalaman
                                                     </span>
                                                 @endif
 
@@ -307,11 +307,11 @@
 
                                                     @if ($member->role == 'Leader')
                                                         <span class="badge bg-primary">
-                                                            Ketua Juruaudit
+                                                            Ketua Kumpulan Audit
                                                         </span>
                                                     @else
                                                         <span class="badge bg-secondary">
-                                                            Ahli Juruaudit
+                                                            Juruaudit Dalaman
                                                         </span>
                                                     @endif
 
@@ -500,7 +500,7 @@
                                                 <div class="alert alert-warning mb-0">
 
                                                     Tiada jawapan direkodkan untuk
-                                                    juruaudit ini.
+                                                    juruaudit dalaman ini.
 
                                                 </div>
                                             @endif

@@ -4,6 +4,7 @@ use App\Models\User;
 use App\Models\AuditTemplate;
 use App\Models\AuditTemplateItems;
 use App\Models\AuditGroups;
+use App\Models\AuditAnswers;
 
 // Home
 Breadcrumbs::for('dashboard', function ($trail) {
@@ -103,6 +104,13 @@ Breadcrumbs::for('audit.summary', function ($trail, $id) {
     $auditGroup = AuditGroups::find(decode($id));
     $trail->parent('audit');
     $trail->push($auditGroup->name, route('audit.summary', $id));
+});
+
+// Audit Summary Review
+Breadcrumbs::for('audit.answer-review.edit', function ($trail, $id) {
+    $answer = AuditAnswers::find(decode($id));
+    $trail->parent('audit.summary', encode($answer->audit_group_id));
+    $trail->push('Pindaan Jawapan: ' . $answer->auditItem->perkara, route('audit.answer-review.edit', $id));
 });
 
 // Audit Admin Review

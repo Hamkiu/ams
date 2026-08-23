@@ -169,10 +169,37 @@ class AuditGroupsController extends Controller
      */
     public function destroy($id)
     {
-        $auditGroup = AuditGroups::find(decode($id));
+        $auditGroup = AuditGroups::findOrFail(decode($id));
+
+        if ($auditGroup->members()->exists()) {
+            return redirect()->back()->with(
+                'error',
+                'Group tidak boleh dihapus kerana sudah mempunyai ahli audit. Sila hapuskan ahli terlebih dahulu.'
+            );
+        }
+
+        if ($auditGroup->status != 'BELUM BERMULA') {
+            return redirect()->back()->with(
+                'error',
+                'Group tidak boleh dihapus kerana proses audit telah bermula.'
+            );
+        }
+
         $auditGroup->delete();
-        auditTrail('Delete', 'Tetapan Audit', 'Audit Group', $auditGroup->id, $auditGroup->name, \Auth::user()->id);
-        return redirect()->back()->with('success', 'Group berjaya dihapus');
+
+        auditTrail(
+            'Delete',
+            'Tetapan Audit',
+            'Audit Group',
+            $auditGroup->id,
+            $auditGroup->name,
+            \Auth::user()->id
+        );
+
+        return redirect()->back()->with(
+            'success',
+            'Group berjaya dihapus.'
+        );
     }
 
     public function answers($id)

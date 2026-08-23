@@ -350,18 +350,27 @@
                                                     {{-- TELAH DIPINDA --}}
                                                     @if ($review)
                                                         <span class="badge bg-warning text-dark">
-
-                                                            <i class="material-icons-outlined
-                                                                      align-middle"
+                                                            <i class="material-icons-outlined align-middle"
                                                                 style="font-size: 14px;">
-
                                                                 edit
-
                                                             </i>
 
                                                             TELAH DIPINDA
-
                                                         </span>
+
+
+                                                        <button type="button" class="btn btn-info btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#comparisonModal{{ $answer->id }}">
+
+                                                            <i class="material-icons-outlined align-middle"
+                                                                style="font-size: 16px;">
+                                                                compare
+                                                            </i>
+
+                                                            Lihat Perbandingan
+
+                                                        </button>
                                                     @endif
 
 
@@ -759,6 +768,9 @@
                                         </div>
 
                                     </div>
+
+                                    {{-- modal comparison --}}
+                                    @include('audit.summary.comparison')
                                 @endforeach
 
                             </div>

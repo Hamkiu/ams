@@ -423,16 +423,22 @@ class AuditController extends Controller
                 */
                 if ($refType === 'answer') {
 
-                    $answer = AuditAnswers::with('member')
-                        ->find($row->ref_id);
+                    $answer = AuditAnswers::find($row->ref_id);
 
-                    if ($answer && !$answer->member->isCompleted()) {
+                    if ($answer) {
 
-                        $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '"
-                                    class="btn btn-danger btn-sm"
-                                    title="Delete">
-                                    <i class="material-icons-outlined">delete</i>
-                                  </a>';
+                        $member = AuditGroupsMembers::where('audit_group_id', $answer->audit_group_id)
+                            ->where('user_id', $answer->user_id)
+                            ->first();
+
+                        if ($member && $member->status !== 'SELESAI') {
+
+                            $btn .= ' <a href="' . route('auditfiles.delete', encode($row->id)) . '"
+                        class="btn btn-danger btn-sm"
+                        title="Delete">
+                        <i class="material-icons-outlined">delete</i>
+                      </a>';
+                        }
                     }
                 }
 

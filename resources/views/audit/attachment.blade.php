@@ -24,32 +24,33 @@
 
 
             {{-- UPLOAD PANEL --}}
-            <div class="col-lg-3">
+            @if (!$readonly)
+                <div class="col-lg-3">
 
-                <div class="card border shadow-sm">
+                    <div class="card border shadow-sm">
 
-                    <div class="card-header bg-light">
-                        <strong>Attachment(s)</strong>
-                    </div>
-
-                    <div class="card-body">
-
-                        <div class="mb-3">
-
-                            <input type="file" class="form-control attachment-file"
-                                id="attachment_answer_{{ $answer->id }}" data-ref="{{ encode($answer->id) }}"
-                                data-type="answer" multiple @disabled($readonly)>
-
-                            <small class="text-muted">
-                                doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
-                                <br>
-                                <strong>Maximum 10 MB</strong>
-                            </small>
-
+                        <div class="card-header bg-light">
+                            <strong>Attachment(s)</strong>
                         </div>
 
-                        <div class="d-grid">
-                            @if (!$readonly)
+                        <div class="card-body">
+
+                            <div class="mb-3">
+
+                                <input type="file" class="form-control attachment-file"
+                                    id="attachment_answer_{{ $answer->id }}" data-ref="{{ encode($answer->id) }}"
+                                    data-type="answer" multiple @disabled($readonly)>
+
+                                <small class="text-muted">
+                                    doc, docx, pdf, txt, jpeg, png, jpg, gif, svg
+                                    <br>
+                                    <strong>Maximum 10 MB</strong>
+                                </small>
+
+                            </div>
+
+                            <div class="d-grid">
+
                                 <button type="button" class="btn btn-primary btn-upload"
                                     data-ref="{{ encode($answer->id) }}" data-type="answer"
                                     data-id="{{ $answer->id }}">
@@ -58,14 +59,14 @@
                                     Add
 
                                 </button>
-                            @endif
+                            </div>
+
                         </div>
 
                     </div>
 
                 </div>
-
-            </div>
+            @endif
         @else
             <div class="alert alert-warning mb-0">
                 Sila simpan item audit terlebih dahulu sebelum memuat naik lampiran.

@@ -268,10 +268,24 @@
                                 ================================================== --}}
                                 @foreach ($auditGroup->members as $member)
                                     @php
+
+                                        /*
+                                |--------------------------------------------------------------------------
+                                | JAWAPAN ASAL AUDITOR
+                                |--------------------------------------------------------------------------
+                                */
                                         $answer = $auditGroup->answers
                                             ->where('audit_item_id', $item->id)
                                             ->where('user_id', $member->user_id)
                                             ->first();
+
+                                        /*
+                                |--------------------------------------------------------------------------
+                                | PINDAAN KETUA
+                                |--------------------------------------------------------------------------
+                                */
+                                        $review = $answer?->review;
+
                                     @endphp
 
 
@@ -303,8 +317,9 @@
                                                 </div>
 
 
-                                                <div class="flex-shrink-0">
+                                                <div class="d-flex flex-wrap align-items-center gap-2">
 
+                                                    {{-- ROLE --}}
                                                     @if ($member->role == 'Leader')
                                                         <span class="badge bg-primary">
                                                             Ketua Kumpulan Audit
@@ -313,6 +328,35 @@
                                                         <span class="badge bg-secondary">
                                                             Juruaudit Dalaman
                                                         </span>
+                                                    @endif
+
+
+                                                    {{-- ADA PINDAAN KETUA --}}
+                                                    @if ($review)
+                                                        <span class="badge bg-warning text-dark">
+
+                                                            <i class="material-icons-outlined align-middle"
+                                                                style="font-size: 14px;">
+                                                                edit
+                                                            </i>
+
+                                                            TELAH DIPINDA
+
+                                                        </span>
+
+
+                                                        <button type="button" class="btn btn-info btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#comparisonModal{{ $answer->id }}">
+
+                                                            <i class="material-icons-outlined align-middle"
+                                                                style="font-size: 16px;">
+                                                                compare
+                                                            </i>
+
+                                                            Lihat Perbandingan
+
+                                                        </button>
                                                     @endif
 
                                                 </div>
@@ -340,36 +384,81 @@
 
                                                     @forelse ($item->checklists as $checklist)
                                                         @php
-                                                            $isChecked = $answer->checklists
-                                                                ->where('audit_checklist_id', $checklist->id)
-                                                                ->isNotEmpty();
+
+                                                            /*
+                                                            |--------------------------------------------------------------------------
+                                                            | STATUS ASAL AUDITOR
+                                                            |--------------------------------------------------------------------------
+                                                            */
+                                                            $originalChecklist = $answer->checklists->firstWhere(
+                                                                'audit_checklist_id',
+                                                                $checklist->id,
+                                                            );
+
+                                                            /*
+                                                            |--------------------------------------------------------------------------
+                                                            | STATUS PINDAAN KETUA
+                                                            |--------------------------------------------------------------------------
+                                                            */
+                                                            $reviewChecklist = $review?->checklists?->firstWhere(
+                                                                'audit_checklist_id',
+                                                                $checklist->id,
+                                                            );
+
+                                                            /*
+                                                            |--------------------------------------------------------------------------
+                                                            | STATUS FINAL UNTUK ADMIN
+                                                            |--------------------------------------------------------------------------
+                                                            |
+                                                            | Jika Ketua pinda → guna pindaan
+                                                            | Jika tidak       → guna asal
+                                                            |
+                                                            */
+                                                            $status =
+                                                                $reviewChecklist?->status ??
+                                                                $originalChecklist?->status;
+
                                                         @endphp
 
 
-                                                        <div class="d-flex align-items-start mb-2">
+                                                        <div class="border rounded bg-white p-3 mb-2">
 
-                                                            <div class="me-2 flex-shrink-0">
+                                                            <div
+                                                                class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
 
-                                                                @if ($isChecked)
-                                                                    <span class="text-success fw-bold">
-                                                                        ✓
-                                                                    </span>
-                                                                @else
-                                                                    <span class="text-muted">
-                                                                        -
-                                                                    </span>
-                                                                @endif
+                                                                <div class="flex-grow-1 text-break" style="min-width: 0;">
 
-                                                            </div>
+                                                                    {{ $checklist->name }}
+
+                                                                </div>
 
 
-                                                            <div class="flex-grow-1 text-break" style="min-width: 0;">
+                                                                <div class="flex-shrink-0">
 
-                                                                {{ $checklist->name }}
+                                                                    @if ($status === 'AKUR')
+                                                                        <span class="badge bg-success">
+                                                                            AKUR
+                                                                        </span>
+                                                                    @elseif ($status === 'TIDAK AKUR')
+                                                                        <span class="badge bg-danger">
+                                                                            TIDAK AKUR
+                                                                        </span>
+                                                                    @elseif ($status === 'TIDAK BERKAITAN')
+                                                                        <span class="badge bg-secondary">
+                                                                            TIDAK BERKAITAN
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge bg-light text-dark">
+                                                                            BELUM DIJAWAB
+                                                                        </span>
+                                                                    @endif
+
+                                                                </div>
 
                                                             </div>
 
                                                         </div>
+
 
                                                     @empty
 
@@ -386,17 +475,24 @@
                                                 ================================== --}}
                                                 <div class="mb-4">
 
-                                                    <h6>
-                                                        Penemuan Lain
-                                                    </h6>
+                                                    <div class="d-flex align-items-center gap-2 mb-2">
 
-                                                    <div
-                                                        class="border rounded
-                                                                p-2 p-md-3
-                                                                bg-light
-                                                                text-break">
+                                                        <h6 class="mb-0">
+                                                            Penemuan Lain
+                                                        </h6>
 
-                                                        {{ $answer->penemuan_lain ?? '-' }}
+                                                        @if ($review)
+                                                            <span class="badge bg-warning text-dark">
+                                                                Versi Ketua
+                                                            </span>
+                                                        @endif
+
+                                                    </div>
+
+
+                                                    <div class="border rounded p-2 p-md-3 bg-white text-break">
+
+                                                        {{ $review?->penemuan_lain ?? ($answer->penemuan_lain ?? '-') }}
 
                                                     </div>
 
@@ -408,12 +504,23 @@
                                                 ================================== --}}
                                                 <div class="mb-4">
 
-                                                    <h6 class="mb-2">
-                                                        Bukti Audit
-                                                    </h6>
+                                                    <div class="d-flex align-items-center gap-2 mb-2">
+
+                                                        <h6 class="mb-0">
+                                                            Bukti Audit
+                                                        </h6>
+
+                                                        @if ($review)
+                                                            <span class="badge bg-warning text-dark">
+                                                                Versi Ketua
+                                                            </span>
+                                                        @endif
+
+                                                    </div>
+
 
                                                     <textarea class="form-control bukti-audit-admin" id="bukti_audit_{{ $item->id }}_{{ $member->user_id }}"
-                                                        rows="6">{{ $answer->bukti_audit ?? '' }}</textarea>
+                                                        rows="6">{{ $review?->bukti_audit ?? ($answer->bukti_audit ?? '') }}</textarea>
 
                                                 </div>
 
@@ -423,9 +530,17 @@
                                                 ================================== --}}
                                                 <div>
 
-                                                    <h6 class="mb-3">
-                                                        Lampiran
-                                                    </h6>
+                                                    <div class="d-flex align-items-center gap-2 mb-3">
+
+                                                        <h6 class="mb-0">
+                                                            Lampiran
+                                                        </h6>
+
+                                                        <span class="badge bg-light text-dark">
+                                                            Lampiran Asal Juruaudit
+                                                        </span>
+
+                                                    </div>
 
 
                                                     @forelse ($answer->files as $file)
@@ -507,7 +622,9 @@
 
                                         </div>
 
+
                                     </div>
+                                    @include('auditadminreview.partials.comparison')
                                 @endforeach
 
                             </div>

@@ -86,13 +86,38 @@ class AuditAdminReviewsController extends Controller
         |--------------------------------------------------------------------------
         */
         $auditGroup = AuditGroups::with([
+
             'auditTemplate.items.checklists',
+
             'members.pengguna',
+
             'answers.auditor',
             'answers.checklists',
             'answers.files',
-            'conclusion',
+
+            /*
+            |--------------------------------------------------------------------------
+            | PINDAAN KETUA KUMPULAN AUDIT
+            |--------------------------------------------------------------------------
+            */
+            'answers.review.checklists',
+
+            /*
+            |--------------------------------------------------------------------------
+            | RUMUSAN KETUA
+            |--------------------------------------------------------------------------
+            */
+            'conclusion.files',
+
+            /*
+            |--------------------------------------------------------------------------
+            | ULASAN ADMIN
+            |--------------------------------------------------------------------------
+            */
+            'review',
+
         ])->findOrFail($groupId);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -112,6 +137,7 @@ class AuditAdminReviewsController extends Controller
                 );
         }
 
+
         /*
         |--------------------------------------------------------------------------
         | Readonly jika audit telah selesai
@@ -119,10 +145,14 @@ class AuditAdminReviewsController extends Controller
         */
         $readonly = $auditGroup->status === 'SELESAI';
 
-        return view('auditadminreview.create', compact(
-            'auditGroup',
-            'readonly'
-        ));
+
+        return view(
+            'auditadminreview.create',
+            compact(
+                'auditGroup',
+                'readonly'
+            )
+        );
     }
 
     /**
@@ -595,13 +625,36 @@ class AuditAdminReviewsController extends Controller
         |--------------------------------------------------------------------------
         */
         $auditGroup = AuditGroups::with([
+
             'auditTemplate.items.checklists',
+
             'members.pengguna',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jawapan asal Auditor
+            |--------------------------------------------------------------------------
+            */
             'answers.auditor',
             'answers.checklists',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Pindaan Ketua Kumpulan
+            |--------------------------------------------------------------------------
+            */
+            'answers.review.checklists',
+
+            /*
+            |--------------------------------------------------------------------------
+            | Rumusan Ketua & Ulasan Admin
+            |--------------------------------------------------------------------------
+            */
             'conclusion',
             'review',
+
         ])->findOrFail($groupId);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -609,14 +662,20 @@ class AuditAdminReviewsController extends Controller
         |--------------------------------------------------------------------------
         */
         if ($auditGroup->status !== 'SELESAI') {
+
             return redirect()
                 ->route('auditadminreview')
-                ->with('error', 'Laporan hanya boleh dicetak selepas audit selesai.');
+                ->with(
+                    'error',
+                    'Laporan hanya boleh dicetak selepas audit selesai.'
+                );
         }
 
-        return view('auditadminreview.print', compact(
-            'auditGroup'
-        ));
+
+        return view(
+            'auditadminreview.print',
+            compact('auditGroup')
+        );
     }
     /**
      * Display the specified resource.

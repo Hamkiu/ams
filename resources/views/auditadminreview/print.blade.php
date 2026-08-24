@@ -472,107 +472,318 @@
             <div class="section-title">C. Hasil Audit</div>
 
             @forelse ($auditGroup->auditTemplate->items as $item)
+
+                {{-- =================================================
+                ITEM AUDIT
+            ================================================== --}}
                 <div class="item-title">
+
                     {{ $item->sort }}. {{ $item->perkara }}
+
                 </div>
 
+
+                {{-- =================================================
+                MAKLUMAT ITEM
+            ================================================== --}}
                 <table class="table-info">
+
                     <tr>
-                        <th width="20%">No. Klausa</th>
-                        <td>{{ $item->no_klausa ?? '-' }}</td>
+
+                        <th width="20%">
+                            No. Klausa
+                        </th>
+
+                        <td>
+                            {{ $item->no_klausa ?? '-' }}
+                        </td>
+
                     </tr>
+
                     <tr>
-                        <th>Klausa</th>
-                        <td>{{ $item->klausa ?? '-' }}</td>
+
+                        <th>
+                            Klausa
+                        </th>
+
+                        <td>
+                            {{ $item->klausa ?? '-' }}
+                        </td>
+
                     </tr>
+
                 </table>
 
+
+                {{-- =================================================
+                JAWAPAN SETIAP JURUAUDIT
+            ================================================== --}}
                 @foreach ($auditGroup->members as $member)
                     @php
+
+                        /*
+                    |--------------------------------------------------------------------------
+                    | JAWAPAN ASAL AUDITOR
+                    |--------------------------------------------------------------------------
+                    */
                         $answer = $auditGroup->answers
                             ->where('audit_item_id', $item->id)
                             ->where('user_id', $member->user_id)
                             ->first();
+
+                        /*
+                    |--------------------------------------------------------------------------
+                    | PINDAAN KETUA
+                    |--------------------------------------------------------------------------
+                    |
+                    | Jika null = Ketua tidak membuat pindaan.
+                    |
+                    */
+                        $answerReview = $answer?->review;
+
                     @endphp
 
+
                     <div class="answer-box">
+
+                        {{-- =================================================
+                        NAMA AUDITOR
+                    ================================================== --}}
                         <div class="auditor-title">
-                            Juruaudit: {{ $member->pengguna->name ?? '-' }}
+
+                            Juruaudit:
+                            {{ $member->pengguna->name ?? '-' }}
+
+
                             @if ($member->role == 'Leader')
-                                <span class="role-label">(Ketua Kumpulan Audit)</span>
+                                <span class="role-label">
+                                    (Ketua Kumpulan Audit)
+                                </span>
                             @endif
+
                         </div>
 
+
                         @if ($answer)
+                            {{-- =================================================
+                            CHECKLIST
+                        ================================================== --}}
                             <table class="table-checklist">
+
                                 <thead>
+
                                     <tr>
-                                        <th class="col-no">Bil.</th>
-                                        <th>Checklist</th>
-                                        <th class="col-status">Status</th>
+
+                                        <th class="col-no">
+                                            Bil.
+                                        </th>
+
+                                        <th>
+                                            Checklist
+                                        </th>
+
+                                        <th class="col-status">
+                                            Status
+                                        </th>
+
                                     </tr>
+
                                 </thead>
+
+
                                 <tbody>
+
                                     @forelse ($item->checklists as $checklist)
                                         @php
-                                            $isChecked = $answer->checklists
-                                                ->where('audit_checklist_id', $checklist->id)
-                                                ->isNotEmpty();
+
+                                            /*
+                                        |--------------------------------------------------------------------------
+                                        | CHECKLIST ASAL AUDITOR
+                                        |--------------------------------------------------------------------------
+                                        */
+                                            $originalChecklist = $answer->checklists->firstWhere(
+                                                'audit_checklist_id',
+                                                $checklist->id,
+                                            );
+
+                                            /*
+                                        |--------------------------------------------------------------------------
+                                        | CHECKLIST PINDAAN KETUA
+                                        |--------------------------------------------------------------------------
+                                        */
+                                            $reviewChecklist = $answerReview?->checklists?->firstWhere(
+                                                'audit_checklist_id',
+                                                $checklist->id,
+                                            );
+
+                                            /*
+                                        |--------------------------------------------------------------------------
+                                        | STATUS FINAL
+                                        |--------------------------------------------------------------------------
+                                        |
+                                        | Ada pindaan → gunakan pindaan Ketua.
+                                        | Tiada       → gunakan jawapan asal.
+                                        |
+                                        */
+                                            $status = $reviewChecklist?->status ?? $originalChecklist?->status;
+
                                         @endphp
+
+
                                         <tr>
-                                            <td class="text-center">{{ $loop->iteration }}</td>
-                                            <td>{{ $checklist->name }}</td>
+
                                             <td class="text-center">
-                                                @if ($isChecked)
-                                                    <span class="checkmark">✓</span>
-                                                @else
-                                                    <span class="unchecked">-</span>
-                                                @endif
+
+                                                {{ $loop->iteration }}
+
                                             </td>
+
+
+                                            <td>
+
+                                                {{ $checklist->name }}
+
+                                            </td>
+
+
+                                            <td class="text-center">
+
+                                                @if ($status === 'AKUR')
+                                                    <strong>
+                                                        AKUR
+                                                    </strong>
+                                                @elseif ($status === 'TIDAK AKUR')
+                                                    <strong>
+                                                        TIDAK AKUR
+                                                    </strong>
+                                                @elseif ($status === 'TIDAK BERKAITAN')
+                                                    <strong>
+                                                        TIDAK BERKAITAN
+                                                    </strong>
+                                                @else
+                                                    -
+                                                @endif
+
+                                            </td>
+
                                         </tr>
+
+
                                     @empty
+
                                         <tr>
-                                            <td colspan="3" class="text-center text-muted">Tiada checklist.</td>
+
+                                            <td colspan="3" class="text-center text-muted">
+
+                                                Tiada checklist.
+
+                                            </td>
+
                                         </tr>
                                     @endforelse
+
                                 </tbody>
+
                             </table>
 
+
+                            {{-- =================================================
+                            PENEMUAN LAIN + BUKTI AUDIT
+                        ================================================== --}}
                             <table class="answer-detail">
+
+                                {{-- =============================================
+                                PENEMUAN LAIN
+                            ============================================== --}}
                                 <tr>
-                                    <th width="25%">Penemuan Lain</th>
+
+                                    <th width="25%">
+                                        Penemuan Lain
+                                    </th>
+
+
                                     <td>
-                                        @if (!empty($answer->penemuan_lain))
-                                            {!! nl2br(e($answer->penemuan_lain)) !!}
+
+                                        @php
+
+                                            /*
+                                        |--------------------------------------------------------------------------
+                                        | PENEMUAN FINAL
+                                        |--------------------------------------------------------------------------
+                                        */
+                                            $penemuanFinal = $answerReview?->penemuan_lain ?? $answer->penemuan_lain;
+
+                                        @endphp
+
+
+                                        @if (!empty($penemuanFinal))
+                                            {!! nl2br(e($penemuanFinal)) !!}
                                         @else
                                             -
                                         @endif
+
                                     </td>
+
                                 </tr>
+
+
+                                {{-- =============================================
+                                BUKTI AUDIT
+                            ============================================== --}}
                                 <tr>
-                                    <th>Bukti Audit</th>
+
+                                    <th>
+                                        Bukti Audit
+                                    </th>
+
+
                                     <td>
-                                        @if (!empty($answer->bukti_audit))
+
+                                        @php
+
+                                            /*
+                                        |--------------------------------------------------------------------------
+                                        | BUKTI AUDIT FINAL
+                                        |--------------------------------------------------------------------------
+                                        */
+                                            $buktiFinal = $answerReview?->bukti_audit ?? $answer->bukti_audit;
+
+                                        @endphp
+
+
+                                        @if (!empty($buktiFinal))
                                             <div class="ckeditor-content">
-                                                {!! $answer->bukti_audit !!}
+
+                                                {!! $buktiFinal !!}
+
                                             </div>
                                         @else
                                             -
                                         @endif
+
                                     </td>
+
                                 </tr>
+
                             </table>
                         @else
                             <div class="no-answer">
+
                                 Tiada jawapan direkodkan untuk juruaudit ini.
+
                             </div>
                         @endif
+
                     </div>
                 @endforeach
 
+
                 @empty
+
                     <div class="no-answer text-center">
+
                         Tiada item audit.
+
                     </div>
                 @endforelse
             </div>
@@ -614,5 +825,7 @@
         </div>
 
     </body>
+
+
 
     </html>

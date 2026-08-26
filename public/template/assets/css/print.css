@@ -1,0 +1,1062 @@
+/* =========================================================
+ * PAGE SETUP
+ * ========================================================= */
+
+ @page {
+    size: A4 portrait;
+    margin: 12mm 15mm 12mm 15mm;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background: #fff;
+}
+
+body {
+    position: relative;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5px;
+    line-height: 1.4;
+
+    color: #111;
+    background: #fff;
+}
+
+
+/* =========================================================
+ * WATERMARK LOGO
+ * ========================================================= */
+
+.watermark-container {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 100%;
+
+    text-align: center;
+
+    /*
+     * Jangan guna negative z-index.
+     * Chrome Print boleh sembunyikan watermark jika berada
+     * di belakang body / table.
+     */
+    z-index: 1;
+
+    opacity: 0.10;
+
+    pointer-events: none;
+}
+
+.watermark-logo {
+    display: block;
+
+    width: 380px;
+    height: auto;
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+ * PAGE CONTAINER
+ * ========================================================= */
+
+.page-container {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+    max-width: 210mm;
+
+    margin: 0 auto;
+
+    /*
+     * PENTING:
+     * transparent supaya watermark di belakang masih nampak.
+     */
+    background: transparent;
+}
+
+
+/* =========================================================
+ * PRINT TOOLBAR
+ * ========================================================= */
+
+.print-toolbar {
+    position: relative;
+
+    z-index: 2;
+
+    max-width: 210mm;
+
+    margin: 20px auto;
+
+    text-align: right;
+}
+
+.btn-print {
+    display: inline-block;
+
+    padding: 8px 16px;
+
+    border: none;
+    border-radius: 4px;
+
+    background: #1a252f;
+
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-print:hover {
+    background: #2c3e50;
+}
+
+
+/* =========================================================
+ * OUTER PRINT DOCUMENT TABLE
+ * ========================================================= */
+
+.print-document-table {
+    position: relative;
+
+    z-index: 2;
+
+    width: 100%;
+
+    border: none;
+
+    border-collapse: collapse;
+
+    margin: 0;
+    padding: 0;
+
+    /*
+     * WAJIB TRANSPARENT
+     * supaya watermark boleh dilihat.
+     */
+    background: transparent;
+}
+
+.print-document-table > thead > tr > td,
+.print-document-table > tbody > tr > td {
+    border: none;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+}
+
+
+/* =========================================================
+ * REPEATING PAGE HEADER
+ * ========================================================= */
+
+.print-document-header {
+    display: table-header-group;
+}
+
+.print-document-header-cell {
+    border: none !important;
+
+    padding: 0 0 5mm 0 !important;
+
+    background: transparent !important;
+}
+
+.page-header-wrapper {
+    width: 100%;
+
+    text-align: right;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+}
+
+.page-header-box {
+    display: inline-table;
+
+    width: 70mm;
+
+    margin: 0;
+
+    border: 1px solid #777;
+
+    border-collapse: collapse;
+
+    /*
+     * Header kecil memang putih supaya jelas.
+     */
+    background: #fff;
+}
+
+.page-header-box td {
+    border: none;
+
+    padding: 0 2px;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 7px;
+
+    line-height: 1.25;
+
+    vertical-align: middle;
+
+    white-space: nowrap;
+
+    background: #fff;
+}
+
+.page-header-box .header-label {
+    width: 34mm;
+
+    text-align: left;
+}
+
+.page-header-box .header-colon {
+    width: 3mm;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    text-align: center;
+}
+
+.page-header-box .header-value {
+    text-align: left;
+}
+
+
+/* =========================================================
+ * HEADER LAPORAN
+ * ========================================================= */
+
+.report-header {
+    position: relative;
+
+    z-index: 2;
+
+    text-align: center;
+
+    margin-bottom: 18px;
+
+    padding-bottom: 12px;
+
+    border-bottom: 2px solid #222;
+
+    background: transparent;
+}
+
+.header-logo {
+    height: 65px;
+
+    width: auto;
+
+    margin-bottom: 8px;
+}
+
+.report-header h2 {
+    margin: 0;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    color: #000;
+}
+
+.report-header h3 {
+    margin: 3px 0 0;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    color: #333;
+}
+
+.report-header .reference {
+    margin-top: 4px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    color: #444;
+}
+
+
+/* =========================================================
+ * SECTIONS
+ * ========================================================= */
+
+.section {
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: 16px;
+
+    page-break-inside: auto;
+
+    break-inside: auto;
+
+    background: transparent;
+}
+
+.section-title {
+    margin: 0 0 8px;
+
+    padding: 6px 10px;
+
+    border: 1px solid #111;
+
+    background: #e9ecef;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.3px;
+}
+
+.item-title {
+    margin: 14px 0 6px;
+
+    padding: 6px 10px;
+
+    background: #f8f9fa;
+
+    border: 1px solid #ccc;
+
+    border-left: 4px solid #111;
+
+    font-size: 11px;
+
+    font-weight: bold;
+}
+
+.auditor-title {
+    margin: 8px 0 4px;
+
+    font-size: 10.5px;
+
+    font-weight: bold;
+
+    color: #222;
+}
+
+.role-label {
+    font-size: 9.5px;
+
+    color: #555;
+
+    font-weight: normal;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: #666;
+}
+
+
+/* =========================================================
+ * NORMAL CONTENT TABLE
+ * ========================================================= */
+
+.page-container table:not(.page-header-box) {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    margin-bottom: 8px;
+
+    /*
+     * Jangan letak background putih pada keseluruhan table.
+     * Watermark perlu boleh nampak melalui kawasan kosong.
+     */
+    background: transparent;
+}
+
+.page-container th,
+.page-container td {
+    border: 1px solid #222;
+
+    padding: 5px 8px;
+
+    vertical-align: top;
+
+    font-size: 10px;
+}
+
+.page-container th {
+    background: #f1f3f5;
+
+    font-weight: bold;
+
+    text-align: left;
+
+    color: #000;
+}
+
+.page-container td {
+    /*
+     * Sedikit transparent.
+     * Watermark masih boleh nampak di belakang.
+     */
+    background: rgba(255, 255, 255, 0.78);
+}
+
+.table-info th {
+    width: 25%;
+
+    background: #f8f9fa;
+}
+
+.table-checklist .col-no {
+    width: 32px;
+
+    text-align: center;
+}
+
+.table-checklist .col-status {
+    width: 65px;
+
+    text-align: center;
+}
+
+.answer-detail {
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+ * STATUS
+ * ========================================================= */
+
+.checkmark {
+    font-weight: bold;
+
+    color: #000;
+}
+
+.unchecked {
+    color: #888;
+}
+
+
+/* =========================================================
+ * CKEDITOR
+ * ========================================================= */
+
+.ckeditor-content {
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow-wrap: break-word;
+
+    word-wrap: break-word;
+
+    background: transparent;
+}
+
+.ckeditor-content p {
+    margin: 0 0 4px 0;
+}
+
+.ckeditor-content p:last-child {
+    margin-bottom: 0;
+}
+
+.ckeditor-content img {
+    display: block;
+
+    max-width: 100% !important;
+
+    height: auto !important;
+
+    margin: 4px 0;
+}
+
+.ckeditor-content figure {
+    max-width: 100% !important;
+
+    margin: 6px 0 !important;
+}
+
+.ckeditor-content figure.table {
+    width: 100%;
+
+    margin: 6px 0;
+}
+
+.ckeditor-content table {
+    width: 100% !important;
+
+    border-collapse: collapse !important;
+
+    background: transparent !important;
+}
+
+.ckeditor-content table td,
+.ckeditor-content table th {
+    border: 1px solid #333 !important;
+
+    padding: 4px 6px !important;
+}
+
+.ckeditor-content ul,
+.ckeditor-content ol {
+    padding-left: 20px;
+
+    margin: 4px 0;
+}
+
+
+/* =========================================================
+ * ANSWER BOX
+ * ========================================================= */
+
+.answer-box {
+    margin-bottom: 12px;
+
+    padding: 6px;
+
+    border: 1px solid #dedede;
+
+    /*
+     * Kekalkan sedikit transparency untuk watermark.
+     */
+    background: rgba(255, 255, 255, 0.72);
+}
+
+
+/* =========================================================
+ * CONCLUSION / REVIEW
+ * ========================================================= */
+
+.conclusion-box,
+.review-box {
+    min-height: 60px;
+
+    border: 1px solid #222;
+
+    padding: 8px 10px;
+
+    background: rgba(255, 255, 255, 0.72);
+}
+
+
+/* =========================================================
+ * NO ANSWER
+ * ========================================================= */
+
+.no-answer {
+    padding: 8px;
+
+    font-style: italic;
+
+    color: #666;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+ * FOOTER
+ * ========================================================= */
+
+.report-footer {
+    position: relative;
+
+    z-index: 2;
+
+    margin-top: 20px;
+
+    padding-top: 6px;
+
+    border-top: 1px solid #888;
+
+    font-size: 8.5px;
+
+    color: #555;
+
+    text-align: center;
+
+    page-break-inside: avoid;
+
+    break-inside: avoid;
+
+    background: transparent;
+}
+
+
+/* =========================================================
+ * PRINT
+ * ========================================================= */
+
+@media print {
+
+    /* =====================================================
+     * PAGE
+     * ===================================================== */
+
+    @page {
+        size: A4 portrait;
+
+        margin-top: 8mm;
+
+        margin-right: 15mm;
+
+        margin-bottom: 12mm;
+
+        margin-left: 15mm;
+    }
+
+
+    /* =====================================================
+     * HIDE BUTTON
+     * ===================================================== */
+
+    .no-print {
+        display: none !important;
+    }
+
+
+    /* =====================================================
+     * BODY
+     * ===================================================== */
+
+    html,
+    body {
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+        background: #fff;
+
+        -webkit-print-color-adjust: exact !important;
+
+        print-color-adjust: exact !important;
+    }
+
+
+    /* =====================================================
+     * WATERMARK
+     * ===================================================== */
+
+    .watermark-container {
+        display: block !important;
+
+        position: fixed !important;
+
+        top: 50% !important;
+
+        left: 50% !important;
+
+        transform: translate(-50%, -50%) !important;
+
+        width: 100% !important;
+
+        /*
+         * PENTING:
+         * positive z-index.
+         */
+        z-index: 1 !important;
+
+        /*
+         * Boleh ubah 0.07 - 0.10 jika mahu lebih jelas.
+         */
+        opacity: 0.10 !important;
+
+        visibility: visible !important;
+
+        pointer-events: none !important;
+    }
+
+
+    .watermark-logo {
+        display: block !important;
+
+        width: 380px !important;
+
+        max-width: 70% !important;
+
+        height: auto !important;
+
+        margin: 0 auto !important;
+
+        visibility: visible !important;
+    }
+
+
+    /* =====================================================
+     * CONTENT LAYER
+     * ===================================================== */
+
+    .print-document-table,
+    .print-document-content,
+    .page-container,
+    .section {
+        position: relative;
+
+        z-index: 2;
+
+        background: transparent !important;
+    }
+
+
+    /* =====================================================
+     * OUTER DOCUMENT TABLE
+     * ===================================================== */
+
+    .print-document-table {
+        width: 100%;
+
+        margin: 0;
+
+        padding: 0;
+
+        border: none;
+
+        border-collapse: collapse;
+
+        page-break-inside: auto;
+
+        break-inside: auto;
+
+        background: transparent !important;
+    }
+
+
+    /*
+     * HEADER ULANG SETIAP PAGE
+     */
+
+    .print-document-header {
+        display: table-header-group !important;
+    }
+
+
+    .print-document-body {
+        display: table-row-group !important;
+    }
+
+
+    .print-document-header-cell {
+        padding: 0 0 5mm 0 !important;
+
+        border: none !important;
+
+        background: transparent !important;
+    }
+
+
+    /* =====================================================
+     * HEADER BOX
+     * ===================================================== */
+
+    .page-header-wrapper {
+        width: 100%;
+
+        text-align: right;
+
+        background: transparent !important;
+    }
+
+
+    .page-header-box {
+        display: inline-table;
+
+        width: 70mm;
+
+        margin: 0;
+
+        border: 1px solid #777 !important;
+
+        border-collapse: collapse;
+
+        background: #fff !important;
+    }
+
+
+    .page-header-box td {
+        border: none !important;
+
+        padding: 0 2px !important;
+
+        font-size: 7px !important;
+
+        line-height: 1.25 !important;
+
+        vertical-align: middle;
+
+        white-space: nowrap;
+
+        background: #fff !important;
+    }
+
+
+    .page-header-box .header-label {
+        width: 34mm;
+    }
+
+
+    .page-header-box .header-colon {
+        width: 3mm;
+
+        text-align: center;
+    }
+
+
+    /* =====================================================
+     * PAGE CONTENT
+     * ===================================================== */
+
+    .print-document-content {
+        border: none !important;
+
+        padding: 0 !important;
+
+        background: transparent !important;
+    }
+
+
+    .page-container {
+        width: 100%;
+
+        max-width: none;
+
+        margin: 0;
+
+        padding: 0;
+
+        background: transparent !important;
+    }
+
+
+    /* =====================================================
+     * CONTENT TABLE BACKGROUND
+     * ===================================================== */
+
+    .page-container table:not(.page-header-box) {
+        background: transparent !important;
+    }
+
+
+    .page-container td {
+        background: rgba(255, 255, 255, 0.78);
+    }
+
+
+    /* =====================================================
+     * TABLE PAGINATION
+     * ===================================================== */
+
+    .page-container table {
+        page-break-inside: auto;
+
+        break-inside: auto;
+    }
+
+
+    .page-container tbody {
+        page-break-inside: auto;
+
+        break-inside: auto;
+    }
+
+
+    /*
+     * JIKA ROW TAK MUAT,
+     * TURUNKAN SATU ROW TERUS.
+     */
+
+    .page-container tr {
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+
+        page-break-after: auto;
+    }
+
+
+    .page-container thead {
+        display: table-header-group;
+    }
+
+
+    /* =====================================================
+     * TITLE PAGINATION
+     * ===================================================== */
+
+    .section-title,
+    .item-title,
+    .auditor-title {
+        page-break-after: avoid !important;
+
+        break-after: avoid-page !important;
+    }
+
+
+    /* =====================================================
+     * ANSWER BOX
+     * ===================================================== */
+
+    .answer-box {
+        page-break-inside: auto !important;
+
+        break-inside: auto !important;
+
+        background: rgba(255, 255, 255, 0.72) !important;
+    }
+
+
+    /* =====================================================
+     * CONCLUSION / REVIEW
+     * ===================================================== */
+
+    .conclusion-box,
+    .review-box {
+        page-break-inside: avoid;
+
+        break-inside: avoid;
+
+        background: rgba(255, 255, 255, 0.72) !important;
+    }
+
+
+    /* =====================================================
+     * IMAGES
+     * ===================================================== */
+
+    img,
+    figure {
+        page-break-inside: avoid;
+
+        break-inside: avoid;
+    }
+
+
+    /*
+     * Watermark dikecualikan daripada pagination image biasa.
+     */
+
+    .watermark-container,
+    .watermark-logo {
+        page-break-inside: auto !important;
+
+        break-inside: auto !important;
+    }
+
+
+    /* =====================================================
+     * CKEDITOR
+     * ===================================================== */
+
+    .ckeditor-content {
+        overflow: visible !important;
+
+        background: transparent !important;
+    }
+
+
+    .ckeditor-content img {
+        max-width: 100% !important;
+
+        height: auto !important;
+
+        page-break-inside: avoid;
+
+        break-inside: avoid;
+    }
+
+
+    .ckeditor-content figure {
+        max-width: 100% !important;
+
+        page-break-inside: avoid;
+
+        break-inside: avoid;
+    }
+
+
+    .ckeditor-content table {
+        page-break-inside: auto !important;
+
+        break-inside: auto !important;
+
+        background: transparent !important;
+    }
+
+
+    .ckeditor-content table tr {
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* =====================================================
+     * PRINT COLOURS
+     * ===================================================== */
+
+    .section-title,
+    .item-title,
+    th {
+        -webkit-print-color-adjust: exact !important;
+
+        print-color-adjust: exact !important;
+    }
+
+
+    /* =====================================================
+     * FOOTER
+     * ===================================================== */
+
+    .report-footer {
+        page-break-inside: avoid;
+
+        break-inside: avoid;
+
+        background: transparent !important;
+    }
+
+}

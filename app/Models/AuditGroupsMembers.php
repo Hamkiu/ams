@@ -8,7 +8,7 @@ class AuditGroupsMembers extends Model
 {
     protected $table = 'audit_groups_members';
     protected $primaryKey = 'id';
-    protected $fillable = ['audit_group_id', 'user_id', 'jabatan', 'sort', 'role', 'remarks', 'status', 'started_at', 'completed_at', 'created_by', 'updated_by'];
+    protected $fillable = ['audit_group_id', 'user_id', 'jabatan', 'sort', 'role', 'remarks', 'status', 'auditi', 'nombor_auditi', 'started_at', 'completed_at', 'created_by', 'updated_by'];
     public $timestamps = true;
     protected $casts = [
         'started_at' => 'datetime',

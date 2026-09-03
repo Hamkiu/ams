@@ -41,6 +41,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('summary/{id}', [AuditController::class, 'summary'])->name('audit.summary');
             Route::post('store-conclusion', [AuditController::class, 'storeConclusion'])->name('audit.store-conclusion');
             Route::post('submit-conclusion', [AuditController::class, 'submitConclusion'])->name('audit.submit-conclusion');
+            Route::post('store-auditi', [AuditController::class, 'storeAuditi'])->name('audit.store-auditi');
+
 
             // answer-review
             Route::get(

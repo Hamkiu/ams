@@ -137,6 +137,9 @@
                                             <small class="text-muted d-block text-break">
                                                 {{ $member->jabatan ?? '-' }}
                                             </small>
+                                            <small class="text-muted d-block text-break">
+                                                Auditi: {{ $member->auditi ?? '-' }}
+                                            </small>
 
                                             <div class="mt-2">
 

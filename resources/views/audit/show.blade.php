@@ -80,6 +80,15 @@
                                             : {{ $member->started_at?->format('d-m-Y H:i') ?? '-' }}
                                         </td>
                                     </tr>
+
+                                    <tr>
+                                        <td class="fw-semibold">
+                                            Nama Auditi
+                                        </td>
+                                        <td>
+                                            : {{ $member->auditi ?? '-' }}
+                                        </td>
+                                    </tr>
                                 @endif
 
                             </tbody>

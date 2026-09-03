@@ -29,6 +29,83 @@ class AuditController extends Controller
         return view('audit.index', compact('groups'));
     }
 
+    public function storeAuditi(Request $request)
+    {
+        /*
+    |--------------------------------------------------------------------------
+    | VALIDATION
+    |--------------------------------------------------------------------------
+    */
+
+        $request->validate([
+            'member_id'   => 'required',
+            'no_pekerja'  => 'required|string|max:50',
+            'auditi'      => 'required|string|max:255',
+        ]);
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | DECODE MEMBER ID
+    |--------------------------------------------------------------------------
+    */
+
+        $memberId = decode($request->member_id);
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | DAPATKAN MEMBER
+    |--------------------------------------------------------------------------
+    |
+    | Pastikan member tersebut:
+    | 1. Wujud
+    | 2. Adalah user yang sedang login
+    |
+    */
+
+        $member = AuditGroupsMembers::where('id', $memberId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | PASTIKAN AUDIT BELUM BERMULA
+    |--------------------------------------------------------------------------
+    */
+
+        if ($member->status !== 'BELUM BERMULA') {
+
+            return redirect()
+                ->route('audit.index')
+                ->with('error', 'Auditi tidak boleh ditukar kerana audit telah bermula.');
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | SIMPAN AUDITI
+    |--------------------------------------------------------------------------
+    */
+
+        $member->nombor_auditi = $request->no_pekerja;
+        $member->auditi = $request->auditi;
+
+        $member->save();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | REDIRECT
+    |--------------------------------------------------------------------------
+    */
+
+        return redirect()
+            ->route('audit')
+            ->with('success', 'Maklumat Auditi berjaya disimpan.');
+    }
+
     public function show($id)
     {
         $group = AuditGroups::with([

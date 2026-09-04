@@ -261,6 +261,22 @@
 
                                 </tr>
 
+                                @if ($auditGroup->started_at)
+                                    <tr>
+
+                                        <th>
+                                            Tarikh Mula
+                                        </th>
+
+                                        <td>
+
+                                            {{ \Carbon\Carbon::parse($auditGroup->started_at)->format('d/m/Y h:i A') }}
+
+                                        </td>
+
+                                    </tr>
+                                @endif
+
 
                                 @if ($auditGroup->completed_at)
                                     <tr>
@@ -308,11 +324,15 @@
                                         </th>
 
                                         <th>
-                                            Nama
+                                            Nama Auditor
                                         </th>
 
                                         <th width="140">
                                             Peranan
+                                        </th>
+
+                                        <th>
+                                            Auditi
                                         </th>
 
                                     </tr>
@@ -342,6 +362,12 @@
                                             <td>
 
                                                 {{ $member->role == 'Leader' ? 'Ketua Kumpulan Audit' : 'Juruaudit Dalaman' }}
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ $member->auditi ?? '-' }}
 
                                             </td>
 

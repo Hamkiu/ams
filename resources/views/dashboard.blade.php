@@ -1,790 +1,974 @@
 @extends('layouts.master')
 @section('title', 'Dashboard')
 @section('content')
-<div class="row">
-    <div class="col-xxl-8 d-flex align-items-stretch">
-      <div class="card w-100 overflow-hidden rounded-4">
-        <div class="card-body position-relative p-4">
-          <div class="row">
-            <div class="col-12 col-sm-7">
-              <div class="d-flex align-items-center gap-3 mb-5">
-                <img src="assets/images/avatars/01.png" class="rounded-circle bg-grd-info p-1"  width="60" height="60" alt="user">
-                <div class="">
-                  <p class="mb-0 fw-semibold">Welcome back</p>
-                  <h4 class="fw-semibold mb-0 fs-4 mb-0">{{ \Auth::user()->name }}!</h4>
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-5">
-                <div class="">
-                  <h4 class="mb-1 fw-semibold d-flex align-content-center">$65.4K<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
-                  </h4>
-                  <p class="mb-3">Today's Sales</p>
-                  <div class="progress mb-0" style="height:5px;">
-                    <div class="progress-bar bg-grd-success" role="progressbar" style="width: 60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                <div class="vr"></div>
-                <div class="">
-                  <h4 class="mb-1 fw-semibold d-flex align-content-center">78.4%<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
-                  </h4>
-                  <p class="mb-3">Growth Rate</p>
-                  <div class="progress mb-0" style="height:5px;">
-                    <div class="progress-bar bg-grd-danger" role="progressbar" style="width: 60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-sm-5">
-              <div class="welcome-back-img pt-4">
-                 <img src="assets/images/gallery/welcome-back-3.png" height="180" alt="">
-              </div>
-            </div>
-          </div><!--end row-->
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-2 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div class="d-flex align-items-start justify-content-between mb-1">
-            <div class="">
-              <h5 class="mb-0">42.5K</h5>
-              <p class="mb-0">Active Users</p>
-            </div>
-            <div class="dropdown">
-              <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                data-bs-toggle="dropdown">
-                <span class="material-icons-outlined fs-5">more_vert</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="chart-container2">
-            <div id="chart1"></div>
-          </div>
-          <div class="text-center">
-            <p class="mb-0 font-12">24K users increased from last month</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-2 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div class="d-flex align-items-start justify-content-between mb-3">
-            <div class="">
-              <h5 class="mb-0">97.4K</h5>
-              <p class="mb-0">Total Users</p>
-            </div>
-            <div class="dropdown">
-              <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                data-bs-toggle="dropdown">
-                <span class="material-icons-outlined fs-5">more_vert</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="chart-container2">
-            <div id="chart2"></div>
-          </div>
-          <div class="text-center">
-            <p class="mb-0 font-12"><span class="text-success me-1">12.5%</span> from last month</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div class="text-center">
-            <h6 class="mb-0">Monthly Revenue</h6>
-          </div>
-          <div class="mt-4" id="chart5"></div>
-          <p>Avrage monthly sale for every author</p>
-          <div class="d-flex align-items-center gap-3 mt-4">
-            <div class="">
-              <h1 class="mb-0 text-primary">68.9%</h1>
-            </div>
-            <div class="d-flex align-items-center align-self-end">
-              <p class="mb-0 text-success">34.5%</p>
-              <span class="material-icons-outlined text-success">expand_less</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div class="d-flex flex-column gap-3">
-            <div class="d-flex align-items-start justify-content-between">
-              <div class="">
-                <h5 class="mb-0">Device Type</h5>
-              </div>
-              <div class="dropdown">
-                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                  data-bs-toggle="dropdown">
-                  <span class="material-icons-outlined fs-5">more_vert</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                  <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-                </ul>
-              </div>
-            </div>
-            <div class="position-relative">
-              <div class="piechart-legend">
-                <h2 class="mb-1">68%</h2>
-                <h6 class="mb-0">Total Views</h6>
-              </div>
-              <div id="chart6"></div>
-            </div>
-            <div class="d-flex flex-column gap-3">
-              <div class="d-flex align-items-center justify-content-between">
-                <p class="mb-0 d-flex align-items-center gap-2 w-25"><span
-                    class="material-icons-outlined fs-6 text-primary">desktop_windows</span>Desktop</p>
-                <div class="">
-                  <p class="mb-0">35%</p>
-                </div>
-              </div>
-              <div class="d-flex align-items-center justify-content-between">
-                <p class="mb-0 d-flex align-items-center gap-2 w-25"><span
-                    class="material-icons-outlined fs-6 text-danger">tablet_mac</span>Tablet</p>
-                <div class="">
-                  <p class="mb-0">48%</p>
-                </div>
-              </div>
-              <div class="d-flex align-items-center justify-content-between">
-                <p class="mb-0 d-flex align-items-center gap-2 w-25"><span
-                    class="material-icons-outlined fs-6 text-success">phone_android</span>Mobile</p>
-                <div class="">
-                  <p class="mb-0">27%</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xxl-4">
-      <div class="row">
-        <div class="col-md-6 d-flex align-items-stretch">
-          <div class="card w-100 rounded-4">
-            <div class="card-body">
-              <div class="d-flex align-items-start justify-content-between mb-1">
-                <div class="">
-                  <h5 class="mb-0">82.7K</h5>
-                  <p class="mb-0">Total Clicks</p>
-                </div>
-                <div class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                    data-bs-toggle="dropdown">
-                    <span class="material-icons-outlined fs-5">more_vert</span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="chart-container2">
-                <div id="chart3"></div>
-              </div>
-              <div class="text-center">
-                <p class="mb-0 font-12"><span class="text-success me-1">12.5%</span> from last month</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 d-flex align-items-stretch">
-          <div class="card w-100 rounded-4">
-            <div class="card-body">
-              <div class="d-flex align-items-start justify-content-between mb-1">
-                <div class="">
-                  <h5 class="mb-0">68.4K</h5>
-                  <p class="mb-0">Total Views</p>
-                </div>
-                <div class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                    data-bs-toggle="dropdown">
-                    <span class="material-icons-outlined fs-5">more_vert</span>
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="chart-container2">
-                <div id="chart4"></div>
-              </div>
-              <div class="text-center">
-                <p class="mb-0 font-12">35K users increased from last month</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card rounded-4">
-        <div class="card-body">
-          <div class="d-flex align-items-center gap-3 mb-2">
-            <div class="">
-              <h3 class="mb-0">85,247</h3>
-            </div>
-            <div class="flex-grow-0">
-              <p
-                class="dash-lable d-flex align-items-center gap-1 rounded mb-0 bg-success text-success bg-opacity-10">
-                <span class="material-icons-outlined fs-6">arrow_downward</span>23.7%
-              </p>
-            </div>
-          </div>
-          <p class="mb-0">Total Accounts</p>
-          <div id="chart7"></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div class="d-flex align-items-start justify-content-between mb-3">
-            <div class="">
-              <h6 class="mb-0 fw-bold">Campaign Stats</h6>
-            </div>
-            <div class="dropdown">
-              <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="material-icons-outlined fs-5">more_vert</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-              </ul>
-            </div>
-           </div>
+    <div class="row">
 
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-primary">
-                      <span class="material-icons-outlined text-white">calendar_today</span>
+        {{-- =========================================================
+      PAGE HEADER
+  ========================================================== --}}
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+
+            <div>
+                <h4 class="mb-1 fw-bold">
+                    Dashboard Audit
+                </h4>
+
+                <p class="mb-0 text-muted">
+                    Ringkasan prestasi dan status pelaksanaan audit
+                </p>
+            </div>
+
+            {{-- FILTER TAHUN --}}
+            <div>
+                <form method="GET" action="{{ route('dashboard') }}">
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <label for="tahun" class="fw-semibold mb-0">
+                            Tahun
+                        </label>
+
+                        <select name="tahun" id="tahun" class="form-select" onchange="this.form.submit()"
+                            style="min-width: 130px;">
+
+                            @foreach ($senaraiTahun as $item)
+                                <option value="{{ $item }}" {{ $tahun == $item ? 'selected' : '' }}>
+                                    {{ $item }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
                     </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Campaigns</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">54</p>
-                      <p class="mb-0 fw-bold text-success">28%</p>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-success">
-                      <span class="material-icons-outlined text-white">email</span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Emailed</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">245</p>
-                      <p class="mb-0 fw-bold text-danger">15%</p>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-branding">
-                      <span class="material-icons-outlined text-white">open_in_new</span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Opened</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">54</p>
-                      <p class="mb-0 fw-bold text-success">30.5%</p>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-warning">
-                      <span class="material-icons-outlined text-white">ads_click</span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Clicked</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">859</p>
-                      <p class="mb-0 fw-bold text-danger">34.6%</p>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-info">
-                      <span class="material-icons-outlined text-white">subscriptions</span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Subscribed</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">24,758</p>
-                      <p class="mb-0 fw-bold text-success">53%</p>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-danger">
-                      <span class="material-icons-outlined text-white">inbox</span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Spam Message</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">548</p>
-                      <p class="mb-0 fw-bold text-danger">47%</p>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0 bg-transparent">
-                  <div class="d-flex align-items-center gap-3">
-                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-grd-deep-blue">
-                      <span class="material-icons-outlined text-white">visibility</span>
-                    </div>
-                    <div class="flex-grow-1">
-                      <h6 class="mb-0">Views Mails</h6>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                      <p class="mb-0">9845</p>
-                      <p class="mb-0 fw-bold text-success">68%</p>
-                    </div>
-                  </div>
-                </li>
-            </ul>
+
+                </form>
+            </div>
 
         </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div id="chart8"></div>
-          <div class="d-flex align-items-center gap-3 mt-4">
-            <div class="">
-              <h1 class="mb-0">36.7%</h1>
-            </div>
-            <div class="d-flex align-items-center align-self-end gap-2">
-              <span class="material-icons-outlined text-success">trending_up</span>
-              <p class="mb-0 text-success">34.5%</p>
-            </div>
-          </div>
-          <p class="mb-4">Visitors Growth</p>
-          <div class="d-flex flex-column gap-3">
-            <div class="">
-              <p class="mb-1">Cliks <span class="float-end">2589</span></p>
-              <div class="progress" style="height: 5px;">
-                <div class="progress-bar bg-grd-primary" style="width: 65%"></div>
-              </div>
-            </div>
-            <div class="">
-              <p class="mb-1">Likes <span class="float-end">6748</span></p>
-              <div class="progress" style="height: 5px;">
-                <div class="progress-bar bg-grd-warning" style="width: 55%"></div>
-              </div>
-            </div>
-            <div class="">
-              <p class="mb-1">Upvotes <span class="float-end">9842</span></p>
-              <div class="progress" style="height: 5px;">
-                <div class="progress-bar bg-grd-info" style="width: 45%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-          <div class="d-flex align-items-start justify-content-between mb-3">
-            <div class="">
-              <h5 class="mb-0 fw-bold">Social Leads</h5>
-            </div>
-            <div class="dropdown">
-              <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                data-bs-toggle="dropdown">
-                <span class="material-icons-outlined fs-5">more_vert</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-              </ul>
-            </div>
-           </div>
-          <div class="d-flex flex-column justify-content-between gap-4">
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/17.png" width="32" alt="">
-                <p class="mb-0">Facebook</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">55%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#0d6efd", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/18.png" width="32" alt="">
-                <p class="mb-0">LinkedIn</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">67%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#fc185a", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/19.png" width="32" alt="">
-                <p class="mb-0">Instagram</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">78%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#02c27a", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/20.png" width="32" alt="">
-                <p class="mb-0">Snapchat</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">46%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#fd7e14", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/05.png" width="32" alt="">
-                <p class="mb-0">Google</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">38%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#0dcaf0", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/08.png" width="32" alt="">
-                <p class="mb-0">Altaba</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">15%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#6f42c1", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-4">
-              <div class="d-flex align-items-center gap-3 flex-grow-1">
-                <img src="assets/images/apps/07.png" width="32" alt="">
-                <p class="mb-0">Spotify</p>
-              </div>
-              <div class="">
-                <p class="mb-0 fs-6">12%</p>
-              </div>
-              <div class="">
-                <p class="mb-0 data-attributes">
-                  <span
-                    data-peity='{ "fill": ["#ff00b3", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>  
-    </div>
-    <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-header border-0 p-3 border-bottom">
-          <div class="d-flex align-items-start justify-content-between">
-            <div class="">
-              <h5 class="mb-0">New Users</h5>
-            </div>
-            <div class="dropdown">
-              <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="material-icons-outlined fs-5">more_vert</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="card-body p-0">
-          <div class="user-list p-3">
-            <div class="d-flex flex-column gap-3">
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/01.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">Elon Jonado</h6>
-                  <p class="mb-0">elon_deo</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/02.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">Alexzender Clito</h6>
-                  <p class="mb-0">zli_alexzender</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/03.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">Michle Tinko</h6>
-                  <p class="mb-0">tinko_michle</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/04.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">KailWemba</h6>
-                  <p class="mb-0">wemba_kl</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/05.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">Henhco Tino</h6>
-                  <p class="mb-0">Henhco_tino</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/06.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">Gonjiko Fernando</h6>
-                  <p class="mb-0">gonjiko_fernando</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-              <div class="d-flex align-items-center gap-3">
-                <img src="assets/images/avatars/08.png" width="45" height="45" class="rounded-circle" alt="">
-                <div class="flex-grow-1">
-                  <h6 class="mb-0">Specer Kilo</h6>
-                  <p class="mb-0">specer_kilo</p>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <input class="form-check-input ms-0" type="checkbox">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer bg-transparent p-3">
-          <div class="d-flex align-items-center justify-content-between gap-3">
-            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">share</i></a>
-            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">textsms</i></a>
-            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">email</i></a>
-            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">attach_file</i></a>
-            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">event</i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-lg-12 col-xxl-8 d-flex align-items-stretch">
-      <div class="card w-100 rounded-4">
-        <div class="card-body">
-         <div class="d-flex align-items-start justify-content-between mb-3">
-            <div class="">
-              <h5 class="mb-0">Recent Orders</h5>
-            </div>
-            <div class="dropdown">
-              <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle"
-                data-bs-toggle="dropdown">
-                <span class="material-icons-outlined fs-5">more_vert</span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="javascript:;">Action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
-                <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="order-search position-relative my-3">
-            <input class="form-control rounded-5 px-5" type="text" placeholder="Search">
-            <span class="material-icons-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
-          </div>
-           <div class="table-responsive">
-               <table class="table align-middle">
-                 <thead>
-                  <tr>
-                    <th>Item Name</th>
-                    <th>Amount</th>
-                    <th>Vendor</th>
-                    <th>Status</th>
-                    <th>Rating</th>
-                  </tr>
-                 </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-3">
-                           <div class="">
-                              <img src="assets/images/top-products/01.png" class="rounded-circle" width="50" height="50" alt="">
-                           </div>
-                           <p class="mb-0">Sports Shoes</p>
-                        </div>
-                      </td>
-                      <td>$149</td>
-                      <td>Julia Sunota</td>
-                      <td><p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p></td>
-                      <td>
-                        <div class="d-flex align-items-center gap-1">
-                          <p class="mb-0">5.0</p>
-                          <i class="material-icons-outlined text-warning fs-6">star</i>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-3">
-                           <div class="">
-                              <img src="assets/images/top-products/02.png" class="rounded-circle" width="50" height="50" alt="">
-                           </div>
-                           <p class="mb-0">Goldan Watch</p>
-                        </div>
-                      </td>
-                      <td>$168</td>
-                      <td>Julia Sunota</td>
-                      <td><p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p></td>
-                      <td>
-                        <div class="d-flex align-items-center gap-1">
-                          <p class="mb-0">5.0</p>
-                          <i class="material-icons-outlined text-warning fs-6">star</i>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-3">
-                           <div class="">
-                              <img src="assets/images/top-products/03.png" class="rounded-circle" width="50" height="50" alt="">
-                           </div>
-                           <p class="mb-0">Men Polo Tshirt</p>
-                        </div>
-                      </td>
-                      <td>$124</td>
-                      <td>Julia Sunota</td>
-                      <td><p class="dash-lable mb-0 bg-warning bg-opacity-10 text-warning rounded-2">Pending</p></td>
-                      <td>
-                        <div class="d-flex align-items-center gap-1">
-                          <p class="mb-0">4.0</p>
-                          <i class="material-icons-outlined text-warning fs-6">star</i>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-3">
-                           <div class="">
-                              <img src="assets/images/top-products/04.png" class="rounded-circle" width="50" height="50" alt="">
-                           </div>
-                           <p class="mb-0">Blue Jeans Casual</p>
-                        </div>
-                      </td>
-                      <td>$289</td>
-                      <td>Julia Sunota</td>
-                      <td><p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p></td>
-                      <td>
-                        <div class="d-flex align-items-center gap-1">
-                          <p class="mb-0">3.0</p>
-                          <i class="material-icons-outlined text-warning fs-6">star</i>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center gap-3">
-                           <div class="">
-                              <img src="assets/images/top-products/06.png" class="rounded-circle" width="50" height="50" alt="">
-                           </div>
-                           <p class="mb-0">Fancy Shirts</p>
-                        </div>
-                      </td>
-                      <td>$389</td>
-                      <td>Julia Sunota</td>
-                      <td><p class="dash-lable mb-0 bg-danger bg-opacity-10 text-danger rounded-2">Canceled</p></td>
-                      <td>
-                        <div class="d-flex align-items-center gap-1">
-                          <p class="mb-0">2.0</p>
-                          <i class="material-icons-outlined text-warning fs-6">star</i>
-                        </div>
-                      </td>
-                    </tr>
 
-                  </tbody>
-               </table>
-           </div>
+
+        {{-- =========================================================
+      SUMMARY CARDS
+  ========================================================== --}}
+        <div class="row">
+
+            {{-- JUMLAH AUDIT --}}
+            <div class="col-12 col-sm-6 col-xl-3 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center justify-content-between">
+
+                            <div>
+
+                                <p class="mb-1 text-muted">
+                                    Jumlah Audit
+                                </p>
+
+                                <h3 class="mb-0 fw-bold">
+                                    {{ $jumlahAudit }}
+                                </h3>
+
+                                <small class="text-muted">
+                                    Tahun {{ $tahun }}
+                                </small>
+
+                            </div>
+
+                            <div
+                                class="wh-48 d-flex align-items-center justify-content-center rounded-3 bg-primary bg-opacity-10">
+                                <span class="material-icons-outlined text-primary">
+                                    assignment
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- BELUM BERMULA --}}
+            <div class="col-12 col-sm-6 col-xl-3 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center justify-content-between">
+
+                            <div>
+
+                                <p class="mb-1 text-muted">
+                                    Belum Bermula
+                                </p>
+
+                                <h3 class="mb-0 fw-bold">
+                                    {{ $belumBermula }}
+                                </h3>
+
+                                <small class="text-muted">
+                                    Audit
+                                </small>
+
+                            </div>
+
+                            <div
+                                class="wh-48 d-flex align-items-center justify-content-center rounded-3 bg-secondary bg-opacity-10">
+                                <span class="material-icons-outlined text-secondary">
+                                    schedule
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- DALAM PROSES --}}
+            <div class="col-12 col-sm-6 col-xl-3 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center justify-content-between">
+
+                            <div>
+
+                                <p class="mb-1 text-muted">
+                                    Dalam Proses
+                                </p>
+
+                                <h3 class="mb-0 fw-bold">
+                                    {{ $dalamProses }}
+                                </h3>
+
+                                <small class="text-muted">
+                                    Audit
+                                </small>
+
+                            </div>
+
+                            <div
+                                class="wh-48 d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10">
+                                <span class="material-icons-outlined text-warning">
+                                    pending_actions
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- SELESAI --}}
+            <div class="col-12 col-sm-6 col-xl-3 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center justify-content-between">
+
+                            <div>
+
+                                <p class="mb-1 text-muted">
+                                    Selesai
+                                </p>
+
+                                <h3 class="mb-0 fw-bold">
+                                    {{ $selesai }}
+                                </h3>
+
+                                <small class="text-muted">
+                                    Audit
+                                </small>
+
+                            </div>
+
+                            <div
+                                class="wh-48 d-flex align-items-center justify-content-center rounded-3 bg-success bg-opacity-10">
+                                <span class="material-icons-outlined text-success">
+                                    task_alt
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
-      </div>
+
+
+        {{-- =========================================================
+      CHART ROW 1
+  ========================================================== --}}
+        <div class="row">
+
+            {{-- =====================================================
+          2.1 BILANGAN AUDIT MENGIKUT TAHUN
+      ====================================================== --}}
+            <div class="col-12 col-xl-7 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-start justify-content-between mb-4">
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+                                    Bilangan Audit Mengikut Tahun
+                                </h5>
+
+                                <p class="mb-0 text-muted">
+                                    Jumlah audit yang didaftarkan berdasarkan tahun
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-primary bg-opacity-10">
+                                <span class="material-icons-outlined text-primary">
+                                    bar_chart
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div id="chartAuditTahun"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- =====================================================
+          2.2 STATUS KESIAPAN
+      ====================================================== --}}
+            <div class="col-12 col-xl-5 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+                                    Status Kesiapan Audit
+                                </h5>
+
+                                <p class="mb-0 text-muted">
+                                    Tahun {{ $tahun }}
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-success bg-opacity-10">
+                                <span class="material-icons-outlined text-success">
+                                    donut_large
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div id="chartStatusKesiapan"></div>
+
+
+                        {{-- LEGEND --}}
+                        <div class="d-flex flex-column gap-2 mt-3">
+
+                            @foreach ($statusKesiapan as $label => $jumlah)
+                                <div class="d-flex align-items-center justify-content-between">
+
+                                    <span class="text-muted">
+                                        {{ $label }}
+                                    </span>
+
+                                    <span class="fw-bold">
+                                        {{ $jumlah }}
+                                    </span>
+
+                                </div>
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- =========================================================
+      CHART ROW 2
+  ========================================================== --}}
+        <div class="row">
+
+            {{-- =====================================================
+          2.3 STATUS TARIKH AUDIT
+      ====================================================== --}}
+            <div class="col-12 col-xl-6 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-start justify-content-between mb-4">
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+                                    Status Tarikh Audit Mengikut Perancangan
+                                </h5>
+
+                                <p class="mb-0 text-muted">
+                                    Perbandingan tarikh pelan dengan tarikh audit bermula
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-warning bg-opacity-10">
+                                <span class="material-icons-outlined text-warning">
+                                    event
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div id="chartStatusTarikh"></div>
+
+
+                        <div class="mt-3">
+
+                            @foreach ($statusTarikh as $label => $jumlah)
+                                <div class="d-flex align-items-center justify-content-between border-bottom py-2">
+
+                                    <span>
+                                        {{ $label }}
+                                    </span>
+
+                                    <span class="badge bg-primary rounded-pill">
+                                        {{ $jumlah }}
+                                    </span>
+
+                                </div>
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- =====================================================
+          2.4 PRESTASI SENARAI SEMAK
+      ====================================================== --}}
+            <div class="col-12 col-xl-6 d-flex align-items-stretch">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-start justify-content-between mb-4">
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+                                    Prestasi Senarai Semak Audit
+                                </h5>
+
+                                <p class="mb-0 text-muted">
+                                    Keseluruhan keputusan checklist tahun {{ $tahun }}
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-info bg-opacity-10">
+                                <span class="material-icons-outlined text-info">
+                                    fact_check
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div id="chartPrestasiChecklist"></div>
+
+
+                        <div class="row mt-3 text-center">
+
+                            <div class="col-4">
+
+                                <h5 class="mb-0 text-success">
+                                    {{ $akur }}
+                                </h5>
+
+                                <small class="text-muted">
+                                    Akur
+                                </small>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <h5 class="mb-0 text-danger">
+                                    {{ $tidakAkur }}
+                                </h5>
+
+                                <small class="text-muted">
+                                    Tidak Akur
+                                </small>
+
+                            </div>
+
+
+                            <div class="col-4">
+
+                                <h5 class="mb-0 text-secondary">
+                                    {{ $tidakBerkaitan }}
+                                </h5>
+
+                                <small class="text-muted">
+                                    Tidak Berkaitan
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- =========================================================
+      JAVASCRIPT / APEXCHARTS
+  ========================================================== --}}
+        @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+
+                    /*
+                    ============================================================
+                    2.1 BILANGAN AUDIT MENGIKUT TAHUN
+                    ============================================================
+                    */
+
+                    const chartTahun = @json($chartTahun);
+                    const chartJumlahAudit = @json($chartJumlahAudit);
+
+                    const optionsAuditTahun = {
+
+                        series: [{
+                            name: 'Jumlah Audit',
+                            data: chartJumlahAudit
+                        }],
+
+                        chart: {
+                            type: 'bar',
+                            height: 350,
+                            toolbar: {
+                                show: false
+                            }
+                        },
+
+                        plotOptions: {
+
+                            bar: {
+                                borderRadius: 6,
+                                columnWidth: '45%',
+                                dataLabels: {
+                                    position: 'top'
+                                }
+                            }
+
+                        },
+
+                        dataLabels: {
+
+                            enabled: true,
+
+                            offsetY: -20,
+
+                            style: {
+                                fontSize: '12px'
+                            }
+
+                        },
+
+                        xaxis: {
+
+                            categories: chartTahun,
+
+                            title: {
+                                text: 'Tahun'
+                            }
+
+                        },
+
+                        yaxis: {
+
+                            min: 0,
+
+                            forceNiceScale: true,
+
+                            title: {
+                                text: 'Bilangan Audit'
+                            },
+
+                            labels: {
+
+                                formatter: function(value) {
+                                    return Math.round(value);
+                                }
+
+                            }
+
+                        },
+
+                        grid: {
+
+                            strokeDashArray: 4
+
+                        },
+
+                        tooltip: {
+
+                            y: {
+
+                                formatter: function(value) {
+                                    return value + ' Audit';
+                                }
+
+                            }
+
+                        }
+
+                    };
+
+
+                    const auditTahunElement =
+                        document.querySelector('#chartAuditTahun');
+
+                    if (auditTahunElement) {
+
+                        new ApexCharts(
+                            auditTahunElement,
+                            optionsAuditTahun
+                        ).render();
+
+                    }
+
+
+                    /*
+                    ============================================================
+                    2.2 STATUS KESIAPAN AUDIT
+                    ============================================================
+                    */
+
+                    const statusKesiapan = @json(array_values($statusKesiapan));
+
+                    const optionsStatusKesiapan = {
+
+                        series: statusKesiapan,
+
+                        labels: [
+                            'BELUM BERMULA',
+                            'DALAM PROSES',
+                            'MENUNGGU KESIMPULAN',
+                            'MENUNGGU ULASAN',
+                            'SELESAI'
+                        ],
+
+                        chart: {
+
+                            type: 'donut',
+                            height: 350
+
+                        },
+
+                        legend: {
+
+                            position: 'bottom'
+
+                        },
+
+                        dataLabels: {
+
+                            enabled: true
+
+                        },
+
+                        plotOptions: {
+
+                            pie: {
+
+                                donut: {
+
+                                    size: '68%',
+
+                                    labels: {
+
+                                        show: true,
+
+                                        name: {
+                                            show: true
+                                        },
+
+                                        value: {
+                                            show: true
+                                        },
+
+                                        total: {
+
+                                            show: true,
+
+                                            label: 'Jumlah Audit',
+
+                                            formatter: function(w) {
+
+                                                return w.globals.seriesTotals.reduce(
+                                                    (a, b) => a + b,
+                                                    0
+                                                );
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        },
+
+                        tooltip: {
+
+                            y: {
+
+                                formatter: function(value) {
+                                    return value + ' Audit';
+                                }
+
+                            }
+
+                        },
+
+                        responsive: [
+
+                            {
+
+                                breakpoint: 480,
+
+                                options: {
+
+                                    chart: {
+                                        height: 320
+                                    },
+
+                                    legend: {
+                                        position: 'bottom'
+                                    }
+
+                                }
+
+                            }
+
+                        ]
+
+                    };
+
+
+                    const statusKesiapanElement =
+                        document.querySelector('#chartStatusKesiapan');
+
+                    if (statusKesiapanElement) {
+
+                        new ApexCharts(
+                            statusKesiapanElement,
+                            optionsStatusKesiapan
+                        ).render();
+
+                    }
+
+
+                    /*
+                    ============================================================
+                    2.3 STATUS TARIKH AUDIT
+                    ============================================================
+                    */
+
+                    const statusTarikh = @json(array_values($statusTarikh));
+
+                    const optionsStatusTarikh = {
+
+                        series: [{
+                            name: 'Jumlah Audit',
+                            data: statusTarikh
+                        }],
+
+                        chart: {
+
+                            type: 'bar',
+                            height: 350,
+
+                            toolbar: {
+                                show: false
+                            }
+
+                        },
+
+                        plotOptions: {
+
+                            bar: {
+
+                                horizontal: true,
+
+                                borderRadius: 5,
+
+                                barHeight: '50%',
+
+                                dataLabels: {
+                                    position: 'center'
+                                }
+
+                            }
+
+                        },
+
+                        dataLabels: {
+
+                            enabled: true,
+
+                            formatter: function(value) {
+                                return value;
+                            }
+
+                        },
+
+                        xaxis: {
+
+                            categories: [
+                                'Sebelum Tarikh Pelan',
+                                'Mengikut Tarikh Pelan',
+                                'Selepas Tarikh Pelan'
+                            ],
+
+                            min: 0,
+
+                            labels: {
+
+                                formatter: function(value) {
+                                    return Math.round(value);
+                                }
+
+                            }
+
+                        },
+
+                        grid: {
+
+                            strokeDashArray: 4
+
+                        },
+
+                        tooltip: {
+
+                            y: {
+
+                                formatter: function(value) {
+                                    return value + ' Audit';
+                                }
+
+                            }
+
+                        }
+
+                    };
+
+
+                    const statusTarikhElement =
+                        document.querySelector('#chartStatusTarikh');
+
+                    if (statusTarikhElement) {
+
+                        new ApexCharts(
+                            statusTarikhElement,
+                            optionsStatusTarikh
+                        ).render();
+
+                    }
+
+
+                    /*
+                    ============================================================
+                    2.4 PRESTASI SENARAI SEMAK
+                    ============================================================
+                    */
+
+                    const optionsPrestasiChecklist = {
+
+                        series: [
+
+                            {
+                                name: 'Jumlah',
+                                data: [
+                                    {{ $akur }},
+                                    {{ $tidakAkur }},
+                                    {{ $tidakBerkaitan }}
+                                ]
+                            }
+
+                        ],
+
+                        chart: {
+
+                            type: 'bar',
+
+                            height: 350,
+
+                            toolbar: {
+                                show: false
+                            }
+
+                        },
+
+                        plotOptions: {
+
+                            bar: {
+
+                                borderRadius: 6,
+
+                                columnWidth: '45%',
+
+                                distributed: true
+
+                            }
+
+                        },
+
+                        dataLabels: {
+
+                            enabled: true,
+
+                            style: {
+                                fontSize: '13px'
+                            }
+
+                        },
+
+                        legend: {
+
+                            show: false
+
+                        },
+
+                        xaxis: {
+
+                            categories: [
+                                'AKUR',
+                                'TIDAK AKUR',
+                                'TIDAK BERKAITAN'
+                            ]
+
+                        },
+
+                        yaxis: {
+
+                            min: 0,
+
+                            forceNiceScale: true,
+
+                            title: {
+                                text: 'Bilangan Checklist'
+                            },
+
+                            labels: {
+
+                                formatter: function(value) {
+                                    return Math.round(value);
+                                }
+
+                            }
+
+                        },
+
+                        grid: {
+
+                            strokeDashArray: 4
+
+                        },
+
+                        tooltip: {
+
+                            y: {
+
+                                formatter: function(value) {
+                                    return value + ' Checklist';
+                                }
+
+                            }
+
+                        }
+
+                    };
+
+
+                    const prestasiChecklistElement =
+                        document.querySelector('#chartPrestasiChecklist');
+
+                    if (prestasiChecklistElement) {
+
+                        new ApexCharts(
+                            prestasiChecklistElement,
+                            optionsPrestasiChecklist
+                        ).render();
+
+                    }
+
+                });
+            </script>
+        @endpush
+
     </div>
-  </div>
 @endsection

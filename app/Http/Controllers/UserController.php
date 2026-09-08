@@ -24,19 +24,26 @@ class UserController extends Controller
     {
         $data = User::whereDoesntHave('roles', function ($query) {
                     $query->where('name', 'Admin');
-                })->get();
+                })
+                ->with('roles')
+                ->withExists('auditGroupMembers')
+                ->get();
+
         return DataTables::of($data)
+
             ->addIndexColumn()
+
             ->addColumn('roles', function ($row) {
                 return $row->roles->pluck('name')->implode(', ');
             })
+
             ->addColumn('status', function ($row) {
 
                 $btn = '<div class="d-flex justify-content-center align-items-center">';
 
                 if ($row->status == 'AKTIF') {
 
-                    $btn .= '<a href="'.route('user.actionStatus',[encode($row->id),0]).'"
+                    $btn .= '<a href="'.route('user.actionStatus', [encode($row->id), 0]).'"
                                 class="btn btn-success btn-circle raised rounded-circle wh-48"
                                 title="Aktif">
                                 <i class="material-icons-outlined">toggle_on</i>
@@ -44,7 +51,7 @@ class UserController extends Controller
 
                 } else {
 
-                    $btn .= '<a href="'.route('user.actionStatus',[encode($row->id),1]).'"
+                    $btn .= '<a href="'.route('user.actionStatus', [encode($row->id), 1]).'"
                                 class="btn btn-danger btn-circle raised rounded-circle wh-48"
                                 title="Tidak Aktif">
                                 <i class="material-icons-outlined">toggle_off</i>
@@ -56,13 +63,40 @@ class UserController extends Controller
 
                 return $btn;
             })
+
             ->addColumn('tindakan', function ($row) {
+
                 $btn = '';
-                $btn .= '<a href="'.route('user.edit', encode($row->id)).'" class="btn btn-warning btn-sm">Edit</a>';
-                $btn .= ' <a href="'.route('user.destroy', encode($row->id)).'" class="btn btn-danger btn-sm">Delete</a>';
+
+                // =====================================================
+                // EDIT
+                // =====================================================
+                $btn .= '<a href="'.route('user.edit', encode($row->id)).'"
+                            class="btn btn-warning btn-sm">
+                            Edit
+                        </a>';
+
+                // =====================================================
+                // DELETE
+                // Hanya pengguna yang TIDAK PERNAH terlibat Audit Group
+                // boleh dipadam
+                // =====================================================
+                if (!$row->audit_group_members_exists) {
+
+                    $btn .= ' <a href="'.route('user.destroy', encode($row->id)).'"
+                                class="btn btn-danger btn-sm">
+                                Delete
+                            </a>';
+                }
+
                 return $btn;
             })
-            ->rawColumns(['status', 'tindakan'])
+
+            ->rawColumns([
+                'status',
+                'tindakan'
+            ])
+
             ->make(true);
     }
 

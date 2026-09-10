@@ -106,7 +106,7 @@
 
                 <div class="col-12 col-md-8">
                     <label class="text-muted d-block">
-                        Deskripsi
+                        Keterangan
                     </label>
 
                     <div class="fw-bold text-break">

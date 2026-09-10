@@ -8,7 +8,7 @@
             {{-- KIRI --}}
             <div>
                 <h5 class="mb-0">
-                    Rumusan / Kesimpulan Ketua Audit
+                    Rumusan / Kesimpulan Pentadbir
                 </h5>
 
                 <small class="text-muted">

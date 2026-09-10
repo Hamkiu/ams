@@ -31,7 +31,7 @@
                     <div>
 
                         <h5 class="mb-0">
-                            Rumusan / Kesimpulan Ketua Kumpulan
+                            Rumusan / Kesimpulan Ketua Kumpulan Audit
                         </h5>
 
                     </div>
@@ -85,7 +85,7 @@
                         <i class="material-icons-outlined
                                   align-middle me-1"
                             style="font-size: 18px;">
-                            description
+                            keterangan
                         </i>
 
                         Rumusan / Kesimpulan

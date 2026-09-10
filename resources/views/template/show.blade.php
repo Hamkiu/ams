@@ -52,7 +52,7 @@
 
             <div class="col-md-6">
                 <div class="form-group mb-3">
-                    <label>Description</label>
+                    <label>Keterangan</label>
                     <textarea name="description" class="form-control" rows="3">{{ old('description', $auditTemplate->description) }}</textarea>
                 </div>
             </div>

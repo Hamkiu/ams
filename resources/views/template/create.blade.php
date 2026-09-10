@@ -45,7 +45,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group mb-3">
-                        <label for="description">Description</label>
+                        <label for="description">Keterangan</label>
                         <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
                     </div>
                 </div>

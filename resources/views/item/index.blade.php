@@ -84,7 +84,7 @@
         
                     <div class="col-md-10">
                         <div class="form-group mb-3">
-                            <label>Description</label>
+                            <label>Keterangan</label>
                             <textarea name="description"
                                       class="form-control"
                                       rows="3" disabled>{{ old('description', $auditTemplate->description) }}</textarea>

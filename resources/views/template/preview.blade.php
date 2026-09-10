@@ -284,11 +284,11 @@
                                 </div>
 
 
-                                {{-- CHECKLIST --}}
+                                {{-- SENARAI SEMAK --}}
                                 <div class="mt-4">
 
                                     <h6 class="mb-3">
-                                        Checklist Audit
+                                        Senarai Semak Audit
                                     </h6>
 
                                     @forelse ($item->checklists as $index => $checklist)
@@ -310,7 +310,7 @@
 
                                         <div class="alert alert-light border mb-0">
                                             <span class="text-muted">
-                                                Tiada checklist untuk item ini.
+                                                Tiada senarai semak untuk item ini.
                                             </span>
                                         </div>
                                     @endforelse

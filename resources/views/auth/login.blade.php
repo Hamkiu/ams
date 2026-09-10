@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>AMS | Audit Management System</title>
+    <title>AuditPBT</title>
 
     {{-- Favicon --}}
     <link rel="icon" href="{{ asset('template/assets/images/logo-mbi.png') }}" type="image/png">
@@ -90,10 +90,10 @@
                             alt="Logo MBI">
 
                         <h4 class="fw-bold">
-                            Audit Management System
+                            Audit PBT
                         </h4>
 
-                        <p class="mb-4 text-muted">
+                        <p class="mb-4" style="color: #f8fc07;">
                             Sila log masuk menggunakan akaun anda.
                         </p>
 

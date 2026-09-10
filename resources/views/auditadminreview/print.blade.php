@@ -8,7 +8,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laporan Audit - {{ $auditGroup->name }}</title>
+    <title>Nota Audit - {{ $auditGroup->name }}</title>
 
     <link rel="icon" sizes="16x16" href="{{ asset('template/assets/images/logo-mbi.png') }}" type="image/png">
 
@@ -99,7 +99,7 @@
                                 </td>
 
                                 <td class="header-value">
-                                    1
+                                    2
                                 </td>
 
                             </tr>
@@ -116,7 +116,7 @@
                                 </td>
 
                                 <td class="header-value">
-                                    01 April 2026
+                                    16 Jun 2026
                                 </td>
 
                             </tr>
@@ -161,7 +161,7 @@
                             </h2>
 
                             <h3>
-                                Laporan Audit
+                                Nota Audit
                             </h3>
 
 
@@ -215,6 +215,17 @@
                                     </td>
 
                                 </tr>
+                                <tr>
+
+                                    <th>
+                                        Klausa
+                                    </th>
+
+                                    <td>
+                                        {{ $auditGroup->auditTemplate->klausa ?? '-' }}
+                                    </td>
+
+                                </tr>
 
 
                                 <tr>
@@ -233,7 +244,7 @@
                                 <tr>
 
                                     <th>
-                                        Tarikh Audit
+                                        Tarikh Pelan Audit
                                     </th>
 
                                     <td>
@@ -278,7 +289,7 @@
                                 @endif
 
 
-                                @if ($auditGroup->completed_at)
+                                {{-- @if ($auditGroup->completed_at)
                                     <tr>
 
                                         <th>
@@ -292,7 +303,7 @@
                                         </td>
 
                                     </tr>
-                                @endif
+                                @endif --}}
 
                             </table>
 
@@ -512,7 +523,7 @@
 
                                         @if ($answer)
                                             {{-- =====================================
-                                                CHECKLIST
+                                                SENARAI SEMAK
                                             ====================================== --}}
 
                                             <table class="table-checklist">
@@ -530,7 +541,7 @@
 
                                                         <th>
 
-                                                            Checklist
+                                                            Senarai Semak
 
                                                         </th>
 
@@ -635,7 +646,7 @@
 
                                                             <td colspan="3" class="text-center text-muted">
 
-                                                                Tiada checklist.
+                                                                Tiada senarai semak.
 
                                                             </td>
 
@@ -771,11 +782,11 @@
                             D. RUMUSAN / KESIMPULAN KETUA AUDIT
                         ================================================== --}}
 
-                            <div class="section">
+                            {{-- <div class="section">
 
                                 <div class="section-title">
 
-                                    D. Rumusan / Kesimpulan Ketua Audit
+                                    D. Rumusan / Kesimpulan Ketua Kumpulan Audit
 
                                 </div>
 
@@ -794,7 +805,7 @@
 
                                 </div>
 
-                            </div>
+                            </div> --}}
 
 
 
@@ -802,11 +813,11 @@
                             E. ULASAN ADMIN
                         ================================================== --}}
 
-                            <div class="section">
+                            {{-- <div class="section">
 
                                 <div class="section-title">
 
-                                    E. Ulasan Admin
+                                    E. Ulasan Pentadbir
 
                                 </div>
 
@@ -825,7 +836,7 @@
 
                                 </div>
 
-                            </div>
+                            </div> --}}
 
 
 
@@ -835,7 +846,7 @@
 
                             <div class="report-footer">
 
-                                Laporan Audit |
+                                Nota Audit |
                                 {{ $auditGroup->name }}
 
                                 <br>

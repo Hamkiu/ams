@@ -57,12 +57,12 @@
 
 
                     {{-- =========================================
-                        CHECKLIST
+                        SENARAI SEMAK
                     ========================================== --}}
                     <div class="mb-4">
 
                         <h6 class="fw-bold mb-3">
-                            Checklist
+                            Senarai Semak
                         </h6>
 
 
@@ -75,7 +75,7 @@
                                     <tr>
 
                                         <th>
-                                            Checklist
+                                            Senarai Semak
                                         </th>
 
                                         <th class="text-center">
@@ -192,7 +192,7 @@
 
                                             <td colspan="3" class="text-center text-muted">
 
-                                                Tiada checklist.
+                                                Tiada senarai semak.
 
                                             </td>
 

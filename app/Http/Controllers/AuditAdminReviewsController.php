@@ -31,6 +31,9 @@ class AuditAdminReviewsController extends Controller
             ->addColumn('audit_template_id', function ($row) {
                 return $row->auditTemplate->name;
             })
+            ->addColumn('klausa', function ($row) {
+                return $row->auditTemplate->klausa;
+            })
             ->addColumn('bil_juruaudit', function ($row) {
 
                 return '<span class="badge bg-primary">'
@@ -68,7 +71,7 @@ class AuditAdminReviewsController extends Controller
                 }
                 return $btn;
             })
-            ->rawColumns(['audit_template_id', 'bil_juruaudit', 'status', 'created_by', 'updated_by', 'tindakan'])
+            ->rawColumns(['audit_template_id', 'klausa', 'bil_juruaudit', 'status', 'created_by', 'updated_by', 'tindakan'])
             ->make(true);
     }
 

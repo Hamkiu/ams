@@ -328,12 +328,12 @@
 
                                             @if ($answer)
                                                 {{-- =================================
-                                                    CHECKLIST
+                                                    SENARAI SEMAK
                                                 ================================== --}}
                                                 <div class="mb-4">
 
                                                     <h6 class="mb-3">
-                                                        Checklist
+                                                        Senarai Semak
                                                     </h6>
 
 
@@ -373,7 +373,7 @@
                                                     @empty
 
                                                         <span class="text-muted">
-                                                            Tiada checklist.
+                                                            Tiada senarai semak.
                                                         </span>
                                                     @endforelse
 

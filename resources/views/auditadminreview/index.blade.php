@@ -19,6 +19,7 @@
                             <th>No</th>
                             <th>Id Kumpulan</th>
                             <th>Template</th>
+                            <th>Klausa</th>
                             <th>Nama Kumpulan</th>
                             <th>Jabatan / Unit</th>
                             <th>Bil. Juruaudit</th>
@@ -72,6 +73,10 @@
                     {
                         data: 'audit_template_id',
                         name: 'audit_template_id'
+                    },
+                    {
+                        data: 'klausa',
+                        name: 'klausa'
                     },
                     {
                         data: 'name',

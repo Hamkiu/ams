@@ -334,8 +334,8 @@
         <div class="row">
 
             {{-- =====================================================
-          2.3 STATUS TARIKH AUDIT
-      ====================================================== --}}
+            2.3 STATUS TARIKH AUDIT
+            ====================================================== --}}
             <div class="col-12 col-xl-6 d-flex align-items-stretch">
 
                 <div class="card w-100 rounded-4">
@@ -392,17 +392,206 @@
 
             </div>
 
-
             {{-- =====================================================
-          2.4 PRESTASI SENARAI SEMAK
-      ====================================================== --}}
+    PRESTASI MENGIKUT KLAUSA TEMPLATE
+====================================================== --}}
+
             <div class="col-12 col-xl-6 d-flex align-items-stretch">
 
                 <div class="card w-100 rounded-4">
 
                     <div class="card-body">
 
+                        {{-- =====================================================
+                HEADER
+            ====================================================== --}}
+
                         <div class="d-flex align-items-start justify-content-between mb-4">
+
+                            <div>
+
+                                <h5 class="mb-1 fw-bold">
+                                    Prestasi Mengikut Klausa
+                                </h5>
+
+                                <p class="mb-0 text-muted">
+                                    Prestasi keseluruhan mengikut klausa bagi audit selesai tahun {{ $tahun }}
+                                </p>
+
+                            </div>
+
+
+                            <div
+                                class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-success bg-opacity-10">
+
+                                <span class="material-icons-outlined text-success">
+                                    analytics
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- =====================================================
+                CHART
+            ====================================================== --}}
+
+                        @if (count($chartKlausaTemplate) > 0)
+
+                            <div id="chartPrestasiKlausaTemplate"></div>
+
+
+                            {{-- =================================================
+                    DETAIL
+                ================================================== --}}
+
+                            <div class="table-responsive mt-3">
+
+                                <table class="table align-middle mb-0">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Klausa
+                                            </th>
+
+                                            <th class="text-center">
+                                                Akur
+                                            </th>
+
+                                            <th class="text-center">
+                                                Tidak Akur
+                                            </th>
+
+                                            <th class="text-center">
+                                                Tidak Berkaitan
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        @foreach ($prestasiKlausaTemplate as $item)
+                                            <tr>
+
+                                                {{-- KLAUSA TEMPLATE --}}
+
+                                                <td class="fw-semibold">
+
+                                                    {{ $item['klausa'] }}
+
+                                                </td>
+
+
+                                                {{-- AKUR --}}
+
+                                                <td class="text-center">
+
+                                                    <span class="badge bg-success">
+
+                                                        {{ $item['AKUR'] }}
+
+                                                    </span>
+
+                                                </td>
+
+
+                                                {{-- TIDAK AKUR --}}
+
+                                                <td class="text-center">
+
+                                                    <span class="badge bg-danger">
+
+                                                        {{ $item['TIDAK AKUR'] }}
+
+                                                    </span>
+
+                                                </td>
+
+
+                                                {{-- TIDAK BERKAITAN --}}
+
+                                                <td class="text-center">
+
+                                                    <span class="badge bg-secondary">
+
+                                                        {{ $item['TIDAK BERKAITAN'] }}
+
+                                                    </span>
+
+                                                </td>
+
+                                            </tr>
+                                        @endforeach
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        @else
+                            {{-- =================================================
+                    TIADA DATA
+                ================================================== --}}
+
+                            <div class="text-center py-5">
+
+                                <span class="material-icons-outlined text-muted mb-2" style="font-size: 50px;">
+
+                                    analytics
+
+                                </span>
+
+                                <h6 class="mb-1">
+
+                                    Tiada Data Prestasi
+
+                                </h6>
+
+                                <p class="text-muted mb-0">
+
+                                    Tiada data klausa bagi audit yang telah selesai.
+
+                                </p>
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+        <div class="row">
+            {{-- =========================================================
+            2.4 PRESTASI SENARAI SEMAK AUDIT
+            ========================================================== --}}
+            <div class="col-12">
+
+                <div class="card w-100 rounded-4">
+
+                    <div class="card-body">
+
+                        {{-- =====================================================
+                HEADER
+                ==================================================== --}}
+
+                        <div
+                            class="d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-3 mb-4">
 
                             <div>
 
@@ -411,64 +600,314 @@
                                 </h5>
 
                                 <p class="mb-0 text-muted">
-                                    Keseluruhan keputusan checklist tahun {{ $tahun }}
+                                    Prestasi mengikut template, klausa dan kumpulan audit tahun {{ $tahun }}
                                 </p>
 
                             </div>
 
+
                             <div
                                 class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-info bg-opacity-10">
+
                                 <span class="material-icons-outlined text-info">
                                     fact_check
                                 </span>
-                            </div>
-
-                        </div>
-
-                        <div id="chartPrestasiChecklist"></div>
-
-
-                        <div class="row mt-3 text-center">
-
-                            <div class="col-4">
-
-                                <h5 class="mb-0 text-success">
-                                    {{ $akur }}
-                                </h5>
-
-                                <small class="text-muted">
-                                    Akur
-                                </small>
-
-                            </div>
-
-
-                            <div class="col-4">
-
-                                <h5 class="mb-0 text-danger">
-                                    {{ $tidakAkur }}
-                                </h5>
-
-                                <small class="text-muted">
-                                    Tidak Akur
-                                </small>
-
-                            </div>
-
-
-                            <div class="col-4">
-
-                                <h5 class="mb-0 text-secondary">
-                                    {{ $tidakBerkaitan }}
-                                </h5>
-
-                                <small class="text-muted">
-                                    Tidak Berkaitan
-                                </small>
 
                             </div>
 
                         </div>
+
+
+                        {{-- =====================================================
+                FILTER
+                ====================================================== --}}
+
+                        <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+
+                            {{-- Kekalkan tahun --}}
+                            <input type="hidden" name="tahun" value="{{ $tahun }}">
+
+
+                            <div class="row g-3">
+
+                                {{-- =================================================
+                        TEMPLATE
+                    ================================================== --}}
+
+                                <div class="col-12 col-md-6">
+
+                                    <label for="template_id" class="form-label fw-semibold">
+                                        Template Audit
+                                    </label>
+
+                                    <select name="template_id" id="template_id" class="form-select"
+                                        onchange="this.form.submit()">
+
+                                        @foreach ($senaraiTemplate as $template)
+                                            <option value="{{ $template->id }}"
+                                                {{ (string) $templateId === (string) $template->id ? 'selected' : '' }}>
+                                                {{ $template->name }}
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+                                </div>
+
+
+                                {{-- =================================================
+                        GROUP
+                    ================================================== --}}
+
+                                <div class="col-12 col-md-6">
+
+                                    <label for="group_id" class="form-label fw-semibold">
+                                        Kumpulan Audit (Selesai)
+                                    </label>
+
+                                    <select name="group_id" id="group_id" class="form-select"
+                                        onchange="this.form.submit()">
+
+                                        <option value="">
+                                            Semua Kumpulan
+                                        </option>
+
+
+                                        @foreach ($senaraiGroup as $group)
+                                            <option value="{{ $group->id }}"
+                                                {{ (string) $groupId === (string) $group->id ? 'selected' : '' }}>
+
+                                                {{ $group->name }}
+
+                                                @if ($group->jabatan)
+                                                    - {{ $group->jabatan }}
+                                                @endif
+
+                                            </option>
+                                        @endforeach
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+
+                        {{-- =====================================================
+                CHART
+                ====================================================== --}}
+
+                        @if (count($chartKlausa) > 0)
+
+                            <div id="chartPrestasiChecklist"></div>
+
+
+                            {{-- =================================================
+                    SUMMARY
+                ================================================== --}}
+
+                            <div class="row mt-4 text-center">
+
+                                {{-- AKUR --}}
+
+                                <div class="col-4">
+
+                                    <h4 class="mb-1 text-success">
+                                        {{ $akur }}
+                                    </h4>
+
+                                    <small class="text-muted">
+                                        Akur
+                                    </small>
+
+                                </div>
+
+
+                                {{-- TIDAK AKUR --}}
+
+                                <div class="col-4">
+
+                                    <h4 class="mb-1 text-danger">
+                                        {{ $tidakAkur }}
+                                    </h4>
+
+                                    <small class="text-muted">
+                                        Tidak Akur
+                                    </small>
+
+                                </div>
+
+
+                                {{-- TIDAK BERKAITAN --}}
+
+                                <div class="col-4">
+
+                                    <h4 class="mb-1 text-secondary">
+                                        {{ $tidakBerkaitan }}
+                                    </h4>
+
+                                    <small class="text-muted">
+                                        Tidak Berkaitan
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            {{-- =================================================
+                    TABLE DETAILS
+                ================================================== --}}
+
+                            <div class="table-responsive mt-4">
+
+                                <table class="table align-middle">
+
+                                    <thead>
+
+                                        <tr>
+
+                                            <th>
+                                                Klausa
+                                            </th>
+
+                                            <th>
+                                                Perkara
+                                            </th>
+
+                                            <th class="text-center">
+                                                Akur
+                                            </th>
+
+                                            <th class="text-center">
+                                                Tidak Akur
+                                            </th>
+
+                                            <th class="text-center">
+                                                Tidak Berkaitan
+                                            </th>
+
+                                            <th class="text-center">
+                                                Jumlah
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        @foreach ($prestasiKlausa as $item)
+                                            @php
+
+                                                $jumlah =
+                                                    $item['AKUR'] + $item['TIDAK AKUR'] + $item['TIDAK BERKAITAN'];
+
+                                            @endphp
+
+
+                                            <tr>
+
+                                                {{-- KLAUSA --}}
+
+                                                <td>
+
+                                                    <strong>
+                                                        {{ $item['no_klausa'] ?: '-' }}
+                                                    </strong>
+
+                                                </td>
+
+
+                                                {{-- PERKARA --}}
+
+                                                <td>
+
+                                                    {{ $item['klausa'] ?: '-' }}
+
+                                                </td>
+
+
+                                                {{-- AKUR --}}
+
+                                                <td class="text-center">
+
+                                                    <span class="badge bg-success">
+
+                                                        {{ $item['AKUR'] }}
+
+                                                    </span>
+
+                                                </td>
+
+
+                                                {{-- TIDAK AKUR --}}
+
+                                                <td class="text-center">
+
+                                                    <span class="badge bg-danger">
+
+                                                        {{ $item['TIDAK AKUR'] }}
+
+                                                    </span>
+
+                                                </td>
+
+
+                                                {{-- TIDAK BERKAITAN --}}
+
+                                                <td class="text-center">
+
+                                                    <span class="badge bg-secondary">
+
+                                                        {{ $item['TIDAK BERKAITAN'] }}
+
+                                                    </span>
+
+                                                </td>
+
+
+                                                {{-- JUMLAH --}}
+
+                                                <td class="text-center fw-bold">
+
+                                                    {{ $jumlah }}
+
+                                                </td>
+
+                                            </tr>
+                                        @endforeach
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        @else
+                            {{-- =================================================
+                    TIADA DATA
+                ================================================== --}}
+
+                            <div class="text-center py-5">
+
+                                <span class="material-icons-outlined text-muted mb-2" style="font-size: 50px;">
+                                    bar_chart
+                                </span>
+
+                                <h6 class="mb-1">
+                                    Tiada Data Prestasi
+                                </h6>
+
+                                <p class="text-muted mb-0">
+                                    Tiada keputusan senarai semak bagi pilihan ini.
+                                </p>
+
+                            </div>
+
+                        @endif
 
                     </div>
 
@@ -480,8 +919,8 @@
 
 
         {{-- =========================================================
-      JAVASCRIPT / APEXCHARTS
-  ========================================================== --}}
+            JAVASCRIPT / APEXCHARTS
+        ========================================================== --}}
         @push('scripts')
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
@@ -608,6 +1047,12 @@
 
                     const optionsStatusKesiapan = {
 
+                        /*
+                        |--------------------------------------------------------------------------
+                        | DATA
+                        |--------------------------------------------------------------------------
+                        */
+
                         series: statusKesiapan,
 
                         labels: [
@@ -618,24 +1063,86 @@
                             'SELESAI'
                         ],
 
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | WARNA MENGIKUT STATUS
+                        |--------------------------------------------------------------------------
+                        |
+                        | BELUM BERMULA        = Kelabu
+                        | DALAM PROSES         = Biru
+                        | MENUNGGU KESIMPULAN  = Kuning / Orange
+                        | MENUNGGU ULASAN      = Ungu
+                        | SELESAI              = Hijau
+                        |
+                        */
+
+                        colors: [
+                            '#6c757d', // BELUM BERMULA
+                            '#0d6efd', // DALAM PROSES
+                            '#ffc107', // MENUNGGU KESIMPULAN
+                            '#6f42c1', // MENUNGGU ULASAN
+                            '#198754' // SELESAI
+                        ],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | CHART
+                        |--------------------------------------------------------------------------
+                        */
+
                         chart: {
 
                             type: 'donut',
-                            height: 350
+
+                            height: 350,
+
+                            toolbar: {
+                                show: false
+                            }
 
                         },
 
-                        legend: {
 
-                            position: 'bottom'
-
-                        },
+                        /*
+                        |--------------------------------------------------------------------------
+                        | DATA LABEL
+                        |--------------------------------------------------------------------------
+                        */
 
                         dataLabels: {
 
-                            enabled: true
+                            enabled: true,
+
+                            formatter: function(value) {
+
+                                return value.toFixed(1) + '%';
+
+                            },
+
+                            style: {
+
+                                fontSize: '12px',
+
+                                fontWeight: 'bold'
+
+                            },
+
+                            dropShadow: {
+
+                                enabled: false
+
+                            }
 
                         },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | DONUT
+                        |--------------------------------------------------------------------------
+                        */
 
                         plotOptions: {
 
@@ -649,19 +1156,64 @@
 
                                         show: true,
 
+
+                                        /*
+                                        |--------------------------------------------------------------------------
+                                        | STATUS DI TENGAH APABILA HOVER
+                                        |--------------------------------------------------------------------------
+                                        */
+
                                         name: {
-                                            show: true
+
+                                            show: true,
+
+                                            fontSize: '14px',
+
+                                            fontWeight: 500
+
                                         },
 
+
+                                        /*
+                                        |--------------------------------------------------------------------------
+                                        | NILAI
+                                        |--------------------------------------------------------------------------
+                                        */
+
                                         value: {
-                                            show: true
+
+                                            show: true,
+
+                                            fontSize: '22px',
+
+                                            fontWeight: 600,
+
+                                            formatter: function(value) {
+
+                                                return value;
+
+                                            }
+
                                         },
+
+
+                                        /*
+                                        |--------------------------------------------------------------------------
+                                        | JUMLAH KESELURUHAN
+                                        |--------------------------------------------------------------------------
+                                        */
 
                                         total: {
 
                                             show: true,
 
+                                            showAlways: true,
+
                                             label: 'Jumlah Audit',
+
+                                            fontSize: '14px',
+
+                                            fontWeight: 500,
 
                                             formatter: function(w) {
 
@@ -682,17 +1234,91 @@
 
                         },
 
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | LEGEND
+                        |--------------------------------------------------------------------------
+                        */
+
+                        legend: {
+
+                            show: true,
+
+                            position: 'bottom',
+
+                            horizontalAlign: 'center',
+
+                            fontSize: '12px',
+
+                            markers: {
+
+                                width: 10,
+
+                                height: 10,
+
+                                radius: 10
+
+                            },
+
+                            itemMargin: {
+
+                                horizontal: 6,
+
+                                vertical: 3
+
+                            }
+
+                        },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | TOOLTIP
+                        |--------------------------------------------------------------------------
+                        */
+
                         tooltip: {
+
+                            enabled: true,
 
                             y: {
 
                                 formatter: function(value) {
+
                                     return value + ' Audit';
+
                                 }
 
                             }
 
                         },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | STROKE
+                        |--------------------------------------------------------------------------
+                        */
+
+                        stroke: {
+
+                            show: true,
+
+                            width: 2,
+
+                            colors: [
+                                '#ffffff'
+                            ]
+
+                        },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | RESPONSIVE
+                        |--------------------------------------------------------------------------
+                        */
 
                         responsive: [
 
@@ -703,11 +1329,15 @@
                                 options: {
 
                                     chart: {
+
                                         height: 320
+
                                     },
 
                                     legend: {
+
                                         position: 'bottom'
+
                                     }
 
                                 }
@@ -719,14 +1349,24 @@
                     };
 
 
+                    /*
+                    |--------------------------------------------------------------------------
+                    | RENDER CHART
+                    |--------------------------------------------------------------------------
+                    */
+
                     const statusKesiapanElement =
                         document.querySelector('#chartStatusKesiapan');
+
 
                     if (statusKesiapanElement) {
 
                         new ApexCharts(
+
                             statusKesiapanElement,
+
                             optionsStatusKesiapan
+
                         ).render();
 
                     }
@@ -839,99 +1479,243 @@
 
                     }
 
+                    /**
+                     * ============================================================
+                     * PRESTASI MENGIKUT KLAUSA TEMPLATE
+                     * ============================================================
+                     *
+                     * Klausa di sini datang daripada:
+                     *
+                     * audit_templates.klausa
+                     *
+                     */
+
+                    const chartKlausaTemplate =
+                        @json($chartKlausaTemplate);
+
+                    const chartKlausaTemplateAkur =
+                        @json($chartKlausaTemplateAkur);
+
+                    const chartKlausaTemplateTidakAkur =
+                        @json($chartKlausaTemplateTidakAkur);
+
+                    const chartKlausaTemplateTidakBerkaitan =
+                        @json($chartKlausaTemplateTidakBerkaitan);
+
 
                     /*
-                    ============================================================
-                    2.4 PRESTASI SENARAI SEMAK
-                    ============================================================
+                    |--------------------------------------------------------------------------
+                    | OPTIONS
+                    |--------------------------------------------------------------------------
                     */
 
-                    const optionsPrestasiChecklist = {
+                    const optionsPrestasiKlausaTemplate = {
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | SERIES
+                        |--------------------------------------------------------------------------
+                        */
 
                         series: [
 
                             {
-                                name: 'Jumlah',
-                                data: [
-                                    {{ $akur }},
-                                    {{ $tidakAkur }},
-                                    {{ $tidakBerkaitan }}
-                                ]
+                                name: 'AKUR',
+                                data: chartKlausaTemplateAkur
+                            },
+
+                            {
+                                name: 'TIDAK AKUR',
+                                data: chartKlausaTemplateTidakAkur
+                            },
+
+                            {
+                                name: 'TIDAK BERKAITAN',
+                                data: chartKlausaTemplateTidakBerkaitan
                             }
 
                         ],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | WARNA
+                        |--------------------------------------------------------------------------
+                        */
+
+                        colors: [
+
+                            '#198754',
+
+                            '#dc3545',
+
+                            '#6c757d'
+
+                        ],
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | CHART
+                        |--------------------------------------------------------------------------
+                        */
 
                         chart: {
 
                             type: 'bar',
 
-                            height: 350,
+                            height: Math.max(
+                                320,
+                                chartKlausaTemplate.length * 100
+                            ),
 
                             toolbar: {
+
                                 show: false
+
                             }
 
                         },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | BAR
+                        |--------------------------------------------------------------------------
+                        */
 
                         plotOptions: {
 
                             bar: {
 
-                                borderRadius: 6,
+                                horizontal: true,
 
-                                columnWidth: '45%',
+                                borderRadius: 4,
 
-                                distributed: true
+                                barHeight: '65%'
 
                             }
 
                         },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | DATA LABEL
+                        |--------------------------------------------------------------------------
+                        */
 
                         dataLabels: {
 
                             enabled: true,
 
+                            formatter: function(value) {
+
+                                if (value === 0) {
+
+                                    return '';
+
+                                }
+
+                                return value;
+
+                            },
+
                             style: {
-                                fontSize: '13px'
+
+                                fontSize: '11px',
+
+                                fontWeight: 'bold',
+
+                                colors: [
+
+                                    '#ffffff'
+
+                                ]
+
                             }
 
                         },
 
-                        legend: {
 
-                            show: false
-
-                        },
+                        /*
+                        |--------------------------------------------------------------------------
+                        | X AXIS
+                        |--------------------------------------------------------------------------
+                        */
 
                         xaxis: {
 
-                            categories: [
-                                'AKUR',
-                                'TIDAK AKUR',
-                                'TIDAK BERKAITAN'
-                            ]
-
-                        },
-
-                        yaxis: {
+                            categories: chartKlausaTemplate,
 
                             min: 0,
 
                             forceNiceScale: true,
 
                             title: {
-                                text: 'Bilangan Checklist'
+
+                                text: 'Bilangan Senarai Semak'
+
                             },
 
                             labels: {
 
                                 formatter: function(value) {
+
                                     return Math.round(value);
+
                                 }
 
                             }
 
                         },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Y AXIS
+                        |--------------------------------------------------------------------------
+                        */
+
+                        yaxis: {
+
+                            labels: {
+
+                                maxWidth: 180,
+
+                                style: {
+
+                                    fontSize: '11px'
+
+                                }
+
+                            }
+
+                        },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | LEGEND
+                        |--------------------------------------------------------------------------
+                        */
+
+                        legend: {
+
+                            show: true,
+
+                            position: 'top',
+
+                            horizontalAlign: 'center'
+
+                        },
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | GRID
+                        |--------------------------------------------------------------------------
+                        */
 
                         grid: {
 
@@ -939,12 +1723,25 @@
 
                         },
 
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | TOOLTIP
+                        |--------------------------------------------------------------------------
+                        */
+
                         tooltip: {
+
+                            shared: true,
+
+                            intersect: false,
 
                             y: {
 
                                 formatter: function(value) {
-                                    return value + ' Checklist';
+
+                                    return value + ' Senarai Semak';
+
                                 }
 
                             }
@@ -954,13 +1751,249 @@
                     };
 
 
-                    const prestasiChecklistElement =
-                        document.querySelector('#chartPrestasiChecklist');
+                    /*
+                    |--------------------------------------------------------------------------
+                    | RENDER
+                    |--------------------------------------------------------------------------
+                    */
 
-                    if (prestasiChecklistElement) {
+                    const prestasiKlausaTemplateElement =
+                        document.querySelector(
+                            '#chartPrestasiKlausaTemplate'
+                        );
+
+
+                    if (
+                        prestasiKlausaTemplateElement &&
+                        chartKlausaTemplate.length > 0
+                    ) {
 
                         new ApexCharts(
-                            prestasiChecklistElement,
+
+                            prestasiKlausaTemplateElement,
+
+                            optionsPrestasiKlausaTemplate
+
+                        ).render();
+
+                    }
+
+
+                    /*
+                    ============================================================
+                    2.4 PRESTASI SENARAI SEMAK
+                    ============================================================
+                    */
+
+                    const chartKlausa = @json($chartKlausa);
+
+                    const chartAkur = @json($chartAkur);
+
+                    const chartTidakAkur = @json($chartTidakAkur);
+
+                    const chartTidakBerkaitan = @json($chartTidakBerkaitan);
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PASTIKAN ADA DATA
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (chartKlausa.length === 0) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | OPTIONS
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const optionsPrestasiChecklist = {
+
+                        series: [
+
+                            {
+                                name: 'AKUR',
+                                data: chartAkur
+                            },
+
+                            {
+                                name: 'TIDAK AKUR',
+                                data: chartTidakAkur
+                            },
+
+                            {
+                                name: 'TIDAK BERKAITAN',
+                                data: chartTidakBerkaitan
+                            }
+
+                        ],
+
+
+                        chart: {
+
+                            type: 'bar',
+
+                            height: 400,
+
+                            toolbar: {
+                                show: false
+                            }
+
+                        },
+
+
+                        plotOptions: {
+
+                            bar: {
+
+                                horizontal: false,
+
+                                columnWidth: '60%',
+
+                                borderRadius: 4,
+
+                                dataLabels: {
+                                    position: 'top'
+                                }
+
+                            }
+
+                        },
+
+
+                        dataLabels: {
+
+                            enabled: true,
+
+                            formatter: function(value) {
+
+                                if (value === 0) {
+                                    return '';
+                                }
+
+                                return value;
+
+                            },
+
+                            offsetY: -20,
+
+                            style: {
+
+                                fontSize: '12px',
+
+                                colors: [
+                                    '#304758'
+                                ]
+
+                            }
+
+                        },
+
+
+                        stroke: {
+
+                            show: true,
+
+                            width: 2,
+
+                            colors: [
+                                'transparent'
+                            ]
+
+                        },
+
+
+                        xaxis: {
+
+                            categories: chartKlausa,
+
+                            title: {
+                                text: 'Klausa'
+                            }
+
+                        },
+
+
+                        yaxis: {
+
+                            min: 0,
+
+                            forceNiceScale: true,
+
+                            title: {
+                                text: 'Bilangan Senarai Semak'
+                            },
+
+                            labels: {
+
+                                formatter: function(value) {
+
+                                    return Math.round(value);
+
+                                }
+
+                            }
+
+                        },
+
+
+                        legend: {
+
+                            position: 'top',
+
+                            horizontalAlign: 'center'
+
+                        },
+
+
+                        grid: {
+
+                            strokeDashArray: 4
+
+                        },
+
+
+                        tooltip: {
+
+                            shared: true,
+
+                            intersect: false,
+
+                            y: {
+
+                                formatter: function(value) {
+
+                                    return value + ' Senarai Semak';
+
+                                }
+
+                            }
+
+                        }
+
+                    };
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | RENDER
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const chartElement =
+                        document.querySelector('#chartPrestasiChecklist');
+
+
+                    if (chartElement) {
+
+                        new ApexCharts(
+                            chartElement,
                             optionsPrestasiChecklist
                         ).render();
 

@@ -43,13 +43,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="description">Keterangan</label>
                         <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <div class="form-group mb-3">
                         <label for="no_rujukan">Klausa</label>
                         <input type="text" name="klausa" class="form-control text-uppercase"

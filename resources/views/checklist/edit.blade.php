@@ -2,7 +2,7 @@
     @csrf
     <div class="modal-header border-bottom-0 py-2">
         <h5 class="modal-title">
-            Edit Checklist
+            Edit Senarai Semak
         </h5>
     
         <a href="javascript:;" class="primaery-menu-close" data-bs-dismiss="modal">

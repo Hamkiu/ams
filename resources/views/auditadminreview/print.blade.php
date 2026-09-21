@@ -207,7 +207,7 @@
                                 <tr>
 
                                     <th>
-                                        Template Audit
+                                        Templat Audit
                                     </th>
 
                                     <td>
@@ -218,7 +218,7 @@
                                 <tr>
 
                                     <th>
-                                        Klausa
+                                        Piawaian
                                     </th>
 
                                     <td>
@@ -335,7 +335,7 @@
                                         </th>
 
                                         <th>
-                                            Nama Auditor
+                                            Nama Juruaudit
                                         </th>
 
                                         <th width="140">
@@ -500,7 +500,7 @@
 
 
                                         {{-- =========================================
-                                            NAMA AUDITOR
+                                            NAMA JURUAUDIT
                                         ========================================== --}}
 
                                         <div class="auditor-title">

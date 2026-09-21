@@ -100,6 +100,50 @@ class UserController extends Controller
             ->make(true);
     }
 
+    public function listAdmin(Request $request)
+    {
+        $data = User::whereHas('roles', function ($query) {
+                    $query->where('name', 'Admin');
+                })
+                ->with('roles')
+                ->withExists('auditGroupMembers')
+                ->get();
+
+        return DataTables::of($data)
+
+            ->addIndexColumn()
+
+            ->addColumn('roles', function ($row) {
+                return $row->roles->pluck('name')->implode(', ');
+            })
+
+            ->addColumn('tindakan', function ($row) {
+
+                $btn = '';
+
+                // =====================================================
+                // EDIT
+                // =====================================================
+                $btn .= '<a href="'.route('user.edit', encode($row->id)).'"
+                            class="btn btn-warning btn-sm">
+                            Edit
+                        </a>';
+
+                $btn .= ' <a href="'.route('user.destroyAdmin', encode($row->id)).'"
+                            class="btn btn-danger btn-sm">
+                            Remove Admin
+                        </a>';
+
+                return $btn;
+            })
+
+            ->rawColumns([
+                'tindakan'
+            ])
+
+            ->make(true);
+    }
+
     public function actionStatus($id, $status)
     {
         $user = User::find(decode($id));
@@ -222,5 +266,29 @@ class UserController extends Controller
         $user = User::find(decode($id));
         $user->delete();
         return redirect()->route('user')->with('success', 'Pengguna '.$user->name.' berjaya dipadam');
+    }
+
+    public function destroyAdmin($id)
+    {
+        $user = User::findOrFail(decode($id));
+    
+        if (!$user->hasRole('Admin')) {
+            return redirect()
+                ->route('user')
+                ->with('error', 'Pengguna ini bukan Admin.');
+        }
+    
+        $nama = $user->name;
+    
+        // Hanya lucutkan akses Admin.
+        // Rekod pengguna dan sejarah aktiviti kekal.
+        $user->removeRole('Admin');
+    
+        return redirect()
+            ->route('user')
+            ->with(
+                'success',
+                'Akses Admin ' . $nama . ' berjaya dilucutkan.'
+            );
     }
 }

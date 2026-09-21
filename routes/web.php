@@ -71,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('user')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('user');
             Route::any('list', [UserController::class, 'list'])->name('user.list');
+            Route::any('listAdmin', [UserController::class, 'listAdmin'])->name('user.listAdmin');
+            Route::get('destroyAdmin/{id}', [UserController::class, 'destroyAdmin'])->name('user.destroyAdmin');
             Route::get('create', [UserController::class, 'create'])->name('user.create');
             Route::get('edit/{id}', [UserController::class, 'edit'])->name('user.edit');
             Route::post('store', [UserController::class, 'store'])->name('user.store');

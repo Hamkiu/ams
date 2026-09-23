@@ -231,7 +231,7 @@
                                 <tr>
 
                                     <th>
-                                        Jabatan
+                                        Jabatan / Unit
                                     </th>
 
                                     <td>
